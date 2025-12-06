@@ -9,11 +9,11 @@ packages.
 The overall goal here is to make it easier to write javascript libaries
 that target multiple JavaScript runtimes.
 
-![logo](https://raw.githubusercontent.com/frostyetilabs/js/refs/heads/main/.eng/assets/logo.png)
+![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
 
 [![JSR](https://jsr.io/badges/@frostyeti/assert)](https://jsr.io/@frostyeti/assert)
 [![npm version](https://badge.fury.io/js/@frostyeti%2Fassert.svg)](https://badge.fury.io/js/@frostyeti%2Fassert)
-[![GitHub version](https://badge.fury.io/gh/frostyetilabs%2Fjs.svg)](https://badge.fury.io/gh/frostyetilabs%2Fjs)
+[![GitHub version](https://badge.fury.io/gh/frostyeti%2Fjs.svg)](https://badge.fury.io/gh/frostyeti%2Fjs)
 
 ## Documentation
 

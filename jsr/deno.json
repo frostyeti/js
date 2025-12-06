@@ -18,31 +18,31 @@
     },
     "tasks": {
         "test": {
-            "command": "deno run -A ../.eng/main.ts test",
+            "command": "deno run -A ../eng/tasks/main.ts test",
             "description": "Run all tests in the workspace"
         },
         "lint": {
-            "command": "deno run -A ../.eng/main.ts lint",
+            "command": "deno run -A ../eng/tasks/main.ts lint",
             "description": "Lint all files in the workspace"
         },
         "fmt": {
-            "command": "deno run -A ../.eng/main.ts fmt",
+            "command": "deno run -A ../eng/tasks/main.ts fmt",
             "description": "Format all files in the workspace"
         },
         "projects:list": {
-            "command": "deno run -A ../.eng/main.ts projects:list",
+            "command": "deno run -A ../eng/tasks/main.ts projects list",
             "description": "List all projects in the workspace"
         },
         "projects:sync": {
-            "command": "deno run -A ../.eng/main.ts projects:sync",
+            "command": "deno run -A ../eng/tasks/main.ts projects sync",
             "description": "Sync all projects in the workspace"
         },
         "docs:mod": {
-            "command": "deno run -A ../.eng/main.ts docs:mod",
+            "command": "deno run -A ../eng/tasks/main.ts docs update",
             "description": "Update mod.ts documentation for all projects"
         },
         "version:update": {
-            "command": "deno run -A ../.eng/main.ts version:update",
+            "command": "deno run -A ../eng/tasks/main.ts versions update",
             "description": "Update project version"
         }
     },

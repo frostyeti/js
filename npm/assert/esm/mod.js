@@ -12,7 +12,7 @@
  * It is primarily used for testing for various frostyeti.land modules to make it
  * easier to write tests and switch between testing frameworks (deno test and vitest).
  *
- * <img src="https://raw.githubusercontent.com/frostyetilabs/js/refs/heads/main/.eng/assets/logo.png" height="64" />
+ * <img src="https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png" height="64" />
  *
  * ## Usage
  * ```typescript

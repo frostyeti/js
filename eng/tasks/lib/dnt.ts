@@ -173,7 +173,10 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
             outDir: npmProjectDir,
             declaration: "separate",
             esModule: true,
-            shims: { deno: false },
+            shims: { deno: {
+                test: false,
+            },
+         },
             packageManager: "bun",
             scriptModule: false,
             skipSourceOutput: true,
