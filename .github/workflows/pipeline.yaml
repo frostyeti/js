@@ -1,0 +1,59 @@
+name: "pipeline"
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - "*"
+    paths:
+      - "jsr/**"
+      - "npm/**"
+      - "eng/**"
+      - ".github/workflows/pipeline.yaml"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Bun Install
+        run: bun install
+        working-directory: npm
+
+      - name: Deno Install
+        run: deno install
+        working-directory: jsr
+
+      - name: Test
+        run: deno run -A ./eng/tasks/main.ts test --all
+
+      - name: Lint
+        run: deno run -A ./eng/tasks/main.ts lint --all
+        
+      - name: Audit
+        run: deno run -A ./eng/tasks/main.ts npm audit 
+
+      - name: Publish Dry Run
+        run: deno publish --dry-run --allow-dirty -c ./jsr/deno.json
+        if: matrix.os == 'ubuntu-latest'
