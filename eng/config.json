@@ -1,0 +1,56 @@
+{
+  "version": "0.0.0-alpha.0",
+  "packageDefaults": {
+    "type": "module",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "grimfrostmage",
+        "email": "gfm@frostyeti.com"
+      }
+    ],
+    "scripts": {
+      "test": "node --test",
+      "test:bun": "bun test"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/frostyeti/js.git"
+    },
+    "bugs": {
+      "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+    },
+    "homepage": "js.frostyeti.com",
+    "engines": {
+      "node": ">=22"
+    },
+    "copy": {
+      "README.md": "README.md",
+      "LICENSE.md": "LICENSE.md"
+    },
+    "rm": [
+      "test_runner.js",
+      "esm/_dnt.shims.js",
+      "types/_dnt.shims.d.ts",
+      "esm/internal/_dnt.shims.js",
+      "types/internal/_dnt.shims.d.ts"
+    ],
+    "devDependencies": {
+      "@types/node": "^22.14.1"
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "projects": [
+    {
+      "name": "assert",
+      "id": "@frostyeti/assert",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/assert",
+      "denoConfig": "jsr/assert/deno.json",
+      "packageJson": "npm/assert/package.json",
+      "dntConfig": "jsr/assert/dnt.json"
+    }
+  ]
+}

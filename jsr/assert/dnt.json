@@ -1,0 +1,19 @@
+{
+    "description": "Assertion library primarily for testing.",
+    "keywords": [
+        "assert",
+        "test",
+        "assertions"
+    ],
+    "devDependencies": {
+        "@types/node": "^22.14.1"
+    },
+    "rm": [
+        "esm/internal/_dnt.shims.js",
+        "types/internal/_dnt.shims.d.ts"
+    ],
+    "copy": {
+        "internal/globals.d.ts": "./types/internal/globals.d.ts",
+        "internal/globals.js": "./esm/internal/globals.js"
+    }
+}

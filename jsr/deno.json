@@ -1,0 +1,52 @@
+{
+    "fmt": {
+        "exclude": [
+            "**/*.md"
+        ],
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
+    "imports": {
+        "@types/node": "npm:@types/node@^22.17.0"
+    },
+    "publish": {
+        "exclude": [
+            "node_modules",
+            "**/*.test.ts",
+            "**/dnt.ts"
+        ]
+    },
+    "tasks": {
+        "test": {
+            "command": "deno run -A ../.eng/main.ts test",
+            "description": "Run all tests in the workspace"
+        },
+        "lint": {
+            "command": "deno run -A ../.eng/main.ts lint",
+            "description": "Lint all files in the workspace"
+        },
+        "fmt": {
+            "command": "deno run -A ../.eng/main.ts fmt",
+            "description": "Format all files in the workspace"
+        },
+        "projects:list": {
+            "command": "deno run -A ../.eng/main.ts projects:list",
+            "description": "List all projects in the workspace"
+        },
+        "projects:sync": {
+            "command": "deno run -A ../.eng/main.ts projects:sync",
+            "description": "Sync all projects in the workspace"
+        },
+        "docs:mod": {
+            "command": "deno run -A ../.eng/main.ts docs:mod",
+            "description": "Update mod.ts documentation for all projects"
+        },
+        "version:update": {
+            "command": "deno run -A ../.eng/main.ts version:update",
+            "description": "Update project version"
+        }
+    },
+    "workspace": [
+        "./assert"
+    ]
+}

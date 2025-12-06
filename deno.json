@@ -1,0 +1,17 @@
+{
+    "tasks": {
+        "run": "deno run -A ./eng/tasks/main.ts",
+        "projects:list": "deno run -A ./eng/tasks/main.ts projects list",
+        "projects:sync": "deno run -A ./eng/tasks/main.ts projects sync",
+        "docs:mod": "deno run -A ./eng/tasks/main.ts docs update",
+        "version:update": "deno run -A ./eng/tasks/main.ts version update",
+        "dnt": "deno run -A ./eng/tasks/main.ts dnt",
+        "fmt": "deno run -A ./eng/tasks/main.ts fmt",
+        "lint": "deno run -A ./eng/tasks/main.ts lint",
+        "test": "deno run -A ./eng/tasks/main.ts test",
+        "jsr:publish": "deno run -A ./eng/tasks/main.ts jsr publish",
+        "jsr:publish:dry": "deno run -A ./eng/tasks/main.ts jsr publish --dry-run",
+        "npm:publish": "deno run -A ./eng/tasks/main.ts npm publish",
+        "npm:publish:dry": "deno run -A ./eng/tasks/main.ts npm publish --dry-run"
+    }
+}

@@ -1,0 +1,51 @@
+[tools]
+node = '22'
+bun = 'latest'
+deno = 'latest'
+
+[tasks.projects-sync]
+run = """
+deno run -A ./eng/tasks/main.ts projects sync
+"""
+
+
+[tasks.projects-update]
+run = """
+deno run -A ./eng/tasks/main.ts projects update
+"""
+
+
+[tasks.doc-mod]
+run = """
+deno run -A ./eng/tasks/main.ts docs update
+"""
+
+[tasks.projects-list]
+run = """
+deno run -A ./eng/tasks/main.ts projects list
+"""
+
+[tasks.dnt]
+run = """
+deno run -A ./eng/tasks/main.ts dnt
+"""
+
+[tasks.fmt]
+run = """
+deno run -A ./eng/tasks/main.ts fmt
+"""
+
+[tasks.lint]
+run = """
+deno run -A ./eng/tasks/main.ts lint
+"""
+
+[tasks.test]
+run = """
+deno run -A ./eng/tasks/main.ts test
+"""
+
+[tasks.update-version]
+run = """
+deno run -A ./eng/tasks/main.ts version update
+"""

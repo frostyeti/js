@@ -1,0 +1,25 @@
+{
+    "name": "@frostyeti/assert",
+    "version": "0.0.0-alpha.0",
+    "exports": {
+        ".": "./mod.ts",
+        "./array-includes": "./array-includes.ts",
+        "./assertion-error": "./assertion-error.ts",
+        "./debug": "./debug.ts",
+        "./equal": "./equal.ts",
+        "./exists": "./exists.ts",
+        "./fail": "./fail.ts",
+        "./instance-of": "./instance-of.ts",
+        "./is-error": "./is-error.ts",
+        "./falsy": "./falsy.ts",
+        "./not-equal": "./not-equal.ts",
+        "./not-instance-of": "./not-instance-of.ts",
+        "./not-strict-equal": "./not-strict-equal.ts",
+        "./rejects": "./rejects.ts",
+        "./strict-equal": "./strict-equal.ts",
+        "./string-includes": "./string-includes.ts",
+        "./throws": "./throws.ts",
+        "./truthy": "./truthy.ts",
+        "./unimplemented": "./unimplemented.ts"
+    }
+}
