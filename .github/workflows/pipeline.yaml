@@ -52,8 +52,15 @@ jobs:
         with:
           node-version: "22.x"
 
+      - name: Versions Check
+        run: |
+          deno --version
+          bun --version
+          node --version
+          npm --version
+
       - name: Bun Install
-        run: bun install
+        run: bun install --verbose
         working-directory: npm
 
       - name: Deno Install
@@ -62,9 +69,18 @@ jobs:
 
       - name: Lint
         run: deno run -A ./eng/tasks/main.ts lint --all
+        
+      - name: Test Bun
+        run: bun test
+        working-directory: npm
 
-      - name: Test
-        run: deno run -A ./eng/tasks/main.ts test --all
+      - name: Test Node
+        run: node --test
+        working-directory: npm
+
+      - name: Test Deno
+        run: deno test -A 
+        working-directory: jsr
         
       - name: Audit
         run: deno run -A ./eng/tasks/main.ts npm audit 

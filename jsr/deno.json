@@ -12,8 +12,7 @@
     "publish": {
         "exclude": [
             "node_modules",
-            "**/*.test.ts",
-            "**/dnt.ts"
+            "**/*.test.ts"
         ]
     },
     "tasks": {
@@ -52,6 +51,7 @@
         "./chars",
         "./slices",
         "./strings",
-        "./path"
+        "./path",
+        "./process"
     ]
 }

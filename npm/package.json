@@ -12,6 +12,7 @@
     "./chars",
     "./slices",
     "./strings",
-    "./path"
+    "./path",
+    "./process"
   ]
 }

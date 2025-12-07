@@ -391,7 +391,7 @@ switch (task) {
 
             args = parsed._ as string[];
 
-            if (args.includes("--jsr") || args.includes("--deno")) {
+            if (taskArgs.includes("--jsr") || taskArgs.includes("--deno")) {
                 args = args.filter((a) => a !== "--jsr" && a !== "--deno");
                 node = false;
                 bun = false;
@@ -401,6 +401,12 @@ switch (task) {
                 args = args.filter((a) => a !== "--node");
                 deno = false;
                 bun = false;
+            }
+
+            if (taskArgs && taskArgs.includes("--bun")) {
+                args = args.filter((a) => a !== "--bun");
+                deno = false;
+                node = false;
             }
 
             const globs = parsed.glob ?? [];

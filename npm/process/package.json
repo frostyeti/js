@@ -1,0 +1,105 @@
+{
+  "name": "@frostyeti/process",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "Cross runtime current process module for Bun, Deno, and Node.js with stdio and directory stack support.",
+  "keywords": [
+    "process",
+    "stdio",
+    "stdin",
+    "stdout",
+    "stderr",
+    "pushd",
+    "popd"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./args": {
+      "import": {
+        "default": "./esm/args.js",
+        "types": "./types/args.d.ts"
+      }
+    },
+    "./chdir": {
+      "import": {
+        "default": "./esm/chdir.js",
+        "types": "./types/chdir.d.ts"
+      }
+    },
+    "./cwd": {
+      "import": {
+        "default": "./esm/cwd.js",
+        "types": "./types/cwd.d.ts"
+      }
+    },
+    "./exec-path": {
+      "import": {
+        "default": "./esm/exec_path.js",
+        "types": "./types/exec_path.d.ts"
+      }
+    },
+    "./exit": {
+      "import": {
+        "default": "./esm/exit.js",
+        "types": "./types/exit.d.ts"
+      }
+    },
+    "./pid": {
+      "import": {
+        "default": "./esm/pid.js",
+        "types": "./types/pid.d.ts"
+      }
+    },
+    "./popd": {
+      "import": {
+        "default": "./esm/popd.js",
+        "types": "./types/popd.d.ts"
+      }
+    },
+    "./pushd": {
+      "import": {
+        "default": "./esm/pushd.js",
+        "types": "./types/pushd.d.ts"
+      }
+    },
+    "./streams": {
+      "import": {
+        "default": "./esm/streams.js",
+        "types": "./types/streams.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/globals": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/path": "0.0.0-alpha.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}
