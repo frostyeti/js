@@ -16,6 +16,7 @@
         "esm/internal/_dnt.shims.js",
         "esm/_dnt.test_polyfills.js",
         "esm/_dnt.test_shims.js",
+        "esm/package.json",
         "types/internal/_dnt.shims.js",
         "types/_dnt.test_polyfills.js",
         "types/_dnt.test_shims.js",

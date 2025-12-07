@@ -301,7 +301,7 @@ switch (task) {
                         const npm = isWindows ? "npm.cmd" : "npm";
                         const publishArgs = ["publish"];
                         if (taskArgs.includes("--dry")) {
-                            publishArgs.push("--dry-run");
+                            publishArgs.push("--dry-run", "--tag", "0.0.0-dry-run.1");
                         }
 
                         const cmd = new Deno.Command(npm, {
