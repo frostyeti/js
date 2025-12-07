@@ -5,15 +5,7 @@
  */
 import { CharArrayBuilder } from "./char_array_builder.js";
 import { CHAR_HYPHEN_MINUS, CHAR_UNDERSCORE } from "@frostyeti/chars/constants";
-import {
-  isDigit,
-  isLetter,
-  isLower,
-  isSpace,
-  isUpper,
-  toLower,
-  toUpper,
-} from "@frostyeti/chars";
+import { isDigit, isLetter, isLower, isSpace, isUpper, toLower, toUpper } from "@frostyeti/chars";
 import { toCharSliceLike } from "./utils.js";
 /**
  * Converts the slice to the the underscore case. The `_`, `-`, ` `

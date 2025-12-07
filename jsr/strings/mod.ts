@@ -16,7 +16,7 @@
  *
  * The trim methods can trim characters other than whitespace characters.
  *
- * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
+ * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
  * [![JSR](https://jsr.io/badges/@frostyeti/strings)](https://jsr.io/@frostyeti/strings)
  * [![npm version](https://badge.fury.io/js/@frostyeti%2Fstrings.svg)](https://badge.fury.io/js/@frostyeti%2Fstrings)

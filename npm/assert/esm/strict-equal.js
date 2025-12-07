@@ -41,10 +41,9 @@ export function strictEquals(actual, expected, msg) {
       .split("\n")
       .map((l) => `    ${l}`)
       .join("\n");
-    message =
-      `Values have the same structure but are not reference-equal${msgSuffix}\n\n${
-        red(withOffset)
-      }\n`;
+    message = `Values have the same structure but are not reference-equal${msgSuffix}\n\n${
+      red(withOffset)
+    }\n`;
   } else {
     const stringDiff = (typeof actual === "string") &&
       (typeof expected === "string");

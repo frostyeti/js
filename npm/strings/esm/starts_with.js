@@ -3,10 +3,7 @@
  *
  * @module
  */
-import {
-  startsWith as og,
-  startsWithFold as ogFold,
-} from "@frostyeti/slices/starts-with";
+import { startsWith as og, startsWithFold as ogFold } from "@frostyeti/slices/starts-with";
 /**
  * Determines if the leading characters in the string matches the prefix.
  * @param value The string to check.
