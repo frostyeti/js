@@ -29,6 +29,8 @@ export function notStrictEquals(actual, expected, msg) {
   }
   const msgSuffix = msg ? `: ${msg}` : ".";
   throw new AssertionError(
-    `Expected "actual" to not be strictly equal to: ${format(actual)}${msgSuffix}\n`,
+    `Expected "actual" to not be strictly equal to: ${
+      format(actual)
+    }${msgSuffix}\n`,
   );
 }

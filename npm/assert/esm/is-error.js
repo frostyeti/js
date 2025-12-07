@@ -51,7 +51,9 @@ export function isError(
   }
   if (msgMatches && !msgCheck) {
     msg = `Expected error message to include ${
-      msgMatches instanceof RegExp ? msgMatches.toString() : JSON.stringify(msgMatches)
+      msgMatches instanceof RegExp
+        ? msgMatches.toString()
+        : JSON.stringify(msgMatches)
     }, but got ${JSON.stringify(error?.message)}${msgSuffix}`;
     throw new AssertionError(msg);
   }
