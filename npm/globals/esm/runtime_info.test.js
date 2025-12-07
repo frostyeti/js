@@ -1,14 +1,6 @@
 import { test } from "node:test";
 import { equal, nope, ok } from "@frostyeti/assert";
-import {
-  BROWSER,
-  BUN,
-  CLOUDFLARE,
-  DENO,
-  NODE,
-  NODELIKE,
-  RUNTIME,
-} from "./runtime_info.js";
+import { BROWSER, BUN, CLOUDFLARE, DENO, NODE, NODELIKE, RUNTIME } from "./runtime_info.js";
 import { globals } from "./globals.js";
 test("globals::RUNTIME", () => {
   if (globals.Deno !== undefined) {

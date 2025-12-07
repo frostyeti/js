@@ -4,11 +4,7 @@ import { isControl, isControlAt, isControlUnsafe } from "./is_control.js";
 import { isDigit, isDigitAt, isDigitUnsafe } from "./is_digit.js";
 import { isLatin1, isLatin1At } from "./is_latin1.js";
 import { isLetter, isLetterAt, isLetterUnsafe } from "./is_letter.js";
-import {
-  isLetterOrDigit,
-  isLetterOrDigitAt,
-  isLetterOrDigitUnsafe,
-} from "./is_letter_or_digit.js";
+import { isLetterOrDigit, isLetterOrDigitAt, isLetterOrDigitUnsafe } from "./is_letter_or_digit.js";
 import { isLower, isLowerAt, isLowerUnsafe } from "./is_lower.js";
 import { isPunc, isPuncAt, isPuncUnsafe } from "./is_punc.js";
 import { isSpace, isSpaceAt, isSpaceUnsafe } from "./is_space.js";

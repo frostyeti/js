@@ -5,10 +5,7 @@
  * and validation.
  * @module
  */
-import {
-  endsWith as og,
-  endsWithFold as ogFold,
-} from "@frostyeti/slices/ends-with";
+import { endsWith as og, endsWithFold as ogFold } from "@frostyeti/slices/ends-with";
 /**
  * Determines whether the string ends with the specified suffix using
  * case-insensitive comparison.

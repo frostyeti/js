@@ -5,10 +5,7 @@
  *
  * @module
  */
-import {
-  indexOf as og,
-  indexOfFold as ogFold,
-} from "@frostyeti/slices/index-of";
+import { indexOf as og, indexOfFold as ogFold } from "@frostyeti/slices/index-of";
 /**
  * Gets the index of the first occurrence of the specified characters
  * in the string using case-insensitive comparison.
