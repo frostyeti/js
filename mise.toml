@@ -1,6 +1,6 @@
 [tools]
 node = '22'
-bun = 'latest'
+bun = "latest"
 deno = 'latest'
 
 [tasks.projects-sync]
