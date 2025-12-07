@@ -334,6 +334,7 @@ switch (task) {
                                 const dir = join(projectRootDir, baseDir);
                                 console.log("");
                                 console.log(blue(`### PUBLISHING ${project.name.toUpperCase()} ###`));
+                                console.log(`bun ${publishArgs.join(" ") } in ${dir}`);
                                 const cmd = new Deno.Command("bun", {
                                     args: publishArgs,
                                     stdout: "inherit",
