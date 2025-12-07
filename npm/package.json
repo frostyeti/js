@@ -11,6 +11,7 @@
         "./globals",
         "./chars",
         "./slices",
-        "./strings"
+        "./strings",
+        "./process"
     ]
 }

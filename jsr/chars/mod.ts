@@ -9,7 +9,7 @@
  * Cyrillic or Greek characters. The chars library is heavily based on golang's
  * unicode module.
  *
- * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
+ * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
  * [![JSR](https://jsr.io/badges/@frostyeti/chars)](https://jsr.io/@frostyeti/chars)
  * [![npm version](https://badge.fury.io/js/@frostyeti%2Fchars.svg)](https://badge.fury.io/js/@frostyeti%2Fchars)

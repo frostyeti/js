@@ -87,6 +87,15 @@
       "denoConfig": "jsr/strings/deno.json",
       "packageJson": "npm/strings/package.json",
       "dntConfig": "jsr/strings/dnt.json"
+    },
+    {
+      "name": "process",
+      "id": "@frostyeti/process",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/process",
+      "denoConfig": "jsr/process/deno.json",
+      "packageJson": "npm/process/package.json",
+      "dntConfig": "jsr/process/dnt.json"
     }
   ]
 }
