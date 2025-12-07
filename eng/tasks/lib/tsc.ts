@@ -1,6 +1,6 @@
-import { dirname, isAbsolute, join, resolve } from "@std/path";
-import { copy as copyDir, exists, expandGlob } from "@std/fs";
-import { DntConfig, getConfig, Project, setConfig } from "./config.ts";
+import { dirname, join, resolve } from "@std/path";
+import { exists, expandGlob } from "@std/fs";
+import { DntConfig, getConfig, Project } from "./config.ts";
 import { npmDir, projectRootDir } from "./paths.ts";
 import { blue } from "@std/fmt/colors";
 import { relative } from "node:path";
@@ -64,9 +64,10 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
     for (const project of projects) {
         Deno.chdir(projectRootDir);
         if (project.denoConfig) {
-            // deno-lint-ignore no-explicit-any
+         
             const denoConfig = JSON.parse(Deno.readTextFileSync(project.denoConfig)) as Record<
                 string,
+                // deno-lint-ignore no-explicit-any
                 any
             >;
             let dntConfig = baseDnt as DntConfig;
@@ -313,7 +314,7 @@ bun.lockb`;
             }
 
             if (await exists(license)) {
-                await Deno.copyFile(license, join(npmProjectDir, "LICENSE"));
+                await Deno.copyFile(license, join(npmProjectDir, "LICENSE.md"));
             }
 
             const tsFiles = await Array.fromAsync(
