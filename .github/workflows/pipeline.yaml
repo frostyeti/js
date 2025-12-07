@@ -98,8 +98,6 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-          registriy-url: |
-            https://registry.npmjs.org/
 
       - name: Install Node
         uses: actions/setup-node@v4
@@ -144,11 +142,15 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
-          body: ${{ steps.github_release.outputs.changelog }}
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          BODY: ${{ steps.github_release.outputs.changelog }}
+        run: |
+          gh release create "$TAG" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${TAG#v}" \
+              --notes="$BODY" \
+              --discussion-category "Releases"
