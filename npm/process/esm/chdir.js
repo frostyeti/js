@@ -15,6 +15,14 @@ export class ChangeDirectoryError extends Error {
  * @param directory The directory to change to.
  * @throws ChangeDirectoryError if chdir is not implemented, if the directory is not found,
  * or if the runtime does not support changing the directory.
+ *
+ * @example
+ * ```ts
+ * import { chdir } from "@frostyeti/process/chdir.js";
+ *
+ * chdir("/path/to/directory");
+ * console.log(`Changed directory to: /path/to/directory`);
+ * ```
  */
 export function chdir(directory) {
   if (globals.Deno) {

@@ -6,5 +6,13 @@
  *
  * @returns The last directory in the stack.
  * @throws Error if pop is not implemented.
+ *
+ * @example
+ * ```ts
+ * import { popd } from "@frostyeti/process/popd.js";
+ *
+ * const previousDir = popd();
+ * console.log(`Changed directory to: ${previousDir}`);
+ * ```
  */
 export declare function popd(): string | undefined;

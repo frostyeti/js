@@ -7,5 +7,13 @@
  * @returns The current working directory.
  * @throws Error if cwd is not implemented or if the runtime does not support
  * getting the current working directory.
+ *
+ * @example
+ * ```ts
+ * import { cwd } from "@frostyeti/process/cwd.js";
+ *
+ * const currentDir = cwd();
+ * console.log(`Current working directory: ${currentDir}`);
+ * ```
  */
 export declare function cwd(): string;

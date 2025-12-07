@@ -2,8 +2,12 @@
 
 ## Overview
 
-Functionality and primitives related to the current process such as the pid,
-args, execPath, cwd, chdir and standard streams for Deno, Node, and Bun.
+Cross runtime current process features such as the pid, args, execPath, cwd,
+chdir and standard streams for Bun, Deno, and NodeJs. Experimental support for
+the browser.
+
+The browser polyfill is experimental. Chdir calls pushState. The standard
+streams write to the console in the browser. Exit closes the window.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 

@@ -11,7 +11,7 @@ import { globals } from "@frostyeti/globals/globals";
  * import { exit } from "@frostyeti/process/exit.ts";
  *
  * exit(0); // Exits the process with a status code of 0
- * 
+ *
  * exit(1); // Exits the process with a status code of 1
  * ```
  */
