@@ -297,13 +297,11 @@ switch (task) {
             switch (sub) {
                 case "publish":
                     {
-                        const isWindows = Deno.build.os === "windows";
-                        const npm = isWindows ? "npm.cmd" : "npm";
                         const publishArgs = ["publish"];
                         if (taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d")) {
                             publishArgs.push("--dry-run");
                         } else {
-                            publishArgs.push("--provenance", "--access", "public");
+                            publishArgs.push("--access", "public");
                         }
 
                         const config = getConfig();
@@ -313,7 +311,7 @@ switch (task) {
                                 const dir = join(projectRootDir, baseDir);
                                 console.log("");
                                 console.log(blue(`### PUBLISHING ${project.name.toUpperCase()} ###`));
-                                const cmd = new Deno.Command(npm, {
+                                const cmd = new Deno.Command("bun", {
                                     args: publishArgs,
                                     stdout: "inherit",
                                     stderr: "inherit",
