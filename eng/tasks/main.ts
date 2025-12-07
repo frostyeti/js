@@ -300,7 +300,7 @@ switch (task) {
                         const isWindows = Deno.build.os === "windows";
                         const npm = isWindows ? "npm.cmd" : "npm";
                         const publishArgs = ["publish"];
-                        if (taskArgs.includes("--dry")) {
+                        if (taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d")) {
                             publishArgs.push("--dry-run");
                         }
 
