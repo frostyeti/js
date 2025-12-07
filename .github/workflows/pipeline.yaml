@@ -70,7 +70,7 @@ jobs:
         run: deno run -A ./eng/tasks/main.ts npm audit 
 
       - name: Npm Publish Dry Run
-        run: deno run -A ./eng/tasks/main.ts npm publish --dry-run
+        run: deno run -A ./eng/tasks/main.ts npm publish --dry-run --tag 0.0.0-dry-run.1  
         if: matrix.os == 'ubuntu-latest'
 
       - name: Publish Dry Run
