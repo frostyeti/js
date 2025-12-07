@@ -5,6 +5,7 @@
         "projects:sync": "deno run -A ./eng/tasks/main.ts projects sync",
         "docs:mod": "deno run -A ./eng/tasks/main.ts docs update",
         "version:update": "deno run -A ./eng/tasks/main.ts version update",
+        "npm:audit": "deno run -A ./eng/tasks/main.ts npm audit",
         "dnt": "deno run -A ./eng/tasks/main.ts dnt",
         "tsc": "deno run -A ./eng/tasks/main.ts tsc",
         "fmt": "deno run -A ./eng/tasks/main.ts fmt",

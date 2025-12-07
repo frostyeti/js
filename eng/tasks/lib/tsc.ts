@@ -124,7 +124,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.dependencies[key] = `workspace: *`;
+                            dntConfig.dependencies[key] = `*`;
                         }
                     }
                 }
@@ -140,7 +140,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.devDependencies[key] = `workspace: *`;
+                            dntConfig.devDependencies[key] = `*`;
                         }
                     }
                 }
@@ -155,7 +155,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.peerDependencies[key] = `workspace: *`;
+                            dntConfig.peerDependencies[key] = `*`;
                         }
                     }
                 }
@@ -166,7 +166,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.optionalDependencies[key] = `workspace: *`;
+                            dntConfig.optionalDependencies[key] = `*`;
                         }
                     }
                 }
