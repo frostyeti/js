@@ -66,7 +66,9 @@ export function assertFp(value) {
     typeof value?.y !== "number" ||
     typeof value?.id !== "number"
   ) {
-    throw new Error(`Unexpected value, expected 'FarthestPoint': received ${typeof value}`);
+    throw new Error(
+      `Unexpected value, expected 'FarthestPoint': received ${typeof value}`,
+    );
   }
 }
 /**

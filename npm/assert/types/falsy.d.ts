@@ -14,7 +14,10 @@ export type Falsy = false | 0 | 0n | "" | null | undefined;
  * @param expr The expression to test.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function falsy(expr: unknown, msg?: string): asserts expr is Falsy;
+export declare function falsy(
+  expr: unknown,
+  msg?: string,
+): asserts expr is Falsy;
 /**
  * Make an assertion, error will be thrown if `expr` have truthy value.
  *
@@ -29,7 +32,10 @@ export declare function falsy(expr: unknown, msg?: string): asserts expr is Fals
  * @param expr The expression to test.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function nope(expr: unknown, msg?: string): asserts expr is Falsy;
+export declare function nope(
+  expr: unknown,
+  msg?: string,
+): asserts expr is Falsy;
 /**
  * Make an assertion, error will be thrown if `expr` have truthy value.
  *
@@ -44,4 +50,7 @@ export declare function nope(expr: unknown, msg?: string): asserts expr is Falsy
  * @param expr The expression to test.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function notOk(expr: unknown, msg?: string): asserts expr is Falsy;
+export declare function notOk(
+  expr: unknown,
+  msg?: string,
+): asserts expr is Falsy;

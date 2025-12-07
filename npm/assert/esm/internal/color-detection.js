@@ -4,8 +4,10 @@ if (typeof globals.process !== "undefined") {
   const { release } = await import("node:os");
   RELEASE = release();
 }
-const WINDOWS = typeof globals.process !== "undefined" && globals.process.platform === "win32";
-const DARWIN = typeof globals.process !== "undefined" && globals.process.platform === "darwin";
+const WINDOWS = typeof globals.process !== "undefined" &&
+  globals.process.platform === "win32";
+const DARWIN = typeof globals.process !== "undefined" &&
+  globals.process.platform === "darwin";
 function get(value) {
   if (typeof globals.process !== "undefined" && globals.process.env) {
     return globals.process.env[value];
@@ -95,9 +97,8 @@ function detectCi() {
       return AnsiMode.FourBit;
     }
     if (
-      ["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"].some((sign) =>
-        has(sign)
-      ) ||
+      ["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"]
+        .some((sign) => has(sign)) ||
       get("CI_NAME") === "codeship"
     ) {
       return AnsiMode.FourBit;
@@ -106,7 +107,9 @@ function detectCi() {
   }
   const teamCityVersion = get("TEAMCITY_VERSION");
   if (teamCityVersion) {
-    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(teamCityVersion) ? AnsiMode.FourBit : AnsiMode.None;
+    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(teamCityVersion)
+      ? AnsiMode.FourBit
+      : AnsiMode.None;
   }
   return null;
 }
@@ -116,7 +119,10 @@ function detectCi() {
  */
 export function detectMode() {
   const noColor = get("NO_COLOR");
-  if (noColor && noColor.length && (noColor === "1" || noColor.trim().toLowerCase() === "true")) {
+  if (
+    noColor && noColor.length &&
+    (noColor === "1" || noColor.trim().toLowerCase() === "true")
+  ) {
     return AnsiMode.None;
   }
   // override TERM variable
@@ -161,7 +167,10 @@ export function detectMode() {
   if (DARWIN) {
     const termProgram = get("TERM_PROGRAM");
     if (termProgram !== undefined) {
-      const version = Number.parseInt((get("TERM_PROGRAM_VERSION") || "").split(".")[0], 10);
+      const version = Number.parseInt(
+        (get("TERM_PROGRAM_VERSION") || "").split(".")[0],
+        10,
+      );
       switch (termProgram) {
         case "iTerm.app": {
           return version >= 3 ? AnsiMode.TwentyFourBit : AnsiMode.EightBit;

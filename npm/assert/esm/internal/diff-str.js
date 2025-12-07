@@ -141,7 +141,10 @@ const NON_WHITESPACE_REGEXP = /\S/;
  */
 export function diffStr(A, B) {
   // Compute multi-line diff
-  const diffResult = diff(tokenize(`${unescape(A)}\n`), tokenize(`${unescape(B)}\n`));
+  const diffResult = diff(
+    tokenize(`${unescape(A)}\n`),
+    tokenize(`${unescape(B)}\n`),
+  );
   const added = [];
   const removed = [];
   for (const result of diffResult) {
@@ -171,7 +174,9 @@ export function diffStr(A, B) {
       }
       tokens = diff(tokenized[0], tokenized[1]);
       if (
-        tokens.some(({ type, value }) => type === "common" && NON_WHITESPACE_REGEXP.test(value))
+        tokens.some(({ type, value }) =>
+          type === "common" && NON_WHITESPACE_REGEXP.test(value)
+        )
       ) {
         break;
       }

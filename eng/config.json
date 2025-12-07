@@ -51,6 +51,15 @@
       "denoConfig": "jsr/assert/deno.json",
       "packageJson": "npm/assert/package.json",
       "dntConfig": "jsr/assert/dnt.json"
+    },
+    {
+      "name": "globals",
+      "id": "@frostyeti/globals",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/globals",
+      "denoConfig": "jsr/globals/deno.json",
+      "packageJson": "npm/globals/package.json",
+      "dntConfig": "jsr/globals/dnt.json"
     }
   ]
 }

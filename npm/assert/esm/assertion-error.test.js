@@ -6,7 +6,9 @@ test("assert::AssertionError - constructor", () => {
     throw new Error("Expected message to be 'Assertion failed'");
   }
   if (e1.link !== "https://jsr.io/@frostyetiassert/docs/assert-error") {
-    throw new Error("Expected link to be 'https://jsr.io/@frostyetiassert/docs/assert-error'");
+    throw new Error(
+      "Expected link to be 'https://jsr.io/@frostyetiassert/docs/assert-error'",
+    );
   }
   if (e1.expected !== undefined) {
     throw new Error("Expected target to be undefined");

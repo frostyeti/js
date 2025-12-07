@@ -1,5 +1,5 @@
 import { filter, listProjects, syncProjects } from "./lib/projects.ts";
-import { runDnt } from "./lib/dnt.ts";
+import { runTsc } from "./lib/tsc.ts";
 import { jsrDir, npmDir, projectRootDir } from "./lib/paths.ts";
 import { parseArgs } from "@std/cli";
 import { getConfig, Project } from "./lib/config.ts";
@@ -60,7 +60,7 @@ switch (task) {
 
                 console.log("");
                 console.log("### DENO NPM TRANSPILER ###");
-                await runDnt(projectNames);
+                await runTsc(projectNames);
 
                 let deno = true;
                 let node = true;
@@ -166,7 +166,7 @@ switch (task) {
             console.log(projects);
             console.log(projectNames);
 
-            await runDnt(projectNames);
+            await runTsc(projectNames);
         }
 
         break;
@@ -350,24 +350,7 @@ switch (task) {
 
                 case "audit":
                     {
-                        const isWindows = Deno.build.os === "windows";
-                        const npm = isWindows ? "npm.cmd" : "npm";
-
-                        // create npm package lock file
-                        {
-                            const cmd = new Deno.Command(npm, {
-                                args: ["install", "--package-lock-only", "--no-audit"],
-                                stdout: "inherit",
-                                stderr: "inherit",
-                                cwd: npmDir,
-                            });
-                            const o = await cmd.output();
-                            if (o.code !== 0) {
-                                throw new Error(`Failed to create npm package lock file`);
-                            }
-                        }
-
-                        const cmd = new Deno.Command(npm, {
+                        const cmd = new Deno.Command("bun", {
                             args: ["audit"],
                             stdout: "inherit",
                             stderr: "inherit",

@@ -14,4 +14,8 @@
  * @param expected The expected string to check for inclusion.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function stringIncludes(actual: string, expected: string, msg?: string): void;
+export declare function stringIncludes(
+  actual: string,
+  expected: string,
+  msg?: string,
+): void;
