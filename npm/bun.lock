@@ -2,7 +2,9 @@
   "lockfileVersion": 1,
   "configVersion": 1,
   "workspaces": {
-    "": {},
+    "": {
+      "name": "empty",
+    },
     "assert": {
       "name": "@frostyeti/assert",
       "version": "0.0.0-alpha.0",
@@ -29,10 +31,11 @@
         "typescript": "^5.9.3",
       },
     },
-    "process": {
-      "name": "@frostyeti/process",
+    "path": {
+      "name": "@frostyeti/path",
       "version": "0.0.0-alpha.0",
       "dependencies": {
+        "@frostyeti/chars": "0.0.0-alpha.0",
         "@frostyeti/globals": "0.0.0-alpha.0",
       },
       "devDependencies": {
@@ -75,7 +78,7 @@
 
     "@frostyeti/globals": ["@frostyeti/globals@workspace:globals"],
 
-    "@frostyeti/process": ["@frostyeti/process@workspace:process"],
+    "@frostyeti/path": ["@frostyeti/path@workspace:path"],
 
     "@frostyeti/slices": ["@frostyeti/slices@workspace:slices"],
 
