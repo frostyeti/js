@@ -303,7 +303,7 @@ switch (task) {
                         if (taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d")) {
                             publishArgs.push("--dry-run");
                         } else {
-                            publishArgs.push("provenance", "--access", "public");
+                            publishArgs.push("--provenance", "--access", "public");
                         }
 
                         const config = getConfig();
