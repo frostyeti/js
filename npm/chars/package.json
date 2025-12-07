@@ -1,0 +1,153 @@
+{
+  "name": "@frostyeti/chars",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "A simple library for working with characters and Unicode in JavaScript.",
+  "keywords": [
+    "chars",
+    "characters",
+    "simplefold",
+    "unicode",
+    "runes"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./all": {
+      "import": {
+        "default": "./esm/all.js",
+        "types": "./types/all.d.ts"
+      }
+    },
+    "./constants": {
+      "import": {
+        "default": "./esm/constants.js",
+        "types": "./types/constants.d.ts"
+      }
+    },
+    "./is-ascii": {
+      "import": {
+        "default": "./esm/is_ascii.js",
+        "types": "./types/is_ascii.d.ts"
+      }
+    },
+    "./is-char": {
+      "import": {
+        "default": "./esm/is_char.js",
+        "types": "./types/is_char.d.ts"
+      }
+    },
+    "./is-control": {
+      "import": {
+        "default": "./esm/is_control.js",
+        "types": "./types/is_control.d.ts"
+      }
+    },
+    "./is-digit": {
+      "import": {
+        "default": "./esm/is_digit.js",
+        "types": "./types/is_digit.d.ts"
+      }
+    },
+    "./is-latin1": {
+      "import": {
+        "default": "./esm/is_latin1.js",
+        "types": "./types/is_latin1.d.ts"
+      }
+    },
+    "./is-letter-or-digit": {
+      "import": {
+        "default": "./esm/is_letter_or_digit.js",
+        "types": "./types/is_letter_or_digit.d.ts"
+      }
+    },
+    "./is-letter": {
+      "import": {
+        "default": "./esm/is_letter.js",
+        "types": "./types/is_letter.d.ts"
+      }
+    },
+    "./is-lower": {
+      "import": {
+        "default": "./esm/is_lower.js",
+        "types": "./types/is_lower.d.ts"
+      }
+    },
+    "./is-punc": {
+      "import": {
+        "default": "./esm/is_punc.js",
+        "types": "./types/is_punc.d.ts"
+      }
+    },
+    "./is-space": {
+      "import": {
+        "default": "./esm/is_space.js",
+        "types": "./types/is_space.d.ts"
+      }
+    },
+    "./is-symbol": {
+      "import": {
+        "default": "./esm/is_symbol.js",
+        "types": "./types/is_symbol.d.ts"
+      }
+    },
+    "./is-upper": {
+      "import": {
+        "default": "./esm/is_upper.js",
+        "types": "./types/is_upper.d.ts"
+      }
+    },
+    "./simple-fold": {
+      "import": {
+        "default": "./esm/simple_fold.js",
+        "types": "./types/simple_fold.d.ts"
+      }
+    },
+    "./to-lower": {
+      "import": {
+        "default": "./esm/to_lower.js",
+        "types": "./types/to_lower.d.ts"
+      }
+    },
+    "./to-upper": {
+      "import": {
+        "default": "./esm/to_upper.js",
+        "types": "./types/to_upper.d.ts"
+      }
+    },
+    "./types": {
+      "import": {
+        "default": "./esm/types.js",
+        "types": "./types/types.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}

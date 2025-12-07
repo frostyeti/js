@@ -60,6 +60,15 @@
       "denoConfig": "jsr/globals/deno.json",
       "packageJson": "npm/globals/package.json",
       "dntConfig": "jsr/globals/dnt.json"
+    },
+    {
+      "name": "chars",
+      "id": "@frostyeti/chars",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/chars",
+      "denoConfig": "jsr/chars/deno.json",
+      "packageJson": "npm/chars/package.json",
+      "dntConfig": "jsr/chars/dnt.json"
     }
   ]
 }

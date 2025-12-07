@@ -174,9 +174,7 @@ export function diffStr(A, B) {
       }
       tokens = diff(tokenized[0], tokenized[1]);
       if (
-        tokens.some(({ type, value }) =>
-          type === "common" && NON_WHITESPACE_REGEXP.test(value)
-        )
+        tokens.some(({ type, value }) => type === "common" && NON_WHITESPACE_REGEXP.test(value))
       ) {
         break;
       }

@@ -96,18 +96,14 @@ export function buildMessage(diffResult, options = {}) {
   const messages = [
     "",
     "",
-    `    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${
-      green(bold("Expected"))
-    }`,
+    `    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`,
     "",
     "",
   ];
   const diffMessages = diffResult.map((result) => {
     const color = createColor(result.type);
     const line = result.details?.map((detail) =>
-      detail.type !== "common"
-        ? createColor(detail.type, true)(detail.value)
-        : detail.value
+      detail.type !== "common" ? createColor(detail.type, true)(detail.value) : detail.value
     ).join("") ?? result.value;
     return color(`${createSign(result.type)}${line}`);
   });
