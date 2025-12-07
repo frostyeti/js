@@ -309,6 +309,26 @@ switch (task) {
                         const config = getConfig();
                         for (const project of config.projects) {
                             if (project.packageJson) {
+
+                                const id = project.id;
+
+                                const cmd0 = new Deno.Command("npm", {
+                                    args: ["view", id!, "version"],
+                                    stdout: "piped",
+                                    stderr: "inherit",
+                                });
+                                const o0 = await cmd0.output();
+                                if (o0.code === 0) {
+                                    const version = new TextDecoder().decode(o0.stdout).trim();
+                                    const pkgJsonText = await Deno.readTextFile(join(projectRootDir, project.packageJson));
+                                    const pkgJson = JSON.parse(pkgJsonText);
+                                    if (pkgJson.version === version) {
+                                        console.log("");
+                                        console.log(blue(`### SKIPPING ${project.name.toUpperCase()} - VERSION ${version} ALREADY PUBLISHED ###`));
+                                        continue;
+                                    }
+                                }
+
                                 const baseDir = dirname(project.packageJson);
                                 const dir = join(projectRootDir, baseDir);
                                 console.log("");
