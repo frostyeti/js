@@ -9,6 +9,14 @@ import { history } from "./history.ts";
  * @param directory The directory to change to.
  * @throws ChangeDirectoryError if chdir is not implemented, if the directory is not found,
  * or if the runtime does not support changing the directory.
+ * 
+ * @example
+ * ```ts
+ * import { pushd } from "@frostyeti/process/pushd.ts";
+ * 
+ * pushd("/path/to/directory");
+ * console.log(`Changed directory to: /path/to/directory`);
+ * ```
  */
 export function pushd(directory: string): void {
     chdir(directory);

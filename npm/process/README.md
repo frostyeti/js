@@ -2,8 +2,8 @@
 
 ## Overview
 
-Functionality and primitives related to the current process such as the pid, args, execPath, cwd, chdir
-and standard streams for Deno, Node, and Bun.
+Functionality and primitives related to the current process such as the pid,
+args, execPath, cwd, chdir and standard streams for Deno, Node, and Bun.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 
@@ -15,12 +15,13 @@ and standard streams for Deno, Node, and Bun.
 
 Documentation is available on [jsr.io](https://jsr.io/@frostyeti/process/doc)
 
-A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
+A list of other modules can be found at
+[github.com/frostyeti/js](https://github.com/frostyeti/js)
 
 ## Usage
 
 ```typescript
-import { args, execPath, cwd, chdir, stdout, stdin } from "@frostyeti/process";
+import { args, chdir, cwd, execPath, stdin, stdout } from "@frostyeti/process";
 
 console.log(args); // the args passed to current process.
 console.log(execPath()); // path to executable for the current process.
@@ -37,10 +38,9 @@ const buffer = new Uint8Array(1024);
 const bytesRead = stdin.readSync(buffer);
 
 if (bytesRead && bytesRead.length > 0) {
-    // write it back out
-    stdout.writeSync(buffer.subarray(0, bytesRead))
+  // write it back out
+  stdout.writeSync(buffer.subarray(0, bytesRead));
 }
-
 ```
 
 ## Constants
@@ -49,17 +49,23 @@ if (bytesRead && bytesRead.length > 0) {
 
 - **args** - Array of arguments passed to the current process.
 - **pid** - The id of the current process.
-- **stdin** - The standard input stream which is a stream reader that uses Uint8Array.
-- **stdout** - The standard output stream which is a stream writer that uses Uint8Array.
-- **stderr** - The standard error stream which is a stream writer that uses Uint8Array.
+- **stdin** - The standard input stream which is a stream reader that uses
+  Uint8Array.
+- **stdout** - The standard output stream which is a stream writer that uses
+  Uint8Array.
+- **stderr** - The standard error stream which is a stream writer that uses
+  Uint8Array.
 
 ### Functions
 
 - **cwd** - Gets the current working directory.
 - **chdir** - Changes the current working directory.
-- **execPath** - Gets the path of the executable that spawned the current process.
-- **exit** - Exits the current process with the exit code provided. If the exit code is not set, its zero.
-- **popd** - Pops the last directory and returns it while changing the current directory to the last one from history.
+- **execPath** - Gets the path of the executable that spawned the current
+  process.
+- **exit** - Exits the current process with the exit code provided. If the exit
+  code is not set, its zero.
+- **popd** - Pops the last directory and returns it while changing the current
+  directory to the last one from history.
 - **pushd** - Pushs a path to chdir and records the path in history.
 
 ## License

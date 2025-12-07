@@ -6,6 +6,14 @@ import { globals } from "@frostyeti/globals/globals";
  *
  * @param code The exit code. If not provided, the process will exit with a
  * status code of 0.
+ * @example
+ * ```ts
+ * import { exit } from "@frostyeti/process/exit.ts";
+ *
+ * exit(0); // Exits the process with a status code of 0
+ * 
+ * exit(1); // Exits the process with a status code of 1
+ * ```
  */
 export function exit(code?: number): void {
     if (globals.Deno) {
