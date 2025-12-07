@@ -53,6 +53,15 @@ export function isSpace(char: Char): boolean {
  * Checks if the given character is a whitespace character.
  * @param char The character to check.
  * @returns `true` if the character is a whitespace character, `false` otherwise.
+ * 
+ * @example
+ * ```typescript
+ * import { isSpaceUnsafe } from "@frostyeti/chars";
+ * 
+ * console.log(isSpaceUnsafe(0x20)); // true
+ * console.log(isSpaceUnsafe(0x41)); // false
+ * console.log(isSpaceUnsafe(0x3000)); // true
+ * ```
  */
 export function isSpaceUnsafe(char: Char): boolean {
     if (char < 256) {
