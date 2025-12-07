@@ -5,7 +5,6 @@ import { build, emptyDir, type EntryPoint } from "@deno/dnt";
 import { npmDir, projectRootDir } from "./paths.ts";
 import { blue } from "@std/fmt/colors";
 import { relative } from "node:path";
-import { glob } from "node:fs";
 
 export async function runDnt(projectNames?: string[]) : Promise<void> {
     const config = getConfig();
