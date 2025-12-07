@@ -7,8 +7,7 @@ let f = function (v: unknown): string {
 };
 
 if (globals.process && !globals.Deno) {
-    const importName = "node:util";
-    const { inspect } = await import(importName);
+    const { inspect } = await import("node:util");
 
     f = function (v: unknown): string {
         return inspect(v, {

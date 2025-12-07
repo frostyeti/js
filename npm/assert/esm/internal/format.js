@@ -5,8 +5,7 @@ let f = function (v) {
   return `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
 };
 if (globals.process && !globals.Deno) {
-  const importName = "node:util";
-  const { inspect } = await import(importName);
+  const { inspect } = await import("node:util");
   f = function (v) {
     return inspect(v, {
       depth: Infinity,
