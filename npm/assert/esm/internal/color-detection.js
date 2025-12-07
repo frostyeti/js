@@ -107,7 +107,9 @@ function detectCi() {
   }
   const teamCityVersion = get("TEAMCITY_VERSION");
   if (teamCityVersion) {
-    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(teamCityVersion) ? AnsiMode.FourBit : AnsiMode.None;
+    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(teamCityVersion)
+      ? AnsiMode.FourBit
+      : AnsiMode.None;
   }
   return null;
 }

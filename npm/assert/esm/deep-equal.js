@@ -78,7 +78,8 @@ function sameValueZero(a, b) {
   return a === b || Object.is(a, b);
 }
 const setHasUnion = Set.prototype.union != undefined;
-const setHasSymmetricDifference = Set.prototype.symmetricDifference != undefined;
+const setHasSymmetricDifference =
+  Set.prototype.symmetricDifference != undefined;
 /**
  * Deep equality comparison used in assertions.
  *

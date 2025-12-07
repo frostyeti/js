@@ -49,6 +49,7 @@
     "workspace": [
         "./assert",
         "./globals",
-        "./chars"
+        "./chars",
+        "./slices"
     ]
 }

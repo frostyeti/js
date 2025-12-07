@@ -1,0 +1,158 @@
+{
+  "name": "@frostyeti/slices",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "Cross runtime module for slices and char slices which creates views over arrays without allocating  a new array.  Char slices is useful for transforming text without allocating a new string for every change.",
+  "keywords": [
+    "slices",
+    "arrays",
+    "char-arrays",
+    "characters",
+    "case-insensitive",
+    "string"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./camelize": {
+      "import": {
+        "default": "./esm/camelize.js",
+        "types": "./types/camelize.d.ts"
+      }
+    },
+    "./capitalize": {
+      "import": {
+        "default": "./esm/capitalize.js",
+        "types": "./types/capitalize.d.ts"
+      }
+    },
+    "./char-array-builder": {
+      "import": {
+        "default": "./esm/char_array_builder.js",
+        "types": "./types/char_array_builder.d.ts"
+      }
+    },
+    "./char-slice": {
+      "import": {
+        "default": "./esm/char_slice.js",
+        "types": "./types/char_slice.d.ts"
+      }
+    },
+    "./dasherize": {
+      "import": {
+        "default": "./esm/dasherize.js",
+        "types": "./types/dasherize.d.ts"
+      }
+    },
+    "./ends-with": {
+      "import": {
+        "default": "./esm/ends_with.js",
+        "types": "./types/ends_with.d.ts"
+      }
+    },
+    "./equal": {
+      "import": {
+        "default": "./esm/equal.js",
+        "types": "./types/equal.d.ts"
+      }
+    },
+    "./index-of": {
+      "import": {
+        "default": "./esm/index_of.js",
+        "types": "./types/index_of.d.ts"
+      }
+    },
+    "./last-index-of": {
+      "import": {
+        "default": "./esm/last_index_of.js",
+        "types": "./types/last_index_of.d.ts"
+      }
+    },
+    "./ordinalize": {
+      "import": {
+        "default": "./esm/ordinalize.js",
+        "types": "./types/ordinalize.d.ts"
+      }
+    },
+    "./pascalize": {
+      "import": {
+        "default": "./esm/pascalize.js",
+        "types": "./types/pascalize.d.ts"
+      }
+    },
+    "./slice": {
+      "import": {
+        "default": "./esm/slice.js",
+        "types": "./types/slice.d.ts"
+      }
+    },
+    "./starts-with": {
+      "import": {
+        "default": "./esm/starts_with.js",
+        "types": "./types/starts_with.d.ts"
+      }
+    },
+    "./titleize": {
+      "import": {
+        "default": "./esm/titleize.js",
+        "types": "./types/titleize.d.ts"
+      }
+    },
+    "./tokens": {
+      "import": {
+        "default": "./esm/tokens.js",
+        "types": "./types/tokens.d.ts"
+      }
+    },
+    "./trim": {
+      "import": {
+        "default": "./esm/trim.js",
+        "types": "./types/trim.d.ts"
+      }
+    },
+    "./underscore": {
+      "import": {
+        "default": "./esm/underscore.js",
+        "types": "./types/underscore.d.ts"
+      }
+    },
+    "./utils": {
+      "import": {
+        "default": "./esm/utils.js",
+        "types": "./types/utils.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/globals": "0.0.0-alpha.0",
+    "@frostyeti/chars": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}
