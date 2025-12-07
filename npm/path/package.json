@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-{}
-=======
 {
   "name": "@frostyeti/path",
   "version": "0.0.0-alpha.0",
@@ -499,4 +496,3 @@
     "typescript": "^5.9.3"
   }
 }
->>>>>>> 0a6dbcf33b7692ab1e807d56fcc8bc5a2023e7ef
