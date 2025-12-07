@@ -1,10 +1,6 @@
 // Copyright 2018-2025 the Deno authors. MIT license.
 // This module is browser compatible.
-import {
-  assertArgs,
-  lastPathSegment,
-  stripSuffix,
-} from "../_common/basename.js";
+import { assertArgs, lastPathSegment, stripSuffix } from "../_common/basename.js";
 import { stripTrailingSeparators } from "../_common/strip_trailing_separators.js";
 import { isPosixPathSeparator } from "./_util.js";
 /**

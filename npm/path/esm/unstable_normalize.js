@@ -30,7 +30,5 @@ import { normalize as windowsUnstableNormalize } from "./windows/unstable_normal
  * @returns The normalized path.
  */
 export function normalize(path) {
-  return isWindows
-    ? windowsUnstableNormalize(path)
-    : posixUnstableNormalize(path);
+  return isWindows ? windowsUnstableNormalize(path) : posixUnstableNormalize(path);
 }

@@ -23,7 +23,5 @@ import { toNamespacedPath as windowsToNamespacedPath } from "./windows/to_namesp
  * @returns The resolved namespace path.
  */
 export function toNamespacedPath(path) {
-  return isWindows
-    ? windowsToNamespacedPath(path)
-    : posixToNamespacedPath(path);
+  return isWindows ? windowsToNamespacedPath(path) : posixToNamespacedPath(path);
 }

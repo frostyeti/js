@@ -27,7 +27,5 @@ import { join as windowsUnstableJoin } from "./windows/unstable_join.js";
  * @returns The joined path.
  */
 export function join(path, ...paths) {
-  return isWindows
-    ? windowsUnstableJoin(path, ...paths)
-    : posixUnstableJoin(path, ...paths);
+  return isWindows ? windowsUnstableJoin(path, ...paths) : posixUnstableJoin(path, ...paths);
 }
