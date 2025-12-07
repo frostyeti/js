@@ -2,7 +2,7 @@
 
 - [@frostyeti/assert](./jsr/assert/README.md) - cross runtime assertions based on deno assertions.
 - [@frostyeti/chars](./jsr/chars/README.md) - character utilities for TypeScript and JavaScript.
-- [@frostyeti/testing](./jsr/testing/README.md) - cross runtime testing wrapper for deno, bun, and node.
+- [node:test](./jsr/testing/README.md) - cross runtime testing wrapper for deno, bun, and node.
 
 ## License
 
