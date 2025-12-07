@@ -52,10 +52,7 @@
         "./chars",
         "./slices",
         "./strings",
-<<<<<<< HEAD
-        "./process"
-=======
+        "./process",
         "./path"
->>>>>>> master
     ]
 }
