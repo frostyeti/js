@@ -8,12 +8,17 @@
     "devDependencies": {
         "@types/node": "^22.14.1"
     },
+    "polyfills": [
+        "types/internal/globals.d.ts",
+        "esm/internal/globals.js"
+    ],
     "rm": [
         "esm/internal/_dnt.shims.js",
-        "types/internal/_dnt.shims.d.ts"
-    ],
-    "copy": {
-        "internal/globals.d.ts": "./types/internal/globals.d.ts",
-        "internal/globals.js": "./esm/internal/globals.js"
-    }
+        "esm/_dnt.test_polyfills.js",
+        "esm/_dnt.test_shims.js",
+        "types/internal/_dnt.shims.js",
+        "types/_dnt.test_polyfills.js",
+        "types/_dnt.test_shims.js",
+        "test_runner.js"
+    ]
 }

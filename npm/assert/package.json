@@ -1,149 +1,149 @@
 {
-    "name": "@frostyeti/assert",
-    "version": "0.0.0-alpha.0",
-    "description": "Assertion library primarily for testing.",
-    "keywords": [
-        "assert",
-        "test",
-        "assertions"
-    ],
-    "homepage": "js.frostyeti.com",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/frostyeti/js.git"
+  "name": "@frostyeti/assert",
+  "version": "0.0.0-alpha.0",
+  "description": "Assertion library primarily for testing.",
+  "keywords": [
+    "assert",
+    "test",
+    "assertions"
+  ],
+  "homepage": "js.frostyeti.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/mod.d.ts",
+        "default": "./esm/mod.js"
+      }
     },
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+    "./array-includes": {
+      "import": {
+        "types": "./types/array-includes.d.ts",
+        "default": "./esm/array-includes.js"
+      }
     },
-    "module": "./esm/mod.js",
-    "types": "./types/mod.d.ts",
-    "exports": {
-        ".": {
-            "import": {
-                "types": "./types/mod.d.ts",
-                "default": "./esm/mod.js"
-            }
-        },
-        "./array-includes": {
-            "import": {
-                "types": "./types/array-includes.d.ts",
-                "default": "./esm/array-includes.js"
-            }
-        },
-        "./assertion-error": {
-            "import": {
-                "types": "./types/assertion-error.d.ts",
-                "default": "./esm/assertion-error.js"
-            }
-        },
-        "./debug": {
-            "import": {
-                "types": "./types/debug.d.ts",
-                "default": "./esm/debug.js"
-            }
-        },
-        "./equal": {
-            "import": {
-                "types": "./types/equal.d.ts",
-                "default": "./esm/equal.js"
-            }
-        },
-        "./exists": {
-            "import": {
-                "types": "./types/exists.d.ts",
-                "default": "./esm/exists.js"
-            }
-        },
-        "./fail": {
-            "import": {
-                "types": "./types/fail.d.ts",
-                "default": "./esm/fail.js"
-            }
-        },
-        "./instance-of": {
-            "import": {
-                "types": "./types/instance-of.d.ts",
-                "default": "./esm/instance-of.js"
-            }
-        },
-        "./is-error": {
-            "import": {
-                "types": "./types/is-error.d.ts",
-                "default": "./esm/is-error.js"
-            }
-        },
-        "./falsy": {
-            "import": {
-                "types": "./types/falsy.d.ts",
-                "default": "./esm/falsy.js"
-            }
-        },
-        "./not-equal": {
-            "import": {
-                "types": "./types/not-equal.d.ts",
-                "default": "./esm/not-equal.js"
-            }
-        },
-        "./not-instance-of": {
-            "import": {
-                "types": "./types/not-instance-of.d.ts",
-                "default": "./esm/not-instance-of.js"
-            }
-        },
-        "./not-strict-equal": {
-            "import": {
-                "types": "./types/not-strict-equal.d.ts",
-                "default": "./esm/not-strict-equal.js"
-            }
-        },
-        "./rejects": {
-            "import": {
-                "types": "./types/rejects.d.ts",
-                "default": "./esm/rejects.js"
-            }
-        },
-        "./strict-equal": {
-            "import": {
-                "types": "./types/strict-equal.d.ts",
-                "default": "./esm/strict-equal.js"
-            }
-        },
-        "./string-includes": {
-            "import": {
-                "types": "./types/string-includes.d.ts",
-                "default": "./esm/string-includes.js"
-            }
-        },
-        "./throws": {
-            "import": {
-                "types": "./types/throws.d.ts",
-                "default": "./esm/throws.js"
-            }
-        },
-        "./truthy": {
-            "import": {
-                "types": "./types/truthy.d.ts",
-                "default": "./esm/truthy.js"
-            }
-        },
-        "./unimplemented": {
-            "import": {
-                "types": "./types/unimplemented.d.ts",
-                "default": "./esm/unimplemented.js"
-            }
-        }
+    "./assertion-error": {
+      "import": {
+        "types": "./types/assertion-error.d.ts",
+        "default": "./esm/assertion-error.js"
+      }
     },
-    "scripts": {
-        "test": "node --test",
-        "test:bun": "bun test"
+    "./debug": {
+      "import": {
+        "types": "./types/debug.d.ts",
+        "default": "./esm/debug.js"
+      }
     },
-    "type": "module",
-    "engines": {
-        "node": ">=22"
+    "./equal": {
+      "import": {
+        "types": "./types/equal.d.ts",
+        "default": "./esm/equal.js"
+      }
     },
-    "devDependencies": {
-        "@types/node": "^22.14.1"
+    "./exists": {
+      "import": {
+        "types": "./types/exists.d.ts",
+        "default": "./esm/exists.js"
+      }
     },
-    "_generatedBy": "dnt@dev"
+    "./fail": {
+      "import": {
+        "types": "./types/fail.d.ts",
+        "default": "./esm/fail.js"
+      }
+    },
+    "./instance-of": {
+      "import": {
+        "types": "./types/instance-of.d.ts",
+        "default": "./esm/instance-of.js"
+      }
+    },
+    "./is-error": {
+      "import": {
+        "types": "./types/is-error.d.ts",
+        "default": "./esm/is-error.js"
+      }
+    },
+    "./falsy": {
+      "import": {
+        "types": "./types/falsy.d.ts",
+        "default": "./esm/falsy.js"
+      }
+    },
+    "./not-equal": {
+      "import": {
+        "types": "./types/not-equal.d.ts",
+        "default": "./esm/not-equal.js"
+      }
+    },
+    "./not-instance-of": {
+      "import": {
+        "types": "./types/not-instance-of.d.ts",
+        "default": "./esm/not-instance-of.js"
+      }
+    },
+    "./not-strict-equal": {
+      "import": {
+        "types": "./types/not-strict-equal.d.ts",
+        "default": "./esm/not-strict-equal.js"
+      }
+    },
+    "./rejects": {
+      "import": {
+        "types": "./types/rejects.d.ts",
+        "default": "./esm/rejects.js"
+      }
+    },
+    "./strict-equal": {
+      "import": {
+        "types": "./types/strict-equal.d.ts",
+        "default": "./esm/strict-equal.js"
+      }
+    },
+    "./string-includes": {
+      "import": {
+        "types": "./types/string-includes.d.ts",
+        "default": "./esm/string-includes.js"
+      }
+    },
+    "./throws": {
+      "import": {
+        "types": "./types/throws.d.ts",
+        "default": "./esm/throws.js"
+      }
+    },
+    "./truthy": {
+      "import": {
+        "types": "./types/truthy.d.ts",
+        "default": "./esm/truthy.js"
+      }
+    },
+    "./unimplemented": {
+      "import": {
+        "types": "./types/unimplemented.d.ts",
+        "default": "./esm/unimplemented.js"
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1"
+  },
+  "_generatedBy": "dnt@dev"
 }

@@ -16,9 +16,9 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function falsy(expr, msg = "") {
-    if (expr) {
-        throw new AssertionError(msg);
-    }
+  if (expr) {
+    throw new AssertionError(msg);
+  }
 }
 /**
  * Make an assertion, error will be thrown if `expr` have truthy value.
@@ -35,9 +35,9 @@ export function falsy(expr, msg = "") {
  * @param msg The optional message to display if the assertion fails.
  */
 export function nope(expr, msg = "") {
-    if (expr) {
-        throw new AssertionError(msg);
-    }
+  if (expr) {
+    throw new AssertionError(msg);
+  }
 }
 /**
  * Make an assertion, error will be thrown if `expr` have truthy value.
@@ -54,7 +54,7 @@ export function nope(expr, msg = "") {
  * @param msg The optional message to display if the assertion fails.
  */
 export function notOk(expr, msg = "") {
-    if (expr) {
-        throw new AssertionError(msg);
-    }
+  if (expr) {
+    throw new AssertionError(msg);
+  }
 }

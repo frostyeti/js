@@ -3,18 +3,18 @@
  * @see {@link AssertionError}
  */
 export interface AssertionErrorOptions extends ErrorOptions {
-    /**
-     * The expected value of the assertion.
-     */
-    expected?: unknown;
-    /**
-     * The actual value of the assertion.
-     */
-    actual?: unknown;
-    /**
-     * A link to the documentation for the assertion.
-     */
-    link?: string;
+  /**
+   * The expected value of the assertion.
+   */
+  expected?: unknown;
+  /**
+   * The actual value of the assertion.
+   */
+  actual?: unknown;
+  /**
+   * A link to the documentation for the assertion.
+   */
+  link?: string;
 }
 /**
  * Represents an assertion error with additional context.
@@ -34,29 +34,29 @@ export interface AssertionErrorOptions extends ErrorOptions {
  * @public
  */
 export declare class AssertionError extends Error {
-    /**
-     * Creates a new instance of `AssertionError`.
-     *
-     * @param message - The error message.
-     * @param options - The options for the error.
-     */
-    constructor(message: string, options?: AssertionErrorOptions);
-    /**
-     * Determines if the given error is an `AssertionError`.
-     * @param e The error to check.
-     * @returns `true` if the error is an `AssertionError`, otherwise `false`.
-     */
-    static is(e: unknown): e is AssertionError;
-    /**
-     * The expected of the assertion.
-     */
-    expected?: unknown;
-    /**
-     * The actual value of the assertion.
-     */
-    actual?: unknown;
-    /**
-     * A link to the documentation for the assertion.
-     */
-    link?: string;
+  /**
+   * Creates a new instance of `AssertionError`.
+   *
+   * @param message - The error message.
+   * @param options - The options for the error.
+   */
+  constructor(message: string, options?: AssertionErrorOptions);
+  /**
+   * Determines if the given error is an `AssertionError`.
+   * @param e The error to check.
+   * @returns `true` if the error is an `AssertionError`, otherwise `false`.
+   */
+  static is(e: unknown): e is AssertionError;
+  /**
+   * The expected of the assertion.
+   */
+  expected?: unknown;
+  /**
+   * The actual value of the assertion.
+   */
+  actual?: unknown;
+  /**
+   * A link to the documentation for the assertion.
+   */
+  link?: string;
 }

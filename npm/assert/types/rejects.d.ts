@@ -38,4 +38,9 @@ export declare function rejects(fn: () => PromiseLike<unknown>, msg?: string): P
  * @param msg The optional message to display if the assertion fails.
  * @returns The promise which resolves to the thrown error.
  */
-export declare function rejects<E extends Error = Error>(fn: () => PromiseLike<unknown>, ErrorClass: abstract new (...args: any[]) => E, msgIncludes?: string, msg?: string): Promise<E>;
+export declare function rejects<E extends Error = Error>(
+  fn: () => PromiseLike<unknown>,
+  ErrorClass: abstract new (...args: any[]) => E,
+  msgIncludes?: string,
+  msg?: string,
+): Promise<E>;

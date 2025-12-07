@@ -19,10 +19,13 @@ import { falsy } from "./falsy.js";
  * @param unexpectedType The class constructor to check against.
  * @param msg The optional message to display if the assertion fails.
  */
-export function notInstanceOf(actual, 
-// deno-lint-ignore no-explicit-any
-unexpectedType, msg) {
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    msg = `Expected object to not be an instance of "${typeof unexpectedType}"${msgSuffix}`;
-    falsy(actual instanceof unexpectedType, msg);
+export function notInstanceOf(
+  actual,
+  // deno-lint-ignore no-explicit-any
+  unexpectedType,
+  msg,
+) {
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  msg = `Expected object to not be an instance of "${typeof unexpectedType}"${msgSuffix}`;
+  falsy(actual instanceof unexpectedType, msg);
 }

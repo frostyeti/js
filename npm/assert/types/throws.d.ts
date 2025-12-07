@@ -41,4 +41,9 @@ export declare function throws(fn: () => unknown, msg?: string): unknown;
  * @param msg The optional message to display if the assertion fails.
  * @returns The error that was thrown.
  */
-export declare function throws<E extends Error = Error>(fn: () => unknown, ErrorClass: abstract new (...args: any[]) => E, msgIncludes?: string, msg?: string): E;
+export declare function throws<E extends Error = Error>(
+  fn: () => unknown,
+  ErrorClass: abstract new (...args: any[]) => E,
+  msgIncludes?: string,
+  msg?: string,
+): E;

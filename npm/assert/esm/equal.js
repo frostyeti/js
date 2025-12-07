@@ -40,19 +40,19 @@ import { deepEqual } from "./deep-equal.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function equal(actual, expected, msg) {
-    if (deepEqual(actual, expected)) {
-        return;
-    }
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    let message = `Values are not equal${msgSuffix}`;
-    const actualString = format(actual);
-    const expectedString = format(expected);
-    const stringDiff = (typeof actual === "string") &&
-        (typeof expected === "string");
-    const diffResult = stringDiff
-        ? diffStr(actual, expected)
-        : diff(actualString.split("\n"), expectedString.split("\n"));
-    const diffMsg = buildMessage(diffResult, { stringDiff }).join("\n");
-    message = `${message}\n${diffMsg}`;
-    throw new AssertionError(message);
+  if (deepEqual(actual, expected)) {
+    return;
+  }
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  let message = `Values are not equal${msgSuffix}`;
+  const actualString = format(actual);
+  const expectedString = format(expected);
+  const stringDiff = (typeof actual === "string") &&
+    (typeof expected === "string");
+  const diffResult = stringDiff
+    ? diffStr(actual, expected)
+    : diff(actualString.split("\n"), expectedString.split("\n"));
+  const diffMsg = buildMessage(diffResult, { stringDiff }).join("\n");
+  message = `${message}\n${diffMsg}`;
+  throw new AssertionError(message);
 }

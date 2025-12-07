@@ -18,12 +18,14 @@ import type { DiffResult, DiffType } from "./types.js";
  * assertEquals(createColor("common")("foo"), white("foo"));
  * ```
  */
-export declare function createColor(diffType: DiffType, 
-/**
- * TODO(@littledivy): Remove this when we can detect true color terminals. See
- * https://github.com/denoland/deno_std/issues/2575.
- */
-background?: boolean): (s: string) => string;
+export declare function createColor(
+  diffType: DiffType,
+  /**
+   * TODO(@littledivy): Remove this when we can detect true color terminals. See
+   * https://github.com/denoland/deno_std/issues/2575.
+   */
+  background?: boolean,
+): (s: string) => string;
 /**
  * Prefixes `+` or `-` in diff output.
  *
@@ -44,12 +46,12 @@ background?: boolean): (s: string) => string;
 export declare function createSign(diffType: DiffType): string;
 /** Options for {@linkcode buildMessage}. */
 export interface BuildMessageOptions {
-    /**
-     * Whether to output the diff as a single string.
-     *
-     * @default {false}
-     */
-    stringDiff?: boolean;
+  /**
+   * Whether to output the diff as a single string.
+   *
+   * @default {false}
+   */
+  stringDiff?: boolean;
 }
 /**
  * Builds a message based on the provided diff result.
@@ -78,4 +80,7 @@ export interface BuildMessageOptions {
  * // ]
  * ```
  */
-export declare function buildMessage(diffResult: ReadonlyArray<DiffResult<string>>, options?: BuildMessageOptions): string[];
+export declare function buildMessage(
+  diffResult: ReadonlyArray<DiffResult<string>>,
+  options?: BuildMessageOptions,
+): string[];

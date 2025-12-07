@@ -6,10 +6,10 @@ export type DiffType = "removed" | "common" | "added";
  * @typeParam T The type of the value in the diff result.
  */
 export interface DiffResult<T> {
-    /** The type of the diff. */
-    type: DiffType;
-    /** The value of the diff. */
-    value: T;
-    /** The details of the diff. */
-    details?: DiffResult<T>[];
+  /** The type of the diff. */
+  type: DiffType;
+  /** The value of the diff. */
+  value: T;
+  /** The details of the diff. */
+  details?: DiffResult<T>[];
 }

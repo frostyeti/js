@@ -23,28 +23,34 @@ import { stripAnsiCode } from "./internal.js";
  * @param msgMatches The optional string or RegExp to assert in the error message.
  * @param msg The optional message to display if the assertion fails.
  */
-export function isError(error, 
-// deno-lint-ignore no-explicit-any
-ErrorClass, msgMatches, msg) {
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    if (!(error instanceof Error)) {
-        throw new AssertionError(`Expected "error" to be an Error object${msgSuffix}}`);
-    }
-    if (ErrorClass && !(error instanceof ErrorClass)) {
-        msg =
-            `Expected error to be instance of "${ErrorClass.name}", but was "${error?.constructor?.name}"${msgSuffix}`;
-        throw new AssertionError(msg);
-    }
-    // biome-ignore lint/suspicious/noImplicitAnyLet:
-    let msgCheck;
-    if (typeof msgMatches === "string") {
-        msgCheck = stripAnsiCode(error.message).includes(stripAnsiCode(msgMatches));
-    }
-    if (msgMatches instanceof RegExp) {
-        msgCheck = msgMatches.test(stripAnsiCode(error.message));
-    }
-    if (msgMatches && !msgCheck) {
-        msg = `Expected error message to include ${msgMatches instanceof RegExp ? msgMatches.toString() : JSON.stringify(msgMatches)}, but got ${JSON.stringify(error?.message)}${msgSuffix}`;
-        throw new AssertionError(msg);
-    }
+export function isError(
+  error,
+  // deno-lint-ignore no-explicit-any
+  ErrorClass,
+  msgMatches,
+  msg,
+) {
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  if (!(error instanceof Error)) {
+    throw new AssertionError(`Expected "error" to be an Error object${msgSuffix}}`);
+  }
+  if (ErrorClass && !(error instanceof ErrorClass)) {
+    msg =
+      `Expected error to be instance of "${ErrorClass.name}", but was "${error?.constructor?.name}"${msgSuffix}`;
+    throw new AssertionError(msg);
+  }
+  // biome-ignore lint/suspicious/noImplicitAnyLet:
+  let msgCheck;
+  if (typeof msgMatches === "string") {
+    msgCheck = stripAnsiCode(error.message).includes(stripAnsiCode(msgMatches));
+  }
+  if (msgMatches instanceof RegExp) {
+    msgCheck = msgMatches.test(stripAnsiCode(error.message));
+  }
+  if (msgMatches && !msgCheck) {
+    msg = `Expected error message to include ${
+      msgMatches instanceof RegExp ? msgMatches.toString() : JSON.stringify(msgMatches)
+    }, but got ${JSON.stringify(error?.message)}${msgSuffix}`;
+    throw new AssertionError(msg);
+  }
 }

@@ -1,10 +1,11 @@
 import { dirname, isAbsolute, join, resolve } from "@std/path";
-import { exists, copy as copyDir } from "@std/fs";
+import { exists, copy as copyDir, expandGlob } from "@std/fs";
 import { DntConfig, getConfig, Project, setConfig  } from "./config.ts";
 import { build, emptyDir, type EntryPoint } from "@deno/dnt";
 import { npmDir, projectRootDir } from "./paths.ts";
 import { blue } from "@std/fmt/colors";
 import { relative } from "node:path";
+import { glob } from "node:fs";
 
 export async function runDnt(projectNames?: string[]) : Promise<void> {
     const config = getConfig();
@@ -173,10 +174,10 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
             outDir: npmProjectDir,
             declaration: "separate",
             esModule: true,
-            shims: { deno: {
-                test: false,
+            shims: {
+                deno: false,
+                custom: [],
             },
-         },
             packageManager: "bun",
             scriptModule: false,
             skipSourceOutput: true,
@@ -207,7 +208,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                 funding: dntConfig.funding,
                 main: dntConfig.main,
             },
-
+            
             async postBuild() {
                 const pkg = JSON.parse(Deno.readTextFileSync(join(npmProjectDir, "package.json")));
                 if (pkg.devDependencies && pkg.devDependencies["picocolors"]) {
@@ -216,8 +217,36 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                 }
 
             
+                const testFiles = await Array.fromAsync(expandGlob("**/*.test.js", { root: npmProjectDir }));
+
+                for (const tf of testFiles) {
+                    console.log("process test file", tf.path);
+                    const file = await Deno.readTextFile(tf.path);
+                    // remove first line if it is an import of dnt shims
+                    const lines = file.split(/\r?\n/g);
+                    const keepLines = Array<string>();
+                    for (const line of lines) {
+                        if (line.includes("_dnt")) {
+                            console.log("  skip line:", line);
+                            continue;
+                        }
+
+                        if (line.includes("globalThis[Symbol.for(\"import-meta-ponyfill-esmodule\")](import.meta)")){
+                            const index = line.indexOf("globalThis[Symbol.for(\"import-meta-ponyfill-esmodule\")](import.meta)");
+                            const next = line.substring(0, index) + "import.meta" + line.substring(index + "globalThis[Symbol.for(\"import-meta-ponyfill-esmodule\")](import.meta)".length);
+                            keepLines.push(next);
+                            continue;
+                        }
+
+                        keepLines.push(line);
+                    }
+
+                    await Deno.writeTextFile(tf.path, keepLines.join("\n"));
+                }
 
                 const pd = resolve(projectRootDir, project.dir);
+              
+                
 
                 if (await exists(join(pd, "dnt.ts"))) {
                     const dnt = join(pd, "dnt.ts");
@@ -249,7 +278,43 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                     } catch (_e) {
                         // ignore
                     }
-                   
+                }
+
+                console.log("process polyfills");
+                console.log(dntConfig.polyfills);
+
+                if (dntConfig.polyfills) {
+                    for (const pf of dntConfig.polyfills as Array<string>) {
+                        console.log("process polyfill file", pf);
+                         const file = await Deno.readTextFile(join(npmProjectDir, pf));
+                        // remove first line if it is an import of dnt shims
+                        const lines = file.split(/\r?\n/g);
+                        const keepLines = Array<string>();
+                        for (const line of lines) {
+                        
+                            if (line.includes("_dnt")) {
+                                continue;
+                            }
+
+                            if (line.includes("dntShim.dntGlobalThis;")) {
+                                const index = line.indexOf("dntShim.dntGlobalThis;");
+                                const next = line.substring(0, index) + "globalThis;" + line.substring(index + "dntShim.dntGlobalThis;".length);
+                                keepLines.push(next);
+                                continue;
+                            }
+
+                            if (line.includes("typeof dntShim.dntGlobalThis")) {
+                                const index = line.indexOf("typeof dntShim.dntGlobalThis");;
+                                const next = line.substring(0, index) + "typeof globalThis" + line.substring(index + "typeof dntShim.dntGlobalThis".length);
+                                keepLines.push(next);
+                                continue;
+                            }
+
+                            keepLines.push(line);
+                        }
+
+                        await Deno.writeTextFile(join(npmProjectDir, pf), keepLines.join("\n"));
+                    }
                 }
 
                 for (const [key, value] of Object.entries(copy)) {
@@ -321,6 +386,29 @@ bun.lockb`,
                 
             } 
         });
+
+          const pd = resolve(projectRootDir, project.dir);
+
+                const testFiles = await Array.fromAsync(expandGlob("**/*.test.ts", { root: pd }));
+
+                for (const tf of testFiles) {
+                    console.log("process test file", tf.path);
+                    const file = await Deno.readTextFile(tf.path);
+                    // remove first line if it is an import of dnt shims
+                    const lines = file.split(/\r?\n/g);
+                    const keepLines = Array<string>();
+                    for (const line of lines) {
+                        if (line.includes("_dnt")) {
+                            console.log("  skip line:", line);
+                            continue;
+                        }
+
+                        keepLines.push(line);
+                    }
+
+                    await Deno.writeTextFile(tf.path, keepLines.join("\n"));
+                }
+
 
         if (rm.includes("test_runner.js")) {
             const testRunner = join(npmProjectDir, "test_runner.js");

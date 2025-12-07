@@ -23,11 +23,13 @@ import { format } from "./internal/format.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function notEqual(actual, expected, msg) {
-    if (!deepEqual(actual, expected)) {
-        return;
-    }
-    const actualString = format(actual);
-    const expectedString = format(expected);
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    throw new AssertionError(`Expected actual: ${actualString} not to be: ${expectedString}${msgSuffix}`);
+  if (!deepEqual(actual, expected)) {
+    return;
+  }
+  const actualString = format(actual);
+  const expectedString = format(expected);
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  throw new AssertionError(
+    `Expected actual: ${actualString} not to be: ${expectedString}${msgSuffix}`,
+  );
 }

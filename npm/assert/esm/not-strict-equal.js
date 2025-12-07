@@ -24,9 +24,11 @@ import { format } from "./internal/format.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function notStrictEquals(actual, expected, msg) {
-    if (!Object.is(actual, expected)) {
-        return;
-    }
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    throw new AssertionError(`Expected "actual" to not be strictly equal to: ${format(actual)}${msgSuffix}\n`);
+  if (!Object.is(actual, expected)) {
+    return;
+  }
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  throw new AssertionError(
+    `Expected "actual" to not be strictly equal to: ${format(actual)}${msgSuffix}\n`,
+  );
 }

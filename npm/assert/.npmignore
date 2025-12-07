@@ -11,8 +11,6 @@
 /types/truthy.test.d.ts
 /esm/_dnt.test_polyfills.js
 /types/_dnt.test_polyfills.d.ts
-/esm/_dnt.test_shims.js
-/types/_dnt.test_shims.d.ts
 /test_runner.js
 yarn.lock
 pnpm-lock.yaml

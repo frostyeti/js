@@ -13,6 +13,6 @@ import { AssertionError } from "./assertion-error.js";
  * @returns Never returns, always throws.
  */
 export function unimplemented(msg) {
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    throw new AssertionError(`Unimplemented${msgSuffix}`);
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  throw new AssertionError(`Unimplemented${msgSuffix}`);
 }

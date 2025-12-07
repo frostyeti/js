@@ -20,20 +20,22 @@ import { bgGreen, bgRed, bold, gray, green, red, white } from "./styles.js";
  * assertEquals(createColor("common")("foo"), white("foo"));
  * ```
  */
-export function createColor(diffType, 
-/**
- * TODO(@littledivy): Remove this when we can detect true color terminals. See
- * https://github.com/denoland/deno_std/issues/2575.
- */
-background = false) {
-    switch (diffType) {
-        case "added":
-            return (s) => background ? bgGreen(white(s)) : green(bold(s));
-        case "removed":
-            return (s) => background ? bgRed(white(s)) : red(bold(s));
-        default:
-            return white;
-    }
+export function createColor(
+  diffType,
+  /**
+   * TODO(@littledivy): Remove this when we can detect true color terminals. See
+   * https://github.com/denoland/deno_std/issues/2575.
+   */
+  background = false,
+) {
+  switch (diffType) {
+    case "added":
+      return (s) => background ? bgGreen(white(s)) : green(bold(s));
+    case "removed":
+      return (s) => background ? bgRed(white(s)) : red(bold(s));
+    default:
+      return white;
+  }
 }
 /**
  * Prefixes `+` or `-` in diff output.
@@ -53,14 +55,14 @@ background = false) {
  * ```
  */
 export function createSign(diffType) {
-    switch (diffType) {
-        case "added":
-            return "+   ";
-        case "removed":
-            return "-   ";
-        default:
-            return "    ";
-    }
+  switch (diffType) {
+    case "added":
+      return "+   ";
+    case "removed":
+      return "-   ";
+    default:
+      return "    ";
+  }
 }
 /**
  * Builds a message based on the provided diff result.
@@ -90,21 +92,21 @@ export function createSign(diffType) {
  * ```
  */
 export function buildMessage(diffResult, options = {}) {
-    const { stringDiff = false } = options;
-    const messages = [
-        "",
-        "",
-        `    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`,
-        "",
-        "",
-    ];
-    const diffMessages = diffResult.map((result) => {
-        const color = createColor(result.type);
-        const line = result.details?.map((detail) => detail.type !== "common"
-            ? createColor(detail.type, true)(detail.value)
-            : detail.value).join("") ?? result.value;
-        return color(`${createSign(result.type)}${line}`);
-    });
-    messages.push(...(stringDiff ? [diffMessages.join("")] : diffMessages), "");
-    return messages;
+  const { stringDiff = false } = options;
+  const messages = [
+    "",
+    "",
+    `    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`,
+    "",
+    "",
+  ];
+  const diffMessages = diffResult.map((result) => {
+    const color = createColor(result.type);
+    const line = result.details?.map((detail) =>
+      detail.type !== "common" ? createColor(detail.type, true)(detail.value) : detail.value
+    ).join("") ?? result.value;
+    return color(`${createSign(result.type)}${line}`);
+  });
+  messages.push(...(stringDiff ? [diffMessages.join("")] : diffMessages), "");
+  return messages;
 }

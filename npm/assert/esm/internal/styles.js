@@ -5,14 +5,14 @@
 // This code is vendored from `fmt/colors.ts`.
 import { enabled } from "./color-detection.js";
 function code(open, close) {
-    return {
-        open: `\x1b[${open.join(";")}m`,
-        close: `\x1b[${close}m`,
-        regexp: new RegExp(`\\x1b\\[${close}m`, "g"),
-    };
+  return {
+    open: `\x1b[${open.join(";")}m`,
+    close: `\x1b[${close}m`,
+    regexp: new RegExp(`\\x1b\\[${close}m`, "g"),
+  };
 }
 function run(str, code) {
-    return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+  return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
 }
 /**
  * Sets the style of text to be printed to bold.
@@ -31,7 +31,7 @@ function run(str, code) {
  * ```
  */
 export function bold(str) {
-    return run(str, code([1], 22));
+  return run(str, code([1], 22));
 }
 /**
  * Sets the color of text to be printed to red.
@@ -50,7 +50,7 @@ export function bold(str) {
  * ```
  */
 export function red(str) {
-    return run(str, code([31], 39));
+  return run(str, code([31], 39));
 }
 /**
  * Sets the color of text to be printed to green.
@@ -69,7 +69,7 @@ export function red(str) {
  * ```
  */
 export function green(str) {
-    return run(str, code([32], 39));
+  return run(str, code([32], 39));
 }
 /**
  * Sets the color of text to be printed to yellow.
@@ -88,7 +88,7 @@ export function green(str) {
  * ```
  */
 export function yellow(str) {
-    return run(str, code([33], 39));
+  return run(str, code([33], 39));
 }
 /**
  * Sets the color of text to be printed to white.
@@ -105,7 +105,7 @@ export function yellow(str) {
  * ```
  */
 export function white(str) {
-    return run(str, code([37], 39));
+  return run(str, code([37], 39));
 }
 /**
  * Sets the color of text to be printed to gray.
@@ -122,7 +122,7 @@ export function white(str) {
  * ```
  */
 export function gray(str) {
-    return brightBlack(str);
+  return brightBlack(str);
 }
 /**
  * Sets the color of text to be printed to bright-black.
@@ -139,7 +139,7 @@ export function gray(str) {
  * ```
  */
 export function brightBlack(str) {
-    return run(str, code([90], 39));
+  return run(str, code([90], 39));
 }
 /**
  * Sets the background color of text to be printed to red.
@@ -156,7 +156,7 @@ export function brightBlack(str) {
  * ```
  */
 export function bgRed(str) {
-    return run(str, code([41], 49));
+  return run(str, code([41], 49));
 }
 /**
  * Sets the background color of text to be printed to green.
@@ -173,13 +173,16 @@ export function bgRed(str) {
  * ```
  */
 export function bgGreen(str) {
-    return run(str, code([42], 49));
+  return run(str, code([42], 49));
 }
 // https://github.com/chalk/ansi-regex/blob/02fa893d619d3da85411acc8fd4e2eea0e95a9d9/index.js
-const ANSI_PATTERN = new RegExp([
+const ANSI_PATTERN = new RegExp(
+  [
     "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
     "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TXZcf-nq-uy=><~]))",
-].join("|"), "g");
+  ].join("|"),
+  "g",
+);
 /**
  * Remove ANSI escape codes from the string.
  *
@@ -195,5 +198,5 @@ const ANSI_PATTERN = new RegExp([
  * ```
  */
 export function stripAnsiCode(string) {
-    return string.replace(ANSI_PATTERN, "");
+  return string.replace(ANSI_PATTERN, "");
 }

@@ -21,4 +21,9 @@
  * @param msgMatches The optional string or RegExp to assert in the error message.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function isError<E extends Error = Error>(error: unknown, ErrorClass?: abstract new (...args: any[]) => E, msgMatches?: string | RegExp, msg?: string): asserts error is E;
+export declare function isError<E extends Error = Error>(
+  error: unknown,
+  ErrorClass?: abstract new (...args: any[]) => E,
+  msgMatches?: string | RegExp,
+  msg?: string,
+): asserts error is E;

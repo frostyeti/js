@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import { equal } from "../equal.ts";
 import * as c from "./styles.ts";
+import { globals } from "./globals.ts";
 
 test("assert::red() single color", function () {
     equal(c.red("foo bar"), "[31mfoo bar[39m");
@@ -52,9 +53,6 @@ test("assert::stripAnsiCode()", function () {
         "foofoo",
     );
 });
-
-// deno-lint-ignore no-explicit-any
-const globals: typeof globalThis & Record<string, any> = globalThis;
 
 test("assert::noColor", async function () {
     const fixtures = [

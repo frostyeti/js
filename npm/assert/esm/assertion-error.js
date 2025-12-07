@@ -16,37 +16,37 @@
  * @public
  */
 export class AssertionError extends Error {
-    /**
-     * Creates a new instance of `AssertionError`.
-     *
-     * @param message - The error message.
-     * @param options - The options for the error.
-     */
-    constructor(message, options) {
-        super(message, options);
-        this.name = "AssertionError";
-        this.link = options?.link ?? "https://jsr.io/@frostyetiassert/docs/assert-error";
-        this.expected = options?.expected;
-        this.actual = options?.actual;
-    }
-    /**
-     * Determines if the given error is an `AssertionError`.
-     * @param e The error to check.
-     * @returns `true` if the error is an `AssertionError`, otherwise `false`.
-     */
-    static is(e) {
-        return e instanceof AssertionError || e instanceof Error && e.name === "AssertionError";
-    }
-    /**
-     * The expected of the assertion.
-     */
-    expected;
-    /**
-     * The actual value of the assertion.
-     */
-    actual;
-    /**
-     * A link to the documentation for the assertion.
-     */
-    link;
+  /**
+   * Creates a new instance of `AssertionError`.
+   *
+   * @param message - The error message.
+   * @param options - The options for the error.
+   */
+  constructor(message, options) {
+    super(message, options);
+    this.name = "AssertionError";
+    this.link = options?.link ?? "https://jsr.io/@frostyetiassert/docs/assert-error";
+    this.expected = options?.expected;
+    this.actual = options?.actual;
+  }
+  /**
+   * Determines if the given error is an `AssertionError`.
+   * @param e The error to check.
+   * @returns `true` if the error is an `AssertionError`, otherwise `false`.
+   */
+  static is(e) {
+    return e instanceof AssertionError || e instanceof Error && e.name === "AssertionError";
+  }
+  /**
+   * The expected of the assertion.
+   */
+  expected;
+  /**
+   * The actual value of the assertion.
+   */
+  actual;
+  /**
+   * A link to the documentation for the assertion.
+   */
+  link;
 }

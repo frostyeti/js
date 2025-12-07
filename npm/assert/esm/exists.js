@@ -18,9 +18,9 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to include in the error if the assertion fails.
  */
 export function exists(actual, msg) {
-    if (actual === undefined || actual === null) {
-        const msgSuffix = msg ? `: ${msg}` : ".";
-        msg = `Expected actual: "${actual}" to not be null or undefined${msgSuffix}`;
-        throw new AssertionError(msg);
-    }
+  if (actual === undefined || actual === null) {
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    msg = `Expected actual: "${actual}" to not be null or undefined${msgSuffix}`;
+    throw new AssertionError(msg);
+  }
 }

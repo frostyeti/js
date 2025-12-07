@@ -59,7 +59,10 @@ export declare function tokenize(string: string, wordDiff?: boolean): string[];
  * );
  * ```
  */
-export declare function createDetails(line: DiffResult<string>, tokens: DiffResult<string>[]): DiffResult<string>[];
+export declare function createDetails(
+  line: DiffResult<string>,
+  tokens: DiffResult<string>[],
+): DiffResult<string>[];
 /**
  * Renders the differences between the actual and expected strings. Partially
  * inspired from {@link https://github.com/kpdecker/jsdiff}.

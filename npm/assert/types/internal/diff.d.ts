@@ -1,10 +1,10 @@
 import type { DiffResult, DiffType } from "./types.js";
 /** Represents the farthest point in the diff algorithm. */
 export interface FarthestPoint {
-    /** The y-coordinate of the point. */
-    y: number;
-    /** The id of the point. */
-    id: number;
+  /** The y-coordinate of the point. */
+  y: number;
+  /** The id of the point. */
+  id: number;
 }
 /**
  * Creates an array of common elements between two arrays.
@@ -73,9 +73,16 @@ export declare function assertFp(value: unknown): asserts value is FarthestPoint
  * );
  * ```
  */
-export declare function backTrace<T>(A: T[], B: T[], current: FarthestPoint, swapped: boolean, routes: Uint32Array, diffTypesPtrOffset: number): Array<{
-    type: DiffType;
-    value: T;
+export declare function backTrace<T>(
+  A: T[],
+  B: T[],
+  current: FarthestPoint,
+  swapped: boolean,
+  routes: Uint32Array,
+  diffTypesPtrOffset: number,
+): Array<{
+  type: DiffType;
+  value: T;
 }>;
 /**
  * Creates a {@linkcode FarthestPoint}.
@@ -109,7 +116,15 @@ export declare function backTrace<T>(A: T[], B: T[], current: FarthestPoint, swa
  * );
  * ```
  */
-export declare function createFp(k: number, M: number, routes: Uint32Array, diffTypesPtrOffset: number, ptr: number, slide?: FarthestPoint, down?: FarthestPoint): FarthestPoint;
+export declare function createFp(
+  k: number,
+  M: number,
+  routes: Uint32Array,
+  diffTypesPtrOffset: number,
+  ptr: number,
+  slide?: FarthestPoint,
+  down?: FarthestPoint,
+): FarthestPoint;
 /**
  * Renders the differences between the actual and expected values.
  *

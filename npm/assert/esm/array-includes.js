@@ -24,23 +24,25 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function arrayIncludes(actual, expected, msg) {
-    const missing = [];
-    for (let i = 0; i < expected.length; i++) {
-        let found = false;
-        for (let j = 0; j < actual.length; j++) {
-            if (deepEqual(expected[i], actual[j])) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            missing.push(expected[i]);
-        }
+  const missing = [];
+  for (let i = 0; i < expected.length; i++) {
+    let found = false;
+    for (let j = 0; j < actual.length; j++) {
+      if (deepEqual(expected[i], actual[j])) {
+        found = true;
+        break;
+      }
     }
-    if (missing.length === 0) {
-        return;
+    if (!found) {
+      missing.push(expected[i]);
     }
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    msg = `Expected actual: "${format(actual)}" to include: "${format(expected)}"${msgSuffix}\nmissing: ${format(missing)}`;
-    throw new AssertionError(msg);
+  }
+  if (missing.length === 0) {
+    return;
+  }
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  msg = `Expected actual: "${format(actual)}" to include: "${
+    format(expected)
+  }"${msgSuffix}\nmissing: ${format(missing)}`;
+  throw new AssertionError(msg);
 }

@@ -2,35 +2,34 @@
 // This module is browser compatible.
 import { globals } from "./globals.js";
 let f = function (v) {
-    return `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
+  return `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
 };
 if (globals.process && !globals.Deno) {
-    const importName = "node:util";
-    const { inspect } = await import(importName);
-    f = function (v) {
-        return inspect(v, {
-            depth: Infinity,
-            sorted: true,
-            compact: false,
-            getters: true,
-            maxStringLength: Infinity,
-            maxArrayLength: Infinity,
-        });
-    };
-}
-else if (globals.Deno) {
-    f = function (v) {
-        return globals.Deno.inspect(v, {
-            depth: Infinity,
-            sorted: true,
-            trailingComma: true,
-            compact: false,
-            iterableLimit: Infinity,
-            // getters should be true in assertEquals.
-            getters: true,
-            strAbbreviateSize: Infinity,
-        });
-    };
+  const importName = "node:util";
+  const { inspect } = await import(importName);
+  f = function (v) {
+    return inspect(v, {
+      depth: Infinity,
+      sorted: true,
+      compact: false,
+      getters: true,
+      maxStringLength: Infinity,
+      maxArrayLength: Infinity,
+    });
+  };
+} else if (globals.Deno) {
+  f = function (v) {
+    return globals.Deno.inspect(v, {
+      depth: Infinity,
+      sorted: true,
+      trailingComma: true,
+      compact: false,
+      iterableLimit: Infinity,
+      // getters should be true in assertEquals.
+      getters: true,
+      strAbbreviateSize: Infinity,
+    });
+  };
 }
 /**
  * Converts the input into a string. Objects, Sets and Maps are sorted so as to
@@ -51,5 +50,5 @@ else if (globals.Deno) {
  * ```
  */
 export function format(v) {
-    return f(v);
+  return f(v);
 }
