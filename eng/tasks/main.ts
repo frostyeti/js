@@ -322,6 +322,20 @@ switch (task) {
                         const isWindows = Deno.build.os === "windows";
                         const npm = isWindows ? "npm.cmd" : "npm";
 
+                        // create npm package lock file
+                        {
+                            const cmd = new Deno.Command(npm, {
+                                args: ["install", "--package-lock-only", "--no-audit"],
+                                stdout: "inherit",
+                                stderr: "inherit",
+                                cwd: npmDir,
+                            });
+                            const o = await cmd.output();
+                            if (o.code !== 0) {
+                                throw new Error(`Failed to create npm package lock file`);
+                            }
+                        }
+
                         const cmd = new Deno.Command(npm, {
                             args: ["audit"],
                             stdout: "inherit",
