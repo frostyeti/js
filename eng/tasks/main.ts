@@ -1,5 +1,5 @@
 import { filter, listProjects, syncProjects } from "./lib/projects.ts";
-import { runDnt } from "./lib/dnt.ts";
+import { runTsc } from "./lib/tsc.ts";
 import { jsrDir, npmDir, projectRootDir } from "./lib/paths.ts";
 import { parseArgs } from "@std/cli";
 import { getConfig, Project } from "./lib/config.ts";
@@ -60,7 +60,7 @@ switch (task) {
 
                 console.log("");
                 console.log("### DENO NPM TRANSPILER ###");
-                await runDnt(projectNames);
+                await runTsc(projectNames);
 
                 let deno = true;
                 let node = true;
@@ -166,7 +166,7 @@ switch (task) {
             console.log(projects);
             console.log(projectNames);
 
-            await runDnt(projectNames);
+            await runTsc(projectNames);
         }
 
         break;
