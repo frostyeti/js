@@ -26,7 +26,6 @@ export function notInstanceOf(
   msg,
 ) {
   const msgSuffix = msg ? `: ${msg}` : ".";
-  msg =
-    `Expected object to not be an instance of "${typeof unexpectedType}"${msgSuffix}`;
+  msg = `Expected object to not be an instance of "${typeof unexpectedType}"${msgSuffix}`;
   falsy(actual instanceof unexpectedType, msg);
 }

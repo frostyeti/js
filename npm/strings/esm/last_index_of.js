@@ -1,7 +1,4 @@
-import {
-  lastIndexOf as og,
-  lastIndexOfFold as ogFold,
-} from "@frostyeti/slices/last-index-of";
+import { lastIndexOf as og, lastIndexOfFold as ogFold } from "@frostyeti/slices/last-index-of";
 /**
  * Gets the index of the last occurrence of the specified characters
  * in the string.
