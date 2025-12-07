@@ -47,7 +47,9 @@ export declare function createCommon<T>(A: T[], B: T[]): T[];
  * assertThrows(() => assertFp(undefined));
  * ```
  */
-export declare function assertFp(value: unknown): asserts value is FarthestPoint;
+export declare function assertFp(
+  value: unknown,
+): asserts value is FarthestPoint;
 /**
  * Creates an array of backtraced differences.
  *

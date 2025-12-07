@@ -15,7 +15,10 @@
  * @param msg The optional message to display if the assertion fails.
  * @returns The promise which resolves to the thrown error.
  */
-export declare function rejects(fn: () => PromiseLike<unknown>, msg?: string): Promise<unknown>;
+export declare function rejects(
+  fn: () => PromiseLike<unknown>,
+  msg?: string,
+): Promise<unknown>;
 /**
  * Executes a function which returns a promise, expecting it to reject.
  * If it does not, then it throws. An error class and a string that should be

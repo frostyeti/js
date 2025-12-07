@@ -36,7 +36,9 @@ export async function rejects(fn, errorClassOrMsg, msgIncludesOrMsg, msg) {
     }
   } catch (error) {
     if (!isPromiseReturned) {
-      throw new AssertionError(`Function throws when expected to reject${msgSuffix}`);
+      throw new AssertionError(
+        `Function throws when expected to reject${msgSuffix}`,
+      );
     }
     if (ErrorClass) {
       if (!(error instanceof Error)) {

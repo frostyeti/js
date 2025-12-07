@@ -7,5 +7,6 @@ export const globals: typeof globalThis & Record<string, any> & {
 } = globalThis;
 
 export const WINDOWS =
+    // @ts-ignore no-explicit-any
     (typeof globalThis.Deno !== "undefined" && globalThis.Deno.build.os === "windows") ||
     (typeof globalThis.process !== "undefined" && globalThis.process.platform === "win32");

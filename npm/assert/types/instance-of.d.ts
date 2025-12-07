@@ -19,7 +19,9 @@ export type GetConstructorType<T extends AnyConstructor> = InstanceType<T>;
  * @param expectedType The expected class constructor.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function instanceOf<T extends abstract new (...args: any[]) => any>(
+export declare function instanceOf<
+  T extends abstract new (...args: any[]) => any,
+>(
   actual: unknown,
   expectedType: T,
   msg?: string,

@@ -28,6 +28,32 @@
     "test:bun": "bun test",
     "build": "tsc"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./globals": {
+      "import": {
+        "default": "./esm/globals.js",
+        "types": "./types/globals.d.ts"
+      }
+    },
+    "./os": {
+      "import": {
+        "default": "./esm/os.js",
+        "types": "./types/os.d.ts"
+      }
+    },
+    "./runtime": {
+      "import": {
+        "default": "./esm/runtime_info.js",
+        "types": "./types/runtime_info.d.ts"
+      }
+    }
+  },
   "engines": {
     "node": ">=22"
   },

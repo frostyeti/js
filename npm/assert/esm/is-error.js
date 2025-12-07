@@ -32,7 +32,9 @@ export function isError(
 ) {
   const msgSuffix = msg ? `: ${msg}` : ".";
   if (!(error instanceof Error)) {
-    throw new AssertionError(`Expected "error" to be an Error object${msgSuffix}}`);
+    throw new AssertionError(
+      `Expected "error" to be an Error object${msgSuffix}}`,
+    );
   }
   if (ErrorClass && !(error instanceof ErrorClass)) {
     msg =
@@ -49,7 +51,9 @@ export function isError(
   }
   if (msgMatches && !msgCheck) {
     msg = `Expected error message to include ${
-      msgMatches instanceof RegExp ? msgMatches.toString() : JSON.stringify(msgMatches)
+      msgMatches instanceof RegExp
+        ? msgMatches.toString()
+        : JSON.stringify(msgMatches)
     }, but got ${JSON.stringify(error?.message)}${msgSuffix}`;
     throw new AssertionError(msg);
   }

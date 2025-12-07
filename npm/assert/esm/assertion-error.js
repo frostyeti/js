@@ -25,7 +25,8 @@ export class AssertionError extends Error {
   constructor(message, options) {
     super(message, options);
     this.name = "AssertionError";
-    this.link = options?.link ?? "https://jsr.io/@frostyetiassert/docs/assert-error";
+    this.link = options?.link ??
+      "https://jsr.io/@frostyetiassert/docs/assert-error";
     this.expected = options?.expected;
     this.actual = options?.actual;
   }
@@ -35,7 +36,8 @@ export class AssertionError extends Error {
    * @returns `true` if the error is an `AssertionError`, otherwise `false`.
    */
   static is(e) {
-    return e instanceof AssertionError || e instanceof Error && e.name === "AssertionError";
+    return e instanceof AssertionError ||
+      e instanceof Error && e.name === "AssertionError";
   }
   /**
    * The expected of the assertion.

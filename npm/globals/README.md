@@ -8,7 +8,7 @@ version, the current os, and the current architecture.
 The library primarily enables writing cross platform and runtime code or dealing
 with global variables.
 
-![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
+![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/eng/assets/logo.png)
 
 [![JSR](https://jsr.io/badges/@frostyeti/globals)](https://jsr.io/@frostyeti/globals)
 [![npm version](https://badge.fury.io/js/@frostyeti%2Fglobals.svg)](https://badge.fury.io/js/@frostyeti%2Fglobals)

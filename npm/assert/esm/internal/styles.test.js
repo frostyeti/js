@@ -49,7 +49,7 @@ test("assert::noColor", async function () {
     ["", "[31mfoo bar[39m\n"],
   ];
   const code = `
-    import * as c from "${import.meta.resolve("./styles.ts")}";
+    import * as c from "${import.meta.resolve("./styles.js")}";
     console.log(c.red("foo bar"));
   `;
   if (globals.Deno) {

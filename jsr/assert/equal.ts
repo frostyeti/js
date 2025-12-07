@@ -1,7 +1,7 @@
 // Copyright 2018-2025 the Deno authors. MIT license.
 // This module is browser compatible.
 
-import { buildMessage } from "./internal/build-message.ts ";
+import { buildMessage } from "./internal/build-message.ts";
 import { diff } from "./internal/diff.ts";
 import { diffStr } from "./internal/diff-str.ts";
 import { format } from "./internal/format.ts";

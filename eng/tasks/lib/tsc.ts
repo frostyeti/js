@@ -74,7 +74,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
             let copy: Record<string, string> = dntConfig.copy ?? {};
             const rm = dntConfig.rm ?? [];
 
-            let entryPoints = Array<unknown>();
+            let entryPoints = {} as Record<string, unknown>;
 
             if (!project.dntConfig) {
                 console.debug(`No dnt config found for project ${project.name}`);
@@ -171,27 +171,16 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                     }
                 }
 
-                if (dntConfig.entryPoints) {
-                    entryPoints = dntConfig.entryPoints;
-                    delete dntConfig.entryPoints;
-                }
             }
 
-            if (entryPoints.length === 0 && denoConfig.exports) {
-                for (const [key, value] of Object.entries(denoConfig.exports)) {
-                    entryPoints.push({
-                        [`${key}`]: {
-                            imports: {
-                                "types": "./types/" +
-                                    (value as string).substring(2).replaceAll(".ts", ".d.ts"),
-                                "default": "./esm" +
-                                    (value as string).substring(2).replaceAll(".ts", ".js"),
-                            },
-                        },
-                    });
+            for (const [key, value] of Object.entries(denoConfig.exports)) {
+                    entryPoints[key as string] = {
+                        import: {
+                            default: `./esm/${(value as string).substring(2).replaceAll(".ts", ".js")}`,
+                            types: `./types/${(value as string).substring(2).replaceAll(".ts", ".d.ts")}`,
+                        }
+                    }
                 }
-            }
-
             const npmProjectDir = project.packageJson !== undefined
                 ? resolve(dirname(project.packageJson))
                 : (join(npmDir, project.name));
@@ -245,6 +234,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                     (denoConfig.exports["."] as string).substring(2).replaceAll(".ts", ".js"),
                 types: "./types/" +
                     (denoConfig.exports["."] as string).substring(2).replaceAll(".ts", ".d.ts"),
+
                 description: dntConfig.description,
                 keywords: dntConfig.keywords,
                 license: dntConfig.license,
@@ -252,6 +242,7 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                 bugs: dntConfig.bugs,
                 repository: dntConfig.repository,
                 scripts: dntConfig.scripts,
+                exports: entryPoints,
                 engines: dntConfig.engines,
                 dependencies: dntConfig.dependencies,
                 devDependencies: dntConfig.devDependencies,

@@ -26,7 +26,10 @@ test("assert::equal", () => {
   }
   throws(() => equal(1, 2), "Expected 1 to equal 2");
   throws(() => equal("hello", "world"), "Expected 'hello' to equal 'world'");
-  throws(() => equal([1, 2, 3], [1, 2, 4]), "Expected [1, 2, 3] to equal [1, 2, 4]");
+  throws(
+    () => equal([1, 2, 3], [1, 2, 4]),
+    "Expected [1, 2, 3] to equal [1, 2, 4]",
+  );
   throws(
     () => equal({ a: 1, b: 2 }, { a: 1, b: 3 }),
     "Expected { a: 1, b: 2 } to equal { a: 1, b: 3 }",
