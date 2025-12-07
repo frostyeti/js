@@ -262,7 +262,7 @@ switch (task) {
             switch (sub) {
                 case "publish":
                     {
-                        const dry = taskArgs.includes("--dry");
+                        const dry = taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d");
                         const isWindows = Deno.build.os === "windows";
                         const deno = isWindows ? "deno.exe" : "deno";
 
