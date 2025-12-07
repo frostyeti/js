@@ -99,7 +99,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-          registries: |
+          registriy-url: |
             https://registry.npmjs.org/
 
       - name: Install Node
@@ -129,6 +129,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: deno publish
         working-directory: ./jsr
+
+      - name: NPM CI
+        run: npm ci
+        working-directory: ./npm
 
       - name: NPM Publish
         if: startsWith(github.ref, 'refs/tags/v')
