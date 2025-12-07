@@ -11,6 +11,21 @@ on:
       - "npm/**"
       - "eng/**"
       - ".github/workflows/pipeline.yaml"
+  pull_request:
+    branches:
+      - "*"
+    paths:
+      - "jsr/**"
+      - "npm/**"
+      - "eng/**"
+      - ".github/workflows/pipeline.yaml"
+
+  schedule:
+    - cron: '12 11 * * *'
+
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   build:
@@ -45,15 +60,59 @@ jobs:
         run: deno install
         working-directory: jsr
 
-      - name: Test
-        run: deno run -A ./eng/tasks/main.ts test --all
-
       - name: Lint
         run: deno run -A ./eng/tasks/main.ts lint --all
+
+      - name: Test
+        run: deno run -A ./eng/tasks/main.ts test --all
         
       - name: Audit
         run: deno run -A ./eng/tasks/main.ts npm audit 
 
-      - name: Publish Dry Run
-        run: deno publish --dry-run --allow-dirty -c ./jsr/deno.json
+      - name: Npm Publish Dry Run
+        run: deno run -A ./eng/tasks/main.ts npm publish --dry-run
         if: matrix.os == 'ubuntu-latest'
+
+      - name: Publish Dry Run
+        run: deno run -A ./eng/tasks/main.ts npm jsr --dry-run
+        if: matrix.os == 'ubuntu-latest'
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      discussions: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Build Changelog"
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v6
+        with:
+          configuration: ".github/changelog.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: JSR Publish
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: deno publish
+
+      - name: NPM Publish
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm publish --provenance --access public
+        working-directory: ./npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: ${{ steps.github_release.outputs.changelog }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

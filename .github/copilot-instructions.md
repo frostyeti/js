@@ -1,6 +1,14 @@
+## JavaScript & TypeScript Guide for AI Agents
+
+## Testing
+
+Tests must use the 'node:test' module for consistency across all JavaScript runtimes.
+
+Assertions should be performed using the `@frostyeti/assert` module to ensure uniform behavior.
+
+
 
 <!-- BACKLOG.MD GUIDELINES START -->
-# Instructions for the usage of Backlog.md CLI Tool
 
 ## Backlog.md: Comprehensive Project Management Tool via CLI
 
