@@ -50,6 +50,7 @@
         "./assert",
         "./globals",
         "./chars",
-        "./slices"
+        "./slices",
+        "./strings"
     ]
 }

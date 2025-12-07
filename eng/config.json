@@ -78,6 +78,15 @@
       "denoConfig": "jsr/slices/deno.json",
       "packageJson": "npm/slices/package.json",
       "dntConfig": "jsr/slices/dnt.json"
+    },
+    {
+      "name": "strings",
+      "id": "@frostyeti/strings",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/strings",
+      "denoConfig": "jsr/strings/deno.json",
+      "packageJson": "npm/strings/package.json",
+      "dntConfig": "jsr/strings/dnt.json"
     }
   ]
 }

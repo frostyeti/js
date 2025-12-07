@@ -1,20 +1,24 @@
 {
     "categories": [
         {
-            "title": "## 🚀 @frostyeti/chars",
-            "labels": ["feature", "feat"]
+            "title": "## 🚀 Features",
+            "labels": ["feature"]
         },
         {
             "title": "## 🐛 Fixes",
-            "labels": ["fix", "bug"]
+            "labels": ["fix"]
         },
         {
             "title": "## 🧪 Tests",
             "labels": ["test"]
         },
         {
-            "title": "## 💥 Breaking",
+            "title": "##  Breaking",
             "labels": ["breaking"]
+        },
+        {
+            "title": "## 📦 Dependencies",
+            "labels": ["dependencies"]
         }
     ],
     "template": "#{{CHANGELOG}}\n## Contributors:\n- #{{CONTRIBUTORS}}",
