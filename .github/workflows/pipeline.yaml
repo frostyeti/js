@@ -127,14 +127,6 @@ jobs:
         run: deno publish
         working-directory: ./jsr
 
-      - name: NPM CREATE LOCKFILE
-        run: npm install --package-lock-only --no-audit 
-        working-directory: ./npm
-
-      - name: NPM CI
-        run: npm ci
-        working-directory: ./npm
-
       - name: NPM Publish
         if: startsWith(github.ref, 'refs/tags/v')
         run: deno run -A ./eng/tasks/main.ts npm publish

@@ -303,7 +303,7 @@ switch (task) {
                         if (taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d")) {
                             publishArgs.push("--dry-run");
                         } else {
-                            publishArgs.push("--provenance", "--access", "public");
+                            publishArgs.push( "--access", "public");
                         }
 
                         const config = getConfig();
@@ -312,10 +312,11 @@ switch (task) {
 
                                 const id = project.id;
 
-                                const cmd0 = new Deno.Command("npm", {
-                                    args: ["view", id!, "version"],
+                                const cmd0 = new Deno.Command("bun", {
+                                    args: ["info", id!, "version"],
                                     stdout: "piped",
                                     stderr: "inherit",
+                                    cwd: npmDir,
                                 });
                                 const o0 = await cmd0.output();
                                 if (o0.code === 0) {
@@ -333,7 +334,7 @@ switch (task) {
                                 const dir = join(projectRootDir, baseDir);
                                 console.log("");
                                 console.log(blue(`### PUBLISHING ${project.name.toUpperCase()} ###`));
-                                const cmd = new Deno.Command(npm, {
+                                const cmd = new Deno.Command("bun", {
                                     args: publishArgs,
                                     stdout: "inherit",
                                     stderr: "inherit",
