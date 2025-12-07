@@ -302,17 +302,28 @@ switch (task) {
                         const publishArgs = ["publish"];
                         if (taskArgs.includes("--dry") || taskArgs.includes("--dry-run") || taskArgs.includes("-d")) {
                             publishArgs.push("--dry-run");
+                        } else {
+                            publishArgs.push("--provenance", "--access", "public");
                         }
 
-                        const cmd = new Deno.Command(npm, {
-                            args: publishArgs,
-                            stdout: "inherit",
-                            stderr: "inherit",
-                            cwd: npmDir,
-                        });
-                        const o = await cmd.output();
-                        if (o.code !== 0) {
-                            throw new Error(`Failed to publish to npm`);
+                        const config = getConfig();
+                        for (const project of config.projects) {
+                            if (project.packageJson) {
+                                const baseDir = dirname(project.packageJson);
+                                const dir = join(projectRootDir, baseDir);
+                                console.log("");
+                                console.log(blue(`### PUBLISHING ${project.name.toUpperCase()} ###`));
+                                const cmd = new Deno.Command(npm, {
+                                    args: publishArgs,
+                                    stdout: "inherit",
+                                    stderr: "inherit",
+                                    cwd: dir,
+                                });
+                                const o = await cmd.output();
+                                if (o.code !== 0) {
+                                    throw new Error(`Failed to publish ${project.name} to npm`);
+                                }
+                            }
                         }
                     }
                     break;
