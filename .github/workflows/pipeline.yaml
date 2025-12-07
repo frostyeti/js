@@ -111,8 +111,6 @@ jobs:
       - name: Bun Install
         run: bun install
         working-directory: npm
-        with:
-          registry: https://registry.npmjs.org/
 
 
       - name: Deno Install

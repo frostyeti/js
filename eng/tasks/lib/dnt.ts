@@ -118,7 +118,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                     for (const [key, _] of Object.entries(dntConfig.dependencies)) {
                         const projectDep = globalProjects.find((p) => p.name === key || p.id === key);
                         if (projectDep) {
-                            dntConfig.dependencies[key] = `^${projectDep.version ?? baseVersion}`;
+                            dntConfig.dependencies[key] = `workspace: *`;
                         }
                     }
                 }
@@ -128,7 +128,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                     for (const [key, _] of Object.entries(dntConfig.devDependencies)) {
                         const projectDep = globalProjects.find((p) => p.name === key || p.id === key);
                         if (projectDep) {
-                            dntConfig.devDependencies[key] = `^${projectDep.version ?? baseVersion}`;
+                            dntConfig.devDependencies[key] = `workspace: *`;
                         }
                     }
                 }
@@ -137,7 +137,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                     for (const [key, _] of Object.entries(dntConfig.peerDependencies)) {
                         const projectDep = globalProjects.find((p) => p.name === key || p.id === key);
                         if (projectDep) {
-                            dntConfig.peerDependencies[key] = `^${projectDep.version ?? baseVersion}`;
+                            dntConfig.peerDependencies[key] = `workspace: *`;
                         }
                     }
                 }
@@ -146,7 +146,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                     for (const [key, _] of Object.entries(dntConfig.optionalDependencies)) {
                         const projectDep = globalProjects.find((p) => p.name === key || p.id === key);
                         if (projectDep) {
-                            dntConfig.optionalDependencies[key] = `^${projectDep.version ?? baseVersion}`;
+                            dntConfig.optionalDependencies[key] = `workspace: *`;
                         }
                     }
                 }
