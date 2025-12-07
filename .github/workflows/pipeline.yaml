@@ -46,8 +46,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-          registries: |
-            https://registry.npmjs.org/
+          registry-url: https://registry.npmjs.org/
 
       - name: Install Node
         uses: actions/setup-node@v4
