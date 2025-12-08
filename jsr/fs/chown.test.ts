@@ -14,9 +14,7 @@ const testFile2 = join(import.meta.dirname!, "chown_test2.txt");
 const cu = uid();
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
 
-
 test("chown::chown changes the owner async", async (t) => {
-
     if (cu === null || cu !== 0) {
         if (g.Bun) {
             ok(
@@ -29,7 +27,6 @@ test("chown::chown changes the owner async", async (t) => {
         t.skip("Skipping test: chown requires root privileges");
         return;
     }
-
 
     if (await exists(testFile2)) {
         await remove(testFile2);
@@ -50,7 +47,7 @@ test("chown::chown changes the owner async", async (t) => {
 });
 
 test("chown::chownSync changes the owner", async (t) => {
-      if (cu === null || cu !== 0) {
+    if (cu === null || cu !== 0) {
         if (g.Bun) {
             ok(
                 true,

@@ -56,8 +56,7 @@ test("fs::writeTextFileSync handles aborted signal", () => {
   const controller = new AbortController();
   controller.abort();
   throws(
-    () =>
-      writeTextFileSync("test.txt", "content", { signal: controller.signal }),
+    () => writeTextFileSync("test.txt", "content", { signal: controller.signal }),
     Error,
   );
 });

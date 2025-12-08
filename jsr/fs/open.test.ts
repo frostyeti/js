@@ -100,17 +100,17 @@ test("fs::openSync throws error when file doesn't exist", () => {
     throws(() => openSync(nonExistentPath, { read: true }));
 });
 
-
 test("fs::open file supports lock operations", async (t) => {
-
     if (g.Deno === undefined && !ext.lockSupported) {
         if (g.Bun) {
-            ok(true, "Skipping test: Bun does not support lock operations or skipping tests using node:test");
+            ok(
+                true,
+                "Skipping test: Bun does not support lock operations or skipping tests using node:test",
+            );
             return;
         }
         t.skip("Skipping test: Lock operations are not supported in this environment");
     }
-
 
     await makeDir(testData, { recursive: true });
     const filePath = join(testData, "lock.txt");
@@ -126,11 +126,13 @@ test("fs::open file supports lock operations", async (t) => {
     }
 });
 
-
 test("fs::open file supports seek operations", async (t) => {
-     if (g.Deno === undefined && !ext.seekSupported) { 
+    if (g.Deno === undefined && !ext.seekSupported) {
         if (g.Bun) {
-            ok(true, "Skipping test: Bun does not support lock operations or skipping tests using node:test");
+            ok(
+                true,
+                "Skipping test: Bun does not support lock operations or skipping tests using node:test",
+            );
             return;
         }
         t.skip("Skipping test: Lock operations are not supported in this environment");

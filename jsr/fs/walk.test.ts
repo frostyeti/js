@@ -9,10 +9,10 @@ import { exists as existsAsync } from "./exists.ts";
 import { globals, WIN } from "./globals.ts";
 import { exec } from "./_testutils.ts";
 
-const g : Record<string, unknown> = globalThis as Record<string, unknown>;
+const g: Record<string, unknown> = globalThis as Record<string, unknown>;
 const isBun = g.Bun !== undefined;
 
-const o : test.TestOptions = {};
+const o: test.TestOptions = {};
 if (!isBun && WIN) {
     o.skip = true;
 }

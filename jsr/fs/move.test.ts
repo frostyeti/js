@@ -55,31 +55,30 @@ test("fs::move() creates dest dir if it does not exist", async function () {
 });
 
 test("fs::move() creates dest dir if it does not exist and overwrite option is set to true", async function () {
-        const srcDir = path.join(testdataDir, "move_test_src_2");
-        const destDir = path.join(testdataDir, "move_test_dest_2");
+    const srcDir = path.join(testdataDir, "move_test_src_2");
+    const destDir = path.join(testdataDir, "move_test_dest_2");
 
+    if (await existsAsync(destDir)) {
+        await remove(destDir, { recursive: true });
+    }
+
+    await makeDir(srcDir, { recursive: true });
+    try {
+        // if dest directory not exist
+        await rejects(
+            async () => {
+                await move(srcDir, destDir, { overwrite: true });
+                throw new Error("should not throw error");
+            },
+            Error,
+            "should not throw error",
+        );
+    } finally {
         if (await existsAsync(destDir)) {
             await remove(destDir, { recursive: true });
         }
-
-        await makeDir(srcDir, { recursive: true });
-        try {
-            // if dest directory not exist
-            await rejects(
-                async () => {
-                    await move(srcDir, destDir, { overwrite: true });
-                    throw new Error("should not throw error");
-                },
-                Error,
-                "should not throw error",
-            );
-        } finally {
-            if (await existsAsync(destDir)) {
-                await remove(destDir, { recursive: true });
-            }
-        }
-    },
-);
+    }
+});
 
 test("fs::move() rejects if src file does not exist", async function () {
     const srcFile = path.join(testdataDir, "move_test_src_3", "test.txt");
@@ -167,36 +166,35 @@ test("fs::move() moves dir", async function () {
 });
 
 test("fs::move() moves files if src and dest exist and can overwrite content", async function () {
-        const srcDir = path.join(testdataDir, "move_test_src_6");
-        const destDir = path.join(testdataDir, "move_test_dest_6");
-        const srcFile = path.join(srcDir, "test.txt");
-        const destFile = path.join(destDir, "test.txt");
-        const srcContent = new TextEncoder().encode("src");
-        const destContent = new TextEncoder().encode("dest");
+    const srcDir = path.join(testdataDir, "move_test_src_6");
+    const destDir = path.join(testdataDir, "move_test_dest_6");
+    const srcFile = path.join(srcDir, "test.txt");
+    const destFile = path.join(destDir, "test.txt");
+    const srcContent = new TextEncoder().encode("src");
+    const destContent = new TextEncoder().encode("dest");
 
-        await Promise.all([
-            makeDir(srcDir, { recursive: true }),
-            makeDir(destDir, { recursive: true }),
-        ]);
-        ok(await lstat(srcDir));
-        ok(await lstat(destDir));
-        await Promise.all([
-            writeFile(srcFile, srcContent),
-            writeFile(destFile, destContent),
-        ]);
+    await Promise.all([
+        makeDir(srcDir, { recursive: true }),
+        makeDir(destDir, { recursive: true }),
+    ]);
+    ok(await lstat(srcDir));
+    ok(await lstat(destDir));
+    await Promise.all([
+        writeFile(srcFile, srcContent),
+        writeFile(destFile, destContent),
+    ]);
 
-        await move(srcDir, destDir, { overwrite: true });
+    await move(srcDir, destDir, { overwrite: true });
 
-        await rejects(async () => await lstat(srcDir));
-        ok(await lstat(destDir));
-        ok(await lstat(destFile));
+    await rejects(async () => await lstat(srcDir));
+    ok(await lstat(destDir));
+    ok(await lstat(destFile));
 
-        const destFileContent = await readTextFile(destFile);
-        equal(destFileContent, "src");
+    const destFileContent = await readTextFile(destFile);
+    equal(destFileContent, "src");
 
-        await remove(destDir, { recursive: true });
-    },
-);
+    await remove(destDir, { recursive: true });
+});
 
 test("fs::move() rejects when dest is its own sub dir", async function () {
     const srcDir = path.join(testdataDir, "move_test_src_7");

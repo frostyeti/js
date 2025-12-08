@@ -10,7 +10,7 @@ import { ensureFile, ensureFileSync } from "./ensure_file.ts";
 const testFile = join(import.meta.dirname!, "chmod_test.txt");
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
 
-test("fs::chmod changes permissions async",  async (t) => {
+test("fs::chmod changes permissions async", async (t) => {
     if (WIN) {
         if (g.Bun) {
             ok(

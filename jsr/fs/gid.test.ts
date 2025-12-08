@@ -5,8 +5,7 @@ import { WIN } from "./globals.ts";
 
 const gb: Record<string, unknown> = globalThis as Record<string, unknown>;
 
-
-test("fs::gid returns number when not on windows",  (t) => {
+test("fs::gid returns number when not on windows", (t) => {
     if (WIN) {
         if (gb.Bun) {
             ok(
