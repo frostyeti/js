@@ -11,17 +11,17 @@ import { ok } from "node:assert";
 const testFile1 = join(import.meta.dirname, "chown_test.txt");
 const testFile2 = join(import.meta.dirname, "chown_test2.txt");
 const cu = uid();
-const o = {};
 const g = globalThis;
-if (!g.Bun) {
-  o.skip = cu === null || cu !== 0;
-}
-test("chown::chown changes the owner async", o, async () => {
-  if (g.Bun && cu !== 0) {
-    ok(
-      true,
-      "Skipping test: Bun does not support nested tests using node:test, including the skip",
-    );
+test("chown::chown changes the owner async", async (t) => {
+  if (cu === null || cu !== 0) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun does not support nested tests using node:test, including the skip",
+      );
+      return;
+    }
+    t.skip("Skipping test: chown requires root privileges");
     return;
   }
   if (await exists(testFile2)) {
@@ -39,12 +39,16 @@ test("chown::chown changes the owner async", o, async () => {
     await exec("rm", ["-f", testFile2]);
   }
 });
-test("chown::chownSync changes the owner", o, async () => {
-  if (g.Bun && cu !== 0) {
-    ok(
-      true,
-      "Skipping test: Bun does not support nested tests using node:test, including the skip",
-    );
+test("chown::chownSync changes the owner", async (t) => {
+  if (cu === null || cu !== 0) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun does not support nested tests using node:test, including the skip",
+      );
+      return;
+    }
+    t.skip("Skipping test: chown requires root privileges");
     return;
   }
   if (await exists(testFile1)) {

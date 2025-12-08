@@ -10,19 +10,18 @@ import { symlink } from "./symlink.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "read_link");
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
-const isBun = g.Bun !== undefined;
-const o : test.TestOptions = {};
-if (!isBun && WIN) {
-    o.skip = true;
-}
 
-test("fs::readLink reads target of symbolic link", o, async () => {
-    if (isBun && WIN) {
-        equal(
-            true,
-            true,
-            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
-        );
+test("fs::readLink reads target of symbolic link", async (t) => {
+    if (WIN) {
+        if (g.Bun) {
+            equal(
+                true,
+                true,
+                "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+            );
+            return;
+        }
+        t.skip("Skipping test: readLink is not supported on Windows");
         return;
     }
 

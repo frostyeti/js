@@ -70,7 +70,8 @@ test("fs::writeFile handles abort signal", async () => {
   try {
     controller.abort();
     await rejects(
-      async () => await writeFile(filePath, content, { signal: controller.signal }),
+      async () =>
+        await writeFile(filePath, content, { signal: controller.signal }),
       Error,
     );
   } finally {

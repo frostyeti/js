@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { equal } from "@frostyeti/assert";
+import { equal, ok } from "@frostyeti/assert";
 import { chmod, chmodSync } from "./chmod.js";
 import { join } from "@frostyeti/path";
 import { WIN } from "./globals.js";
@@ -7,7 +7,18 @@ import { exec } from "./_testutils.js";
 import { stat } from "./stat.js";
 import { ensureFile, ensureFileSync } from "./ensure_file.js";
 const testFile = join(import.meta.dirname, "chmod_test.txt");
-test("fs::chmod changes permissions async", { skip: WIN }, async () => {
+const g = globalThis;
+test("fs::chmod changes permissions async", async (t) => {
+  if (WIN) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+      );
+      return;
+    }
+    t.skip("Skipping test: chmod is not supported on Windows");
+  }
   await ensureFile(testFile);
   try {
     await exec("chmod", ["644", testFile]);
@@ -19,7 +30,17 @@ test("fs::chmod changes permissions async", { skip: WIN }, async () => {
     await exec("rm", [testFile]);
   }
 });
-test("fs::chmodSync changes permissions sync", { skip: WIN }, async () => {
+test("fs::chmodSync changes permissions sync", async (t) => {
+  if (WIN) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+      );
+      return;
+    }
+    t.skip("Skipping test: chmod is not supported on Windows");
+  }
   ensureFileSync(testFile);
   try {
     await exec("chmod", ["644", testFile]);

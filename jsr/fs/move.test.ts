@@ -54,9 +54,7 @@ test("fs::move() creates dest dir if it does not exist", async function () {
     }
 });
 
-test(
-    "fs::move() creates dest dir if it does not exist and overwrite option is set to true",
-    async function () {
+test("fs::move() creates dest dir if it does not exist and overwrite option is set to true", async function () {
         const srcDir = path.join(testdataDir, "move_test_src_2");
         const destDir = path.join(testdataDir, "move_test_dest_2");
 
@@ -168,9 +166,7 @@ test("fs::move() moves dir", async function () {
     await remove(destDir, { recursive: true });
 });
 
-test(
-    "fs::move() moves files if src and dest exist and can overwrite content",
-    async function () {
+test("fs::move() moves files if src and dest exist and can overwrite content", async function () {
         const srcDir = path.join(testdataDir, "move_test_src_6");
         const destDir = path.join(testdataDir, "move_test_dest_6");
         const srcFile = path.join(srcDir, "test.txt");

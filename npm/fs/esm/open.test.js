@@ -82,7 +82,10 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+        return e.name = "SuppressedError",
+          e.error = error,
+          e.suppressed = suppressed,
+          e;
       },
   );
 import { test } from "node:test";
@@ -95,7 +98,6 @@ import { remove, removeSync } from "./remove.js";
 import { readTextFile, readTextFileSync } from "./read_text_file.js";
 const testData = join(import.meta.dirname, "test-data", "open");
 const g = globalThis;
-const isBun = g.Bun !== undefined;
 test("fs::open opens file with read access", async () => {
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "read1.txt");
@@ -218,17 +220,18 @@ test("fs::openSync throws error when file doesn't exist", () => {
   const nonExistentPath = join(testData, "non-existent.txt");
   throws(() => openSync(nonExistentPath, { read: true }));
 });
-const skipLock = {};
-if (!isBun) {
-  skipLock.skip = g.Deno === undefined && !ext.lockSupported;
-}
-test("fs::open file supports lock operations", skipLock, async () => {
-  if (!ext.lockSupported && isBun) {
-    ok(
-      true,
-      "Skipping test: Bun does not support file locking or skipping tests using node:test",
+test("fs::open file supports lock operations", async (t) => {
+  if (g.Deno === undefined && !ext.lockSupported) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun does not support lock operations or skipping tests using node:test",
+      );
+      return;
+    }
+    t.skip(
+      "Skipping test: Lock operations are not supported in this environment",
     );
-    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "lock.txt");
@@ -253,17 +256,18 @@ test("fs::open file supports lock operations", skipLock, async () => {
     await remove(filePath);
   }
 });
-const skipSeek = {};
-if (!isBun) {
-  skipSeek.skip = g.Deno === undefined && !ext.seekSupported;
-}
-test("fs::open file supports seek operations", skipSeek, async () => {
-  if (!ext.seekSupported && isBun) {
-    ok(
-      true,
-      "Skipping test: Bun does not support seek operations or skipping tests using node:test",
+test("fs::open file supports seek operations", async (t) => {
+  if (g.Deno === undefined && !ext.seekSupported) {
+    if (g.Bun) {
+      ok(
+        true,
+        "Skipping test: Bun does not support lock operations or skipping tests using node:test",
+      );
+      return;
+    }
+    t.skip(
+      "Skipping test: Lock operations are not supported in this environment",
     );
-    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "seek.txt");

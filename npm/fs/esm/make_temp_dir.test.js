@@ -25,7 +25,9 @@ test("fs::makeTempDir creates directory with suffix", async () => {
   await remove(tempDir, { recursive: true });
 });
 test("fs::makeTempDir creates directory in specified dir", async () => {
-  const baseDir = !WIN ? "/tmp/test-base" : (globals.process.env.TEMP + "\\test-base");
+  const baseDir = !WIN
+    ? "/tmp/test-base"
+    : (globals.process.env.TEMP + "\\test-base");
   await makeDir(baseDir, { recursive: true });
   const tempDir = await makeTempDir({ dir: baseDir });
   ok(tempDir.startsWith(baseDir));
@@ -63,7 +65,9 @@ test("fs::makeTempDirSync creates directory with suffix", async () => {
   await remove(tempDir, { recursive: true });
 });
 test("fs::makeTempDirSync creates directory in specified dir", async () => {
-  const baseDir = !WIN ? "/tmp/test-base" : (globals.process.env.TEMP + "\\test-base");
+  const baseDir = !WIN
+    ? "/tmp/test-base"
+    : (globals.process.env.TEMP + "\\test-base");
   await makeDir(baseDir, { recursive: true });
   const tempDir = makeTempDirSync({ dir: baseDir });
   ok(tempDir.startsWith(baseDir));

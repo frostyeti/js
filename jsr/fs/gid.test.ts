@@ -3,20 +3,20 @@ import { ok } from "@frostyeti/assert";
 import { gid } from "./gid.ts";
 import { WIN } from "./globals.ts";
 
-const g: Record<string, unknown> = globalThis as Record<string, unknown>;
-const isBun = g.Bun !== undefined;
-const o : test.TestOptions = {};
-if (!isBun && WIN) {
-    o.skip = true;
-}
+const gb: Record<string, unknown> = globalThis as Record<string, unknown>;
 
-test("fs::gid returns number when not on windows", o, () => {
-    if (isBun && WIN) {
-        ok(
-            true,
-            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
-        );
-        return;
+
+test("fs::gid returns number when not on windows",  (t) => {
+    if (WIN) {
+        if (gb.Bun) {
+            ok(
+                true,
+                "Skipping test: Bun does not support nested tests using node:test, including the skip",
+            );
+            return;
+        }
+
+        t.skip("Skipping test: gid is not supported on Windows");
     }
 
     const g = gid();

@@ -82,7 +82,10 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+        return e.name = "SuppressedError",
+          e.error = error,
+          e.suppressed = suppressed,
+          e;
       },
   );
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
@@ -95,6 +98,12 @@ import { remove } from "./remove.js";
 import { exists as existsAsync } from "./exists.js";
 import { globals, WIN } from "./globals.js";
 import { exec } from "./_testutils.js";
+const g = globalThis;
+const isBun = g.Bun !== undefined;
+const o = {};
+if (!isBun && WIN) {
+  o.skip = true;
+}
 const testdataDir = resolve(fromFileUrl(import.meta.url), "../testdata/walk");
 async function assertWalkPaths(rootPath, expectedPaths, options) {
   const root = resolve(testdataDir, rootPath);
@@ -212,7 +221,15 @@ test("fs::walkSync() accepts followSymlinks option set to false", () => {
   });
 });
 // https://github.com/denoland/deno_std/issues/1789
-test("fs::walk() walks fifo files on unix", { skip: WIN }, async () => {
+test("fs::walk() walks fifo files on unix", o, async () => {
+  if (isBun && WIN) {
+    equal(
+      true,
+      true,
+      "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+    );
+    return;
+  }
   await exec("mkfifo", [resolve(testdataDir, "fifo", "fifo")]);
   try {
     await assertWalkPaths("fifo", [".", "fifo", ".gitignore"], {
@@ -222,7 +239,15 @@ test("fs::walk() walks fifo files on unix", { skip: WIN }, async () => {
     await remove(resolve(testdataDir, "fifo", "fifo"));
   }
 });
-test("fs::walkSync() walks fifo files on unix", { skip: WIN }, async () => {
+test("fs::walkSync() walks fifo files on unix", o, async () => {
+  if (isBun && WIN) {
+    equal(
+      true,
+      true,
+      "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+    );
+    return;
+  }
   await exec("mkfifo", [resolve(testdataDir, "fifo", "fifo")]);
   try {
     assertWalkSyncPaths("fifo", [".", "fifo", ".gitignore"], {

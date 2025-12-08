@@ -8,20 +8,18 @@ import { stat } from "./stat.ts";
 import { ensureFile, ensureFileSync } from "./ensure_file.ts";
 
 const testFile = join(import.meta.dirname!, "chmod_test.txt");
-
-const o: test.TestOptions = {};
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
-if (!g.Bun && WIN) {
-    o.skip = true;
-}
 
-test("fs::chmod changes permissions async", o, async () => {
-    if (g.Bun && WIN) {
-        ok(
-            true,
-            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
-        );
-        return;
+test("fs::chmod changes permissions async",  async (t) => {
+    if (WIN) {
+        if (g.Bun) {
+            ok(
+                true,
+                "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+            );
+            return;
+        }
+        t.skip("Skipping test: chmod is not supported on Windows");
     }
 
     await ensureFile(testFile);
@@ -38,13 +36,16 @@ test("fs::chmod changes permissions async", o, async () => {
     }
 });
 
-test("fs::chmodSync changes permissions sync", o, async () => {
-    if (g.Bun && WIN) {
-        ok(
-            true,
-            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
-        );
-        return;
+test("fs::chmodSync changes permissions sync", async (t) => {
+    if (WIN) {
+        if (g.Bun) {
+            ok(
+                true,
+                "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+            );
+            return;
+        }
+        t.skip("Skipping test: chmod is not supported on Windows");
     }
 
     ensureFileSync(testFile);

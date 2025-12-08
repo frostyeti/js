@@ -9,7 +9,6 @@ import { readTextFile, readTextFileSync } from "./read_text_file.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "open");
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
-const isBun = g.Bun !== undefined;
 
 test("fs::open opens file with read access", async () => {
     await makeDir(testData, { recursive: true });
@@ -101,19 +100,17 @@ test("fs::openSync throws error when file doesn't exist", () => {
     throws(() => openSync(nonExistentPath, { read: true }));
 });
 
-const skipLock: test.TestOptions = {};
-if (!isBun) {
-    skipLock.skip = g.Deno === undefined && !ext.lockSupported;
-}
 
-test("fs::open file supports lock operations", skipLock, async () => {
-    if (!ext.lockSupported && isBun) {
-        ok(
-            true,
-            "Skipping test: Bun does not support file locking or skipping tests using node:test",
-        );
-        return;
+test("fs::open file supports lock operations", async (t) => {
+
+    if (g.Deno === undefined && !ext.lockSupported) {
+        if (g.Bun) {
+            ok(true, "Skipping test: Bun does not support lock operations or skipping tests using node:test");
+            return;
+        }
+        t.skip("Skipping test: Lock operations are not supported in this environment");
     }
+
 
     await makeDir(testData, { recursive: true });
     const filePath = join(testData, "lock.txt");
@@ -129,18 +126,14 @@ test("fs::open file supports lock operations", skipLock, async () => {
     }
 });
 
-const skipSeek: test.TestOptions = {};
-if (!isBun) {
-    skipSeek.skip = g.Deno === undefined && !ext.seekSupported;
-}
 
-test("fs::open file supports seek operations", skipSeek, async () => {
-    if (!ext.seekSupported && isBun) {
-        ok(
-            true,
-            "Skipping test: Bun does not support seek operations or skipping tests using node:test",
-        );
-        return;
+test("fs::open file supports seek operations", async (t) => {
+     if (g.Deno === undefined && !ext.seekSupported) { 
+        if (g.Bun) {
+            ok(true, "Skipping test: Bun does not support lock operations or skipping tests using node:test");
+            return;
+        }
+        t.skip("Skipping test: Lock operations are not supported in this environment");
     }
 
     await makeDir(testData, { recursive: true });

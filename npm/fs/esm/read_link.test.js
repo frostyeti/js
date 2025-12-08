@@ -8,7 +8,20 @@ import { writeTextFile } from "./write_text_file.js";
 import { remove } from "./remove.js";
 import { symlink } from "./symlink.js";
 const testData = join(import.meta.dirname, "test-data", "read_link");
-test("fs::readLink reads target of symbolic link", { skip: WIN }, async () => {
+const g = globalThis;
+test("fs::readLink reads target of symbolic link", async (t) => {
+  if (WIN) {
+    if (g.Bun) {
+      equal(
+        true,
+        true,
+        "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+      );
+      return;
+    }
+    t.skip("Skipping test: readLink is not supported on Windows");
+    return;
+  }
   await makeDir(testData, { recursive: true });
   const sourcePath = join(testData, "source2.txt");
   const linkPath = join(testData, "link2.txt");
