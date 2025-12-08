@@ -229,6 +229,7 @@ test("fs::open file supports lock operations", async (t) => {
     t.skip(
       "Skipping test: Lock operations are not supported in this environment",
     );
+    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "lock.txt");
@@ -265,6 +266,7 @@ test("fs::open file supports seek operations", async (t) => {
     t.skip(
       "Skipping test: Lock operations are not supported in this environment",
     );
+    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "seek.txt");
