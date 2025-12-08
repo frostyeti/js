@@ -1,0 +1,10 @@
+{
+    "name": "@frostyeti/args",
+    "version": "0.0.0-alpha.0",
+    "exports": {
+        ".": "./mod.ts",
+        "./split": "./split.ts",
+        "./splat": "./splat.ts",
+        "./join": "./join.ts"
+    }
+}

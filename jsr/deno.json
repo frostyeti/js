@@ -53,6 +53,7 @@
         "./strings",
         "./path",
         "./process",
-        "./fs"
+        "./fs",
+        "./args"
     ]
 }
