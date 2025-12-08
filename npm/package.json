@@ -15,6 +15,7 @@
     "./path",
     "./process",
     "./fs",
-    "./args"
+    "./args",
+    "./env"
   ]
 }

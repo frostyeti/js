@@ -1,0 +1,18 @@
+{
+    "description": "The env provides a uniform way to work with environment variables and the path variable across different runtimes and operating systems.",
+    "keywords": [
+        "env",
+        "path",
+        "environment-variables"
+    ],
+    "devDependencies": {
+        "@types/node": "^22.17.0",
+        "@frostyeti/assert": "*"
+    },
+    "dependencies": {
+        "@frostyeti/globals": "*",
+        "@frostyeti/args": "*",
+        "@frostyeti/chars": "*",
+        "@frostyeti/strings": "*"
+    }
+}
