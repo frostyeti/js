@@ -1,0 +1,11 @@
+{
+    "name": "@frostyeti/ansi",
+    "version": "0.0.0-alpha.0",
+    "exports": {
+        ".": "./mod.ts",
+        "./detector": "./detector.ts",
+        "./styles": "./styles.ts",
+        "./enums": "./enums.ts",
+        "./settings": "./settings.ts"
+    }
+}
