@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { globals, WIN } from "./globals.ts";
-import { makeTempDir, makeTempDirSync } from "@frostyeti/fs/make-temp-dir";
+import { makeTempDirSync } from "@frostyeti/fs/make-temp-dir";
 import { remove } from "@frostyeti/fs/remove";
 import { removeSync } from "@frostyeti/fs";
 
@@ -160,37 +160,30 @@ export function execSync(command: string, args: string[], options?: ExecOptions)
     return code;
 }
 
-
 export class DisposableTempDir {
-  #path: string;
-  
-  constructor() {
-       this.#path = makeTempDirSync();
- 
-  }
+    #path: string;
 
+    constructor() {
+        this.#path = makeTempDirSync();
+    }
 
+    get path() {
+        return this.#path;
+    }
 
-  get path() {
-    return this.#path;
-  }
-
-
-
-  [Symbol.dispose]() {
-     try {
-        removeSync(this.path, { recursive: true });
-     } catch (e) {
-        console.error(`Failed to remove temp dir at ${this.path}:`, e);
-     }
-  }
+    [Symbol.dispose]() {
+        try {
+            removeSync(this.path, { recursive: true });
+        } catch (e) {
+            console.error(`Failed to remove temp dir at ${this.path}:`, e);
+        }
+    }
 
     async [Symbol.asyncDispose]() {
-         try {
+        try {
             await remove(this.path, { recursive: true });
-         } catch (e) {
+        } catch (e) {
             console.error(`Failed to remove temp dir at ${this.path}:`, e);
-         }
         }
- 
+    }
 }

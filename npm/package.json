@@ -1,19 +1,19 @@
 {
-    "private": true,
-    "name": "empty",
-    "version": "0.0.0-alpha.0",
-    "scripts": {
-        "test": "node --test",
-        "test:bun": "bun test"
-    },
-    "workspaces": [
-        "./assert",
-        "./globals",
-        "./chars",
-        "./slices",
-        "./strings",
-        "./path",
-        "./process",
-        "./fs"
-    ]
+  "private": true,
+  "name": "empty",
+  "version": "0.0.0-alpha.0",
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test"
+  },
+  "workspaces": [
+    "./assert",
+    "./globals",
+    "./chars",
+    "./slices",
+    "./strings",
+    "./path",
+    "./process",
+    "./fs"
+  ]
 }

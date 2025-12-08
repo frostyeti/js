@@ -1,4 +1,4 @@
-import { skip, test } from "node:test";
+import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
 import { chown, chownSync } from "./chown.ts";
 import { exec } from "./_testutils.ts";
@@ -13,16 +13,18 @@ const testFile1 = join(import.meta.dirname!, "chown_test.txt");
 const testFile2 = join(import.meta.dirname!, "chown_test2.txt");
 const cu = uid();
 
-const o : test.TestOptions = {};
-const g : Record<string, unknown> = globalThis as Record<string, unknown>;
+const o: test.TestOptions = {};
+const g: Record<string, unknown> = globalThis as Record<string, unknown>;
 if (!g.Bun) {
-    o.skip = (cu === null || cu !== 0);
+    o.skip = cu === null || cu !== 0;
 }
 
 test("chown::chown changes the owner async", o, async () => {
-
     if (g.Bun && cu !== 0) {
-        ok(true, "Skipping test: Bun does not support nested tests using node:test, including the skip");
+        ok(
+            true,
+            "Skipping test: Bun does not support nested tests using node:test, including the skip",
+        );
         return;
     }
 
@@ -45,9 +47,11 @@ test("chown::chown changes the owner async", o, async () => {
 });
 
 test("chown::chownSync changes the owner", o, async () => {
-
     if (g.Bun && cu !== 0) {
-        ok(true, "Skipping test: Bun does not support nested tests using node:test, including the skip");
+        ok(
+            true,
+            "Skipping test: Bun does not support nested tests using node:test, including the skip",
+        );
         return;
     }
 

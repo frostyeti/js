@@ -18,7 +18,6 @@ import { DisposableTempDir } from "./_testutils.ts";
 const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
 const testdataDir = path.resolve(moduleDir, "testdata");
 
-
 test("fs::copy() rejects if src does not exist", async () => {
     using tempDir = new DisposableTempDir();
     const srcFile = path.join(testdataDir, "copy_file_not_exists.txt");

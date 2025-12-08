@@ -102,8 +102,9 @@ export async function* expandGlob(
     canonicalize,
   } = {},
 ) {
-  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } =
-    split(toPathString(glob));
+  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } = split(
+    toPathString(glob),
+  );
   root ??= isGlobAbsolute ? winRoot ?? "/" : cwd();
   const globOptions = { extended, globstar, caseInsensitive };
   const absRoot = isGlobAbsolute ? root : resolve(root); // root is always string here
@@ -112,9 +113,7 @@ export async function* expandGlob(
     .map(resolveFromRoot)
     .map((s) => globToRegExp(s, globOptions));
   const shouldInclude = (path) => !excludePatterns.some((p) => !!path.match(p));
-  let fixedRoot = isGlobAbsolute
-    ? winRoot !== undefined ? winRoot : "/"
-    : absRoot;
+  let fixedRoot = isGlobAbsolute ? winRoot !== undefined ? winRoot : "/" : absRoot;
   while (segments.length > 0 && !isGlob(segments[0])) {
     const seg = segments.shift();
     if (seg === undefined) {
@@ -241,8 +240,9 @@ export function* expandGlobSync(
     canonicalize,
   } = {},
 ) {
-  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } =
-    split(toPathString(glob));
+  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } = split(
+    toPathString(glob),
+  );
   root ??= isGlobAbsolute ? winRoot ?? "/" : cwd();
   const globOptions = { extended, globstar, caseInsensitive };
   const absRoot = isGlobAbsolute ? root : resolve(root); // root is always string here
@@ -251,9 +251,7 @@ export function* expandGlobSync(
     .map(resolveFromRoot)
     .map((s) => globToRegExp(s, globOptions));
   const shouldInclude = (path) => !excludePatterns.some((p) => !!path.match(p));
-  let fixedRoot = isGlobAbsolute
-    ? winRoot !== undefined ? winRoot : "/"
-    : absRoot;
+  let fixedRoot = isGlobAbsolute ? winRoot !== undefined ? winRoot : "/" : absRoot;
   while (segments.length > 0 && !isGlob(segments[0])) {
     const seg = segments.shift();
     if (seg === undefined) {
