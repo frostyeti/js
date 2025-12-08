@@ -1,0 +1,18 @@
+{
+    "description": "A dotenv module that can parse .env files into a document or normal object, expand variables, and stringify documents or objects into a .env content.",
+    "keywords": [
+        "dotenv",
+        "env",
+        "variables"
+    ],
+    "devDependencies": {
+        "@types/node": "^22.14.1",
+        "@frostyeti/assert": "*"
+    },
+    "dependencies": {
+        "@frostyeti/chars": "*",
+        "@frostyeti/globals": "*",
+        "@frostyeti/strings": "*",
+        "@frostyeti/env": "*"
+    }
+}
