@@ -6,7 +6,7 @@
  * systems (Windows, Linux, Mac) and include additional utilities
  * like splatting arguments and looking up executables on the path.
  *
- * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
+ * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
  * [![JSR](https://jsr.io/badges/@frostyeti/exec)](https://jsr.io/@frostyeti/exec)
  * [![npm version](https://badge.fury.io/js/@frostyeti%2Fexec.svg)](https://badge.fury.io/js/@frostyeti%2Fexec)
