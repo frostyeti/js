@@ -2,9 +2,8 @@
 
 ## Overview
 
-The fs module provides a modern file system API that works in Deno, Bun, and
-NodeJs to promote creating cross-runtime packages/modules for
-TypeScript/JavaScript.
+A cross runtime file system module for Bun, Deno, and Nodejs. The API is heavily
+influenced by deno's @std/fs and modern features.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 
