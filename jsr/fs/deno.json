@@ -1,0 +1,52 @@
+{
+    "name": "@frostyeti/fs",
+    "version": "0.0.0-alpha.0",
+
+    "exports": {
+        ".": "./mod.ts",
+        "./chmod": "./chmod.ts",
+        "./chown": "./chown.ts",
+        "./copy-file": "./copy_file.ts",
+        "./copy": "./copy.ts",
+        "./cwd": "./cwd.ts",
+        "./empty-dir": "./empty_dir.ts",
+        "./ensure-dir": "./ensure_dir.ts",
+        "./ensure-file": "./ensure_file.ts",
+        "./ensure-link": "./ensure_link.ts",
+        "./ensure-symlink": "./ensure_symlink.ts",
+        "./errors": "./errors.ts",
+        "./exists": "./exists.ts",
+        "./expand-glob": "./expand_glob.ts",
+        "./gid": "./gid.ts",
+        "./is-dir": "./is_dir.ts",
+        "./is-file": "./is_file.ts",
+        "./link": "./link.ts",
+        "./lstat": "./lstat.ts",
+        "./make-dir": "./make_dir.ts",
+        "./make-temp-dir": "./make_temp_dir.ts",
+        "./make-temp-file": "./make_temp_file.ts",
+        "./move": "./move.ts",
+        "./open": "./open.ts",
+        "./read-dir": "./read_dir.ts",
+        "./read-file": "./read_file.ts",
+        "./read-link": "./read_link.ts",
+        "./read-text-file": "./read_text_file.ts",
+        "./realpath": "./realpath.ts",
+        "./remove": "./remove.ts",
+        "./rename": "./rename.ts",
+        "./stat": "./stat.ts",
+        "./symlink": "./symlink.ts",
+        "./uid": "./uid.ts",
+        "./utime": "./utime.ts",
+        "./walk": "./walk.ts",
+        "./write-file": "./write_file.ts",
+        "./write-text-file": "./write_text_file.ts"
+    },
+    "publish": {
+        "exclude": [
+            "**/testdata/**",
+            "**/test-data/**",
+            "**/testdata/**"
+        ]
+    }
+}

@@ -1,5 +1,5 @@
 import { dirname, join, resolve } from "@std/path";
-import { exists, expandGlob } from "@std/fs";
+import { exists, expandGlob, copy } from "@std/fs";
 import { DntConfig, getConfig, Project } from "./config.ts";
 import { npmDir, projectRootDir } from "./paths.ts";
 import { blue } from "@std/fmt/colors";
@@ -71,10 +71,10 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                 any
             >;
             let dntConfig = baseDnt as DntConfig;
-            let copy: Record<string, string> = dntConfig.copy ?? {};
+            let otherFilesToCopy: Record<string, string> = dntConfig.copy ?? {};
             const rm = dntConfig.rm ?? [];
 
-            let entryPoints = {} as Record<string, unknown>;
+            const entryPoints = {} as Record<string, unknown>;
 
             if (!project.dntConfig) {
                 console.debug(`No dnt config found for project ${project.name}`);
@@ -92,8 +92,8 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                 console.log(denoProjectDntConfig);
 
                 if (denoProjectDntConfig.copy) {
-                    copy = {
-                        ...copy,
+                    otherFilesToCopy = {
+                        ...otherFilesToCopy,
                         ...denoProjectDntConfig.copy,
                     };
 
@@ -323,6 +323,16 @@ bun.lockb`;
                 const converted = content.replaceAll(/(from\s+['"].+?)\.ts(['"])/g, "$1.js$2")
                     .replaceAll(/(import\(['"].+?)\.ts(['"]\))/g, "$1.js$2");
                 await Deno.writeTextFile(destPath, converted);
+            }
+
+
+
+            if (otherFilesToCopy) { 
+                for (const [src, dest] of Object.entries(otherFilesToCopy)) {
+                    const absSrc = resolve(projectRootDir, project.dir, src);
+                    const absDest = resolve(npmProjectDir, dest);
+                    await copy(absSrc, absDest, { overwrite: true });
+                }
             }
 
             const bunInstallCmd = new Deno.Command("bun", {

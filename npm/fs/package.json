@@ -1,0 +1,273 @@
+{
+  "name": "@frostyeti/fs",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "The fs module provides a modern file system API that works in Deno, Bun, and NodeJs to promote creating cross-runtime packages/modules",
+  "keywords": [
+    "fs",
+    "file",
+    "system",
+    "filesystem",
+    "deno",
+    "bun",
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./chmod": {
+      "import": {
+        "default": "./esm/chmod.js",
+        "types": "./types/chmod.d.ts"
+      }
+    },
+    "./chown": {
+      "import": {
+        "default": "./esm/chown.js",
+        "types": "./types/chown.d.ts"
+      }
+    },
+    "./copy-file": {
+      "import": {
+        "default": "./esm/copy_file.js",
+        "types": "./types/copy_file.d.ts"
+      }
+    },
+    "./copy": {
+      "import": {
+        "default": "./esm/copy.js",
+        "types": "./types/copy.d.ts"
+      }
+    },
+    "./cwd": {
+      "import": {
+        "default": "./esm/cwd.js",
+        "types": "./types/cwd.d.ts"
+      }
+    },
+    "./empty-dir": {
+      "import": {
+        "default": "./esm/empty_dir.js",
+        "types": "./types/empty_dir.d.ts"
+      }
+    },
+    "./ensure-dir": {
+      "import": {
+        "default": "./esm/ensure_dir.js",
+        "types": "./types/ensure_dir.d.ts"
+      }
+    },
+    "./ensure-file": {
+      "import": {
+        "default": "./esm/ensure_file.js",
+        "types": "./types/ensure_file.d.ts"
+      }
+    },
+    "./ensure-link": {
+      "import": {
+        "default": "./esm/ensure_link.js",
+        "types": "./types/ensure_link.d.ts"
+      }
+    },
+    "./ensure-symlink": {
+      "import": {
+        "default": "./esm/ensure_symlink.js",
+        "types": "./types/ensure_symlink.d.ts"
+      }
+    },
+    "./errors": {
+      "import": {
+        "default": "./esm/errors.js",
+        "types": "./types/errors.d.ts"
+      }
+    },
+    "./exists": {
+      "import": {
+        "default": "./esm/exists.js",
+        "types": "./types/exists.d.ts"
+      }
+    },
+    "./expand-glob": {
+      "import": {
+        "default": "./esm/expand_glob.js",
+        "types": "./types/expand_glob.d.ts"
+      }
+    },
+    "./gid": {
+      "import": {
+        "default": "./esm/gid.js",
+        "types": "./types/gid.d.ts"
+      }
+    },
+    "./is-dir": {
+      "import": {
+        "default": "./esm/is_dir.js",
+        "types": "./types/is_dir.d.ts"
+      }
+    },
+    "./is-file": {
+      "import": {
+        "default": "./esm/is_file.js",
+        "types": "./types/is_file.d.ts"
+      }
+    },
+    "./link": {
+      "import": {
+        "default": "./esm/link.js",
+        "types": "./types/link.d.ts"
+      }
+    },
+    "./lstat": {
+      "import": {
+        "default": "./esm/lstat.js",
+        "types": "./types/lstat.d.ts"
+      }
+    },
+    "./make-dir": {
+      "import": {
+        "default": "./esm/make_dir.js",
+        "types": "./types/make_dir.d.ts"
+      }
+    },
+    "./make-temp-dir": {
+      "import": {
+        "default": "./esm/make_temp_dir.js",
+        "types": "./types/make_temp_dir.d.ts"
+      }
+    },
+    "./make-temp-file": {
+      "import": {
+        "default": "./esm/make_temp_file.js",
+        "types": "./types/make_temp_file.d.ts"
+      }
+    },
+    "./move": {
+      "import": {
+        "default": "./esm/move.js",
+        "types": "./types/move.d.ts"
+      }
+    },
+    "./open": {
+      "import": {
+        "default": "./esm/open.js",
+        "types": "./types/open.d.ts"
+      }
+    },
+    "./read-dir": {
+      "import": {
+        "default": "./esm/read_dir.js",
+        "types": "./types/read_dir.d.ts"
+      }
+    },
+    "./read-file": {
+      "import": {
+        "default": "./esm/read_file.js",
+        "types": "./types/read_file.d.ts"
+      }
+    },
+    "./read-link": {
+      "import": {
+        "default": "./esm/read_link.js",
+        "types": "./types/read_link.d.ts"
+      }
+    },
+    "./read-text-file": {
+      "import": {
+        "default": "./esm/read_text_file.js",
+        "types": "./types/read_text_file.d.ts"
+      }
+    },
+    "./realpath": {
+      "import": {
+        "default": "./esm/realpath.js",
+        "types": "./types/realpath.d.ts"
+      }
+    },
+    "./remove": {
+      "import": {
+        "default": "./esm/remove.js",
+        "types": "./types/remove.d.ts"
+      }
+    },
+    "./rename": {
+      "import": {
+        "default": "./esm/rename.js",
+        "types": "./types/rename.d.ts"
+      }
+    },
+    "./stat": {
+      "import": {
+        "default": "./esm/stat.js",
+        "types": "./types/stat.d.ts"
+      }
+    },
+    "./symlink": {
+      "import": {
+        "default": "./esm/symlink.js",
+        "types": "./types/symlink.d.ts"
+      }
+    },
+    "./uid": {
+      "import": {
+        "default": "./esm/uid.js",
+        "types": "./types/uid.d.ts"
+      }
+    },
+    "./utime": {
+      "import": {
+        "default": "./esm/utime.js",
+        "types": "./types/utime.d.ts"
+      }
+    },
+    "./walk": {
+      "import": {
+        "default": "./esm/walk.js",
+        "types": "./types/walk.d.ts"
+      }
+    },
+    "./write-file": {
+      "import": {
+        "default": "./esm/write_file.js",
+        "types": "./types/write_file.d.ts"
+      }
+    },
+    "./write-text-file": {
+      "import": {
+        "default": "./esm/write_text_file.js",
+        "types": "./types/write_text_file.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/path": "0.0.0-alpha.0",
+    "@frostyeti/globals": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}
