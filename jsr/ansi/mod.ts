@@ -4,7 +4,7 @@
  * The `ansi` module provides color detection, writing ansi
  * codes, and an ansi writer.
  *
- * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/main/.eng/assets/logo.png)
+ * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
  * [![JSR](https://jsr.io/badges/@frostyeti/ansi)](https://jsr.io/@frostyeti/ansi)
  * [![npm version](https://badge.fury.io/js/@frostyeti%2Fansi.svg)](https://badge.fury.io/js/@frostyeti%2Fansi)
