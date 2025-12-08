@@ -1,0 +1,91 @@
+{
+  "name": "@frostyeti/dotenv",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "A dotenv module that can parse .env files into a document or normal object, expand variables, and stringify documents or objects into a .env content.",
+  "keywords": [
+    "dotenv",
+    "env",
+    "variables"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./document": {
+      "import": {
+        "default": "./esm/document.js",
+        "types": "./types/document.d.ts"
+      }
+    },
+    "./expand": {
+      "import": {
+        "default": "./esm/expand.js",
+        "types": "./types/expand.d.ts"
+      }
+    },
+    "./load": {
+      "import": {
+        "default": "./esm/load.js",
+        "types": "./types/load.d.ts"
+      }
+    },
+    "./parse-document": {
+      "import": {
+        "default": "./esm/parse_document.js",
+        "types": "./types/parse_document.d.ts"
+      }
+    },
+    "./parse": {
+      "import": {
+        "default": "./esm/parse.js",
+        "types": "./types/parse.d.ts"
+      }
+    },
+    "./stringify": {
+      "import": {
+        "default": "./esm/stringify.js",
+        "types": "./types/stringify.d.ts"
+      }
+    },
+    "./stringify-document": {
+      "import": {
+        "default": "./esm/stringify_document.js",
+        "types": "./types/stringify_document.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/chars": "0.0.0-alpha.0",
+    "@frostyeti/globals": "0.0.0-alpha.0",
+    "@frostyeti/strings": "0.0.0-alpha.0",
+    "@frostyeti/env": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -132,6 +132,15 @@
       "denoConfig": "jsr/env/deno.json",
       "packageJson": "npm/env/package.json",
       "dntConfig": "jsr/env/dnt.json"
+    },
+    {
+      "name": "dotenv",
+      "id": "@frostyeti/dotenv",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/dotenv",
+      "denoConfig": "jsr/dotenv/deno.json",
+      "packageJson": "npm/dotenv/package.json",
+      "dntConfig": "jsr/dotenv/dnt.json"
     }
   ]
 }

@@ -36,6 +36,21 @@
         "typescript": "^5.9.3",
       },
     },
+    "dotenv": {
+      "name": "@frostyeti/dotenv",
+      "version": "0.0.0-alpha.0",
+      "dependencies": {
+        "@frostyeti/chars": "0.0.0-alpha.0",
+        "@frostyeti/env": "0.0.0-alpha.0",
+        "@frostyeti/globals": "0.0.0-alpha.0",
+        "@frostyeti/strings": "0.0.0-alpha.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@types/node": "^22.14.1",
+        "typescript": "^5.9.3",
+      },
+    },
     "env": {
       "name": "@frostyeti/env",
       "version": "0.0.0-alpha.0",
@@ -132,6 +147,8 @@
     "@frostyeti/assert": ["@frostyeti/assert@workspace:assert"],
 
     "@frostyeti/chars": ["@frostyeti/chars@workspace:chars"],
+
+    "@frostyeti/dotenv": ["@frostyeti/dotenv@workspace:dotenv"],
 
     "@frostyeti/env": ["@frostyeti/env@workspace:env"],
 
