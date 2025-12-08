@@ -9,6 +9,14 @@ import { exists as existsAsync } from "./exists.ts";
 import { globals, WIN } from "./globals.ts";
 import { exec } from "./_testutils.ts";
 
+const g : Record<string, unknown> = globalThis as Record<string, unknown>;
+const isBun = g.Bun !== undefined;
+
+const o : test.TestOptions = {};
+if (!isBun && WIN) {
+    o.skip = true;
+}
+
 const testdataDir = resolve(fromFileUrl(import.meta.url), "../testdata/walk");
 
 async function assertWalkPaths(
@@ -165,7 +173,16 @@ test("fs::walkSync() accepts followSymlinks option set to false", () => {
 });
 
 // https://github.com/denoland/deno_std/issues/1789
-test("fs::walk() walks fifo files on unix", { skip: WIN }, async () => {
+test("fs::walk() walks fifo files on unix", o, async () => {
+    if (isBun && WIN) {
+        equal(
+            true,
+            true,
+            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+        );
+        return;
+    }
+
     await exec("mkfifo", [resolve(testdataDir, "fifo", "fifo")]);
     try {
         await assertWalkPaths("fifo", [".", "fifo", ".gitignore"], {
@@ -176,7 +193,16 @@ test("fs::walk() walks fifo files on unix", { skip: WIN }, async () => {
     }
 });
 
-test("fs::walkSync() walks fifo files on unix", { skip: WIN }, async () => {
+test("fs::walkSync() walks fifo files on unix", o, async () => {
+    if (isBun && WIN) {
+        equal(
+            true,
+            true,
+            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+        );
+        return;
+    }
+
     await exec("mkfifo", [resolve(testdataDir, "fifo", "fifo")]);
     try {
         assertWalkSyncPaths("fifo", [".", "fifo", ".gitignore"], {

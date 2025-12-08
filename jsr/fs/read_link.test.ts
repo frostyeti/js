@@ -9,8 +9,23 @@ import { remove } from "./remove.ts";
 import { symlink } from "./symlink.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "read_link");
+const g: Record<string, unknown> = globalThis as Record<string, unknown>;
+const isBun = g.Bun !== undefined;
+const o : test.TestOptions = {};
+if (!isBun && WIN) {
+    o.skip = true;
+}
 
-test("fs::readLink reads target of symbolic link", { skip: WIN }, async () => {
+test("fs::readLink reads target of symbolic link", o, async () => {
+    if (isBun && WIN) {
+        equal(
+            true,
+            true,
+            "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
+        );
+        return;
+    }
+
     await makeDir(testData, { recursive: true });
     const sourcePath = join(testData, "source2.txt");
     const linkPath = join(testData, "link2.txt");
