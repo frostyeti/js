@@ -147,6 +147,19 @@
         "typescript": "^5.9.3",
       },
     },
+    "secrets": {
+      "name": "@frostyeti/secrets",
+      "version": "0.0.0-alpha.0",
+      "dependencies": {
+        "@frostyeti/chars": "0.0.0-alpha.0",
+        "@frostyeti/globals": "0.0.0-alpha.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+    },
     "slices": {
       "name": "@frostyeti/slices",
       "version": "0.0.0-alpha.0",
@@ -196,6 +209,8 @@
     "@frostyeti/path": ["@frostyeti/path@workspace:path"],
 
     "@frostyeti/process": ["@frostyeti/process@workspace:process"],
+
+    "@frostyeti/secrets": ["@frostyeti/secrets@workspace:secrets"],
 
     "@frostyeti/slices": ["@frostyeti/slices@workspace:slices"],
 

@@ -58,6 +58,7 @@
         "./env",
         "./dotenv",
         "./exec",
-        "./ansi"
+        "./ansi",
+        "./secrets"
     ]
 }
