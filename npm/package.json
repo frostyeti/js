@@ -18,6 +18,7 @@
     "./args",
     "./env",
     "./dotenv",
-    "./exec"
+    "./exec",
+    "./ansi"
   ]
 }
