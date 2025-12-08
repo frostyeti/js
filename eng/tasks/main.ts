@@ -397,8 +397,8 @@ switch (task) {
                 bun = false;
             }
 
-            if (taskArgs && taskArgs.includes("--node")) {
-                args = args.filter((a) => a !== "--node");
+            if (taskArgs && (taskArgs.includes("--node") || taskArgs.includes("--npm"))) {
+                args = args.filter((a) => a !== "--node" && a !== "--npm");
                 deno = false;
                 bun = false;
             }

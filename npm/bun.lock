@@ -22,6 +22,19 @@
         "typescript": "^5.9.3",
       },
     },
+    "fs": {
+      "name": "@frostyeti/fs",
+      "version": "0.0.0-alpha.0",
+      "dependencies": {
+        "@frostyeti/globals": "0.0.0-alpha.0",
+        "@frostyeti/path": "0.0.0-alpha.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+    },
     "globals": {
       "name": "@frostyeti/globals",
       "version": "0.0.0-alpha.0",
@@ -88,6 +101,8 @@
     "@frostyeti/assert": ["@frostyeti/assert@workspace:assert"],
 
     "@frostyeti/chars": ["@frostyeti/chars@workspace:chars"],
+
+    "@frostyeti/fs": ["@frostyeti/fs@workspace:fs"],
 
     "@frostyeti/globals": ["@frostyeti/globals@workspace:globals"],
 

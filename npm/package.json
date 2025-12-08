@@ -13,6 +13,7 @@
     "./slices",
     "./strings",
     "./path",
-    "./process"
+    "./process",
+    "./fs"
   ]
 }
