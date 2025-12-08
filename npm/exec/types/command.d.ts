@@ -15,7 +15,13 @@ import type {
   Output,
   ShellCommandOptions,
 } from "./types.js";
-export type { ChildProcess, CommandArgs, CommandOptions, Output, ShellCommandOptions };
+export type {
+  ChildProcess,
+  CommandArgs,
+  CommandOptions,
+  Output,
+  ShellCommandOptions,
+};
 /**
  * Converts the command arguments to an array of strings.
  * @param args Converts the command arguments to an array of strings.

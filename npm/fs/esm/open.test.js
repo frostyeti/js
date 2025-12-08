@@ -82,7 +82,10 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+        return e.name = "SuppressedError",
+          e.error = error,
+          e.suppressed = suppressed,
+          e;
       },
   );
 import { test } from "node:test";
@@ -229,6 +232,7 @@ test("fs::open file supports lock operations", async (t) => {
     t.skip(
       "Skipping test: Lock operations are not supported in this environment",
     );
+    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "lock.txt");
@@ -265,6 +269,7 @@ test("fs::open file supports seek operations", async (t) => {
     t.skip(
       "Skipping test: Lock operations are not supported in this environment",
     );
+    return;
   }
   await makeDir(testData, { recursive: true });
   const filePath = join(testData, "seek.txt");

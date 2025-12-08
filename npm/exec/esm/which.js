@@ -6,7 +6,14 @@
  */
 import { expand, get, getPath, splitPath } from "@frostyeti/env";
 import { basename, extname, isAbsolute, join, resolve } from "@frostyeti/path";
-import { isDir, isDirSync, isFile, isFileSync, readDir, readDirSync } from "@frostyeti/fs";
+import {
+  isDir,
+  isDirSync,
+  isFile,
+  isFileSync,
+  readDir,
+  readDirSync,
+} from "@frostyeti/fs";
 import { WIN } from "./globals.js";
 import { isNullOrSpace } from "@frostyeti/strings/is-space";
 import { isNullOrEmpty } from "@frostyeti/strings/is-empty";
@@ -62,7 +69,9 @@ export function whichSync(
   const systemPaths = splitPath(getPath())
     .filter((segment) => segment.length > 0)
     .map((segment) => expand(segment));
-  const pathSegments = prependPath !== undefined ? prependPath.concat(systemPaths) : systemPaths;
+  const pathSegments = prependPath !== undefined
+    ? prependPath.concat(systemPaths)
+    : systemPaths;
   let pathExtSegments = [];
   if (WIN) {
     const pe = get("PATHEXT") || "";
@@ -202,7 +211,9 @@ export async function which(
   const systemPaths = splitPath()
     .filter((segment) => segment.length)
     .map((segment) => expand(segment));
-  const pathSegments = prependPath !== undefined ? prependPath.concat(systemPaths) : systemPaths;
+  const pathSegments = prependPath !== undefined
+    ? prependPath.concat(systemPaths)
+    : systemPaths;
   let pathExtSegments = [];
   if (WIN) {
     const pe = get("PATHEXT") || "";

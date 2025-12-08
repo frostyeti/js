@@ -537,8 +537,12 @@ if (globals.Deno) {
     async output() {
       const out = await this.#childProcess.output();
       return new DenoOutput({
-        stdout: this.#options.stdout === "piped" ? out.stdout : new Uint8Array(0),
-        stderr: this.#options.stderr === "piped" ? out.stderr : new Uint8Array(0),
+        stdout: this.#options.stdout === "piped"
+          ? out.stdout
+          : new Uint8Array(0),
+        stderr: this.#options.stderr === "piped"
+          ? out.stderr
+          : new Uint8Array(0),
         code: out.code,
         signal: out.signal,
         success: out.success,

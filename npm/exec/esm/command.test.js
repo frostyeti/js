@@ -82,7 +82,10 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+        return e.name = "SuppressedError",
+          e.error = error,
+          e.suppressed = suppressed,
+          e;
       },
   );
 import { test } from "node:test";
@@ -176,6 +179,7 @@ test(
         return;
       }
       t.skip("Skipping test: echo command not found");
+      return;
     }
     const cmd = new Command(["echo", "hello"], { stdout: "inherit" });
     const output = await cmd.output();
@@ -194,6 +198,7 @@ test("exec::Command - with bad command returns error", async (t) => {
       return;
     }
     t.skip("Skipping test: git command not found");
+    return;
   }
   const cmd = new Command(["git", "clone"], {
     stderr: "piped",
@@ -214,6 +219,7 @@ test("exec::exec runs inline command", async (t) => {
       return;
     }
     t.skip("Skipping test: git command not found");
+    return;
   }
   const output = await exec(`git config \
         --list`);
@@ -229,6 +235,7 @@ test("exec::Command - set cwd", async (t) => {
       return;
     }
     t.skip("Skipping test: ls command not found");
+    return;
   }
   const dir = dirname(fromFileUrl(import.meta.url));
   const cmd2 = new Command(["ls", "-l"], { cwd: dir });
@@ -254,6 +261,7 @@ test("exec::Command - spawn", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", "hello"]);
   const process = cmd.spawn();
@@ -272,6 +280,7 @@ test("exec::Command - spawn with piped options", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", "hello"], {
     stdout: "piped",
@@ -299,6 +308,7 @@ test("exec::Command return text", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", "hello"]);
   const output = await cmd.text();
@@ -314,6 +324,7 @@ test("exec::Command return lines", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", "hello"]);
   const output = await cmd.lines();
@@ -331,6 +342,7 @@ test("exec::Command - pipe to invoke echo, grep, and cat", async (t) => {
       return;
     }
     t.skip("Skipping test: echo, grep, or cat command not found");
+    return;
   }
   const result = await new Command(`echo "my test"`)
     .pipe(["grep", "test"])
@@ -351,6 +363,7 @@ test("exec::Command - output to json", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", '{"hello": "world"}']);
   const output = await cmd.json();
@@ -366,6 +379,7 @@ test("exec::Command with log", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   let f = "";
   let args = [];
@@ -395,6 +409,7 @@ test("exec::Command - use validate on output", async (t) => {
       return;
     }
     t.skip("Skipping test: echo command not found");
+    return;
   }
   const cmd = new Command(["echo", "hello"]);
   const output = await cmd.output();
@@ -449,6 +464,7 @@ test("exec::ShellCommand - get expected shell args for pwsh", (t) => {
       return;
     }
     t.skip("Skipping test: pwsh command not found");
+    return;
   }
   const cmd = new Pwsh("hello.ps1");
   const args = cmd.getShellArgs("hello.ps1", true);
@@ -476,6 +492,7 @@ test("exec::ShellCommand - run inline script", async (t) => {
       return;
     }
     t.skip("Skipping test: pwsh command not found");
+    return;
   }
   const cmd = new Pwsh("Write-Host 'Hello, World!'");
   const output = await cmd.output();
@@ -492,6 +509,7 @@ test("exec::ShellCommand - run file", async (t) => {
       return;
     }
     t.skip("Skipping test: pwsh command not found");
+    return;
   }
   await writeTextFile("hello.ps1", "Write-Host 'Hello, World!'");
   try {
@@ -513,6 +531,7 @@ test("exec:ShellCommand - use spawn", async (t) => {
       return;
     }
     t.skip("Skipping test: pwsh command not found");
+    return;
   }
   await writeTextFile("hello2.ps1", "Write-Host 'Hello, World!'");
   try {
