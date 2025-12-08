@@ -114,6 +114,15 @@
       "denoConfig": "jsr/fs/deno.json",
       "packageJson": "npm/fs/package.json",
       "dntConfig": "jsr/fs/dnt.json"
+    },
+    {
+      "name": "args",
+      "id": "@frostyeti/args",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/args",
+      "denoConfig": "jsr/args/deno.json",
+      "packageJson": "npm/args/package.json",
+      "dntConfig": "jsr/args/dnt.json"
     }
   ]
 }
