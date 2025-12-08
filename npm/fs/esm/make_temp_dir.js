@@ -43,13 +43,9 @@ export async function makeTempDir(options) {
   options ??= {};
   let dir = "";
   if (!options.dir) {
-    dir = WIN
-      ? (globals.process.env.TEMP ?? "c:\\Temp")
-      : (globals.process.env.TMPDIR ?? "/tmp");
+    dir = WIN ? (globals.process.env.TEMP ?? "c:\\Temp") : (globals.process.env.TMPDIR ?? "/tmp");
   } else if (options.dir && !isAbsolute(options.dir)) {
-    dir = WIN
-      ? (globals.process.env.TEMP ?? "c:\\Temp")
-      : (globals.process.env.TMPDIR ?? "/tmp");
+    dir = WIN ? (globals.process.env.TEMP ?? "c:\\Temp") : (globals.process.env.TMPDIR ?? "/tmp");
     dir = join(dir, options.dir);
   } else {
     dir = options.dir;
@@ -77,13 +73,9 @@ export function makeTempDirSync(options) {
   options ??= {};
   let dir = "";
   if (!options.dir) {
-    dir = WIN
-      ? (globals.process.env.TEMP ?? "c:\\Temp")
-      : (globals.process.env.TMPDIR ?? "/tmp");
+    dir = WIN ? (globals.process.env.TEMP ?? "c:\\Temp") : (globals.process.env.TMPDIR ?? "/tmp");
   } else if (options.dir && !isAbsolute(options.dir)) {
-    dir = WIN
-      ? (globals.process.env.TEMP ?? "c:\\Temp")
-      : (globals.process.env.TMPDIR ?? "/tmp");
+    dir = WIN ? (globals.process.env.TEMP ?? "c:\\Temp") : (globals.process.env.TMPDIR ?? "/tmp");
     dir = join(dir, options.dir);
   } else {
     dir = options.dir;

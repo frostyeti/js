@@ -16,7 +16,7 @@ test("fs::gid returns number when not on windows", (t) => {
         }
 
         t.skip("Skipping test: gid is not supported on Windows");
-        return 
+        return;
     }
 
     const g = gid();

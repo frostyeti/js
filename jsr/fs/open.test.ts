@@ -110,7 +110,7 @@ test("fs::open file supports lock operations", async (t) => {
             return;
         }
         t.skip("Skipping test: Lock operations are not supported in this environment");
-        return 
+        return;
     }
 
     await makeDir(testData, { recursive: true });
@@ -137,7 +137,7 @@ test("fs::open file supports seek operations", async (t) => {
             return;
         }
         t.skip("Skipping test: Lock operations are not supported in this environment");
-        return 
+        return;
     }
 
     await makeDir(testData, { recursive: true });

@@ -82,10 +82,7 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError",
-          e.error = error,
-          e.suppressed = suppressed,
-          e;
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
       },
   );
 import { test } from "node:test";
@@ -268,7 +265,7 @@ test("exec::Command - spawn", async (t) => {
   const output = await process.output();
   equal(output.code, 0);
   // should default to piped
-  equal(output.stdout.length, 6);
+  equal(output.text().trim().length, 5);
 });
 test("exec::Command - spawn with piped options", async (t) => {
   if (!echo) {

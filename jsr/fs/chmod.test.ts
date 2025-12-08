@@ -20,7 +20,7 @@ test("fs::chmod changes permissions async", async (t) => {
             return;
         }
         t.skip("Skipping test: chmod is not supported on Windows");
-        return 
+        return;
     }
 
     await ensureFile(testFile);
@@ -47,7 +47,7 @@ test("fs::chmodSync changes permissions sync", async (t) => {
             return;
         }
         t.skip("Skipping test: chmod is not supported on Windows");
-        return 
+        return;
     }
 
     ensureFileSync(testFile);
