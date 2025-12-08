@@ -1,0 +1,12 @@
+{
+    "name": "@frostyeti/exec",
+    "version": "0.0.0-alpha.0",
+    "exports": {
+        ".": "./mod.ts",
+        "./command": "./command.ts",
+        "./errors": "./errors.ts",
+        "./path-finder": "./path_finder.ts",
+        "./set-logger": "./set_logger.ts",
+        "./which": "./which.ts"
+    }
+}

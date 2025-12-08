@@ -17,6 +17,7 @@
     "./fs",
     "./args",
     "./env",
-    "./dotenv"
+    "./dotenv",
+    "./exec"
   ]
 }
