@@ -1,0 +1,60 @@
+{
+  "name": "@frostyeti/fmt",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "Sprintf, printf ported from @std/fmt",
+  "keywords": [
+    "fmt",
+    "format",
+    "printf",
+    "inspect"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./inspect": {
+      "import": {
+        "default": "./esm/inspect.js",
+        "types": "./types/inspect.d.ts"
+      }
+    },
+    "./printf": {
+      "import": {
+        "default": "./esm/printf.js",
+        "types": "./types/printf.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/globals": "0.0.0-alpha.0",
+    "@frostyeti/process": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}

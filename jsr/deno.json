@@ -59,6 +59,7 @@
         "./dotenv",
         "./exec",
         "./ansi",
-        "./secrets"
+        "./secrets",
+        "./fmt"
     ]
 }
