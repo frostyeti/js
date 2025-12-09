@@ -60,6 +60,7 @@
         "./exec",
         "./ansi",
         "./secrets",
-        "./fmt"
+        "./fmt",
+        "./ci-env"
     ]
 }
