@@ -21,7 +21,7 @@ A list of other modules can be found at [github.com/frostyeti/js](https://github
 ```typescript
 import {split, join, splat} from "@frostyeti/args";
 
-console.log(split("echo hello world")); // ["echo", "hello", "world"]
+console.log(split("echo hello world --test")); // ["echo", "hello", "world", "--test"]
 
 console.log(join(["echo", "hello", "world"])); // "echo hello world"
 
