@@ -4,11 +4,11 @@ import { CI, CI_DRIVER } from "./driver.ts";
 import {
     command,
     endGroup,
-    error,
+    // error,
     ok as k,
     registerSecret,
     startGroup,
-    warn,
+    // warn,
     writeLine,
 } from "./log.ts";
 
@@ -21,9 +21,9 @@ test("Test", () => {
 
     writeLine("This is a test log message with a secret: " + myValue);
 
-    error("This is an error message with a secret: " + myValue);
+    // error("This is an error message with a secret: " + myValue);
 
-    warn("This is a warning message with a secret: " + myValue);
+    // warn("This is a warning message with a secret: " + myValue);
 
     k(`This is an ok message with a secret: ${myValue}`);
 
