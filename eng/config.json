@@ -168,6 +168,15 @@
       "denoConfig": "jsr/secrets/deno.json",
       "packageJson": "npm/secrets/package.json",
       "dntConfig": "jsr/secrets/dnt.json"
+    },
+    {
+      "name": "fmt",
+      "id": "@frostyeti/fmt",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/fmt",
+      "denoConfig": "jsr/fmt/deno.json",
+      "packageJson": "npm/fmt/package.json",
+      "dntConfig": "jsr/fmt/dnt.json"
     }
   ]
 }

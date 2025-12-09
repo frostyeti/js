@@ -1,0 +1,16 @@
+{
+    "name": "@frostyeti/fmt",
+    "version": "0.0.0-alpha.0",
+    "keywords": [
+        "fmt",
+        "format",
+        "printf",
+        "inspect"
+    ],
+    "description": "Sprintf, printf ported from @std/fmt",
+    "exports": {
+        ".": "./mod.ts",
+        "./inspect": "./inspect.ts",
+        "./printf": "./printf.ts"
+    }
+}

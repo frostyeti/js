@@ -99,6 +99,19 @@
         "typescript": "^5.9.3",
       },
     },
+    "fmt": {
+      "name": "@frostyeti/fmt",
+      "version": "0.0.0-alpha.0",
+      "dependencies": {
+        "@frostyeti/globals": "0.0.0-alpha.0",
+        "@frostyeti/process": "0.0.0-alpha.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+    },
     "fs": {
       "name": "@frostyeti/fs",
       "version": "0.0.0-alpha.0",
@@ -201,6 +214,8 @@
     "@frostyeti/env": ["@frostyeti/env@workspace:env"],
 
     "@frostyeti/exec": ["@frostyeti/exec@workspace:exec"],
+
+    "@frostyeti/fmt": ["@frostyeti/fmt@workspace:fmt"],
 
     "@frostyeti/fs": ["@frostyeti/fs@workspace:fs"],
 
