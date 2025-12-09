@@ -16,7 +16,7 @@ export interface SecretMasker {
      * @param value - The value to be added.
      * @returns The SecretMasker instance.
      */
-    add(value: string): SecretMasker;
+    add(value: string | RegExp): SecretMasker;
 
     /**
      * Adds a generator function to the SecretMasker.

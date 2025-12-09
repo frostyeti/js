@@ -20,6 +20,7 @@
         "@frostyeti/ansi": "*",
         "@frostyeti/env": "*",
         "@frostyeti/fs": "*",
-        "@frostyeti/secrets": "*"
+        "@frostyeti/secrets": "*",
+        "@frostyeti/chars": "*"
     }
 }

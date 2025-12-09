@@ -1,6 +1,13 @@
 import { test } from "node:test";
 import { ok } from "@frostyeti/assert";
-import { CI, CI_DRIVER } from "./driver.ts";
+import { CI, CI_DRIVER,  } from "./driver.ts";
+import { command, registerSecret } from "./log.ts";
+
+const myValue = "tes";
+
+registerSecret(myValue);
+
+command("my-command", [" test ", "example", "two", "my test value"]);
 
 test("ci-env:: CI_DRIVER and CI is set", () => {
     ok(CI_DRIVER !== undefined, "CI_DRIVER is undefined");

@@ -15,6 +15,7 @@ import {
   yellow,
 } from "@frostyeti/ansi";
 import { secretMasker } from "@frostyeti/secrets";
+import { isSpaceAt } from "@frostyeti/chars/is-space";
 /**
  * Writes a message to the output.
  * @param message The message to write.
@@ -261,6 +262,14 @@ export function success(message, ...args) {
   }
   writeLine(formatted);
 }
+function hasSpace(string) {
+  for (let i = 0; i < string.length; i++) {
+    if (isSpaceAt(string, i)) {
+      return true;
+    }
+  }
+  return false;
+}
 /**
  * Writes a command to the output.
  * @param command The executable.
@@ -284,9 +293,7 @@ export function command(file, args) {
               continue;
             }
             const next = secretMasker.mask(value) ?? "";
-            if (
-              next.includes(" ") || next.includes("\n") || next.includes("\t")
-            ) {
+            if (hasSpace(next)) {
               if (!value.includes("'")) {
                 write(" ");
                 write(magenta(`'${next}'`));
@@ -312,9 +319,7 @@ export function command(file, args) {
               continue;
             }
             const next = secretMasker.mask(value) ?? "";
-            if (
-              next.includes(" ") || next.includes("\n") || next.includes("\t")
-            ) {
+            if (hasSpace(next)) {
               if (!next.includes("'")) {
                 write(" ");
                 write(magenta(`'${next}'`));
@@ -338,9 +343,7 @@ export function command(file, args) {
               continue;
             }
             const next = secretMasker.mask(value) ?? "";
-            if (
-              next.includes(" ") || next.includes("\n") || next.includes("\t")
-            ) {
+            if (hasSpace(next)) {
               if (!next.includes("'")) {
                 write(` '${next}'`);
               } else {
