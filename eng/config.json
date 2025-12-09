@@ -177,6 +177,15 @@
       "denoConfig": "jsr/fmt/deno.json",
       "packageJson": "npm/fmt/package.json",
       "dntConfig": "jsr/fmt/dnt.json"
+    },
+    {
+      "name": "ci-env",
+      "id": "@frostyeti/ci-env",
+      "version": "0.0.0-alpha.0",
+      "dir": "jsr/ci-env",
+      "denoConfig": "jsr/ci-env/deno.json",
+      "packageJson": "npm/ci-env/package.json",
+      "dntConfig": "jsr/ci-env/dnt.json"
     }
   ]
 }

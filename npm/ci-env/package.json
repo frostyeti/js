@@ -1,0 +1,68 @@
+{
+  "name": "@frostyeti/ci-env",
+  "version": "0.0.0-alpha.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "The ci-env provides utilities for working within a CI pipeline.",
+  "keywords": [
+    "frostyeti",
+    "ci",
+    "env",
+    "azure",
+    "devops",
+    "github",
+    "variables"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./driver": {
+      "import": {
+        "default": "./esm/driver.js",
+        "types": "./types/driver.d.ts"
+      }
+    },
+    "./log": {
+      "import": {
+        "default": "./esm/log.js",
+        "types": "./types/log.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/exec": "0.0.0-alpha.0",
+    "@frostyeti/fmt": "0.0.0-alpha.0",
+    "@frostyeti/process": "0.0.0-alpha.0",
+    "@frostyeti/ansi": "0.0.0-alpha.0",
+    "@frostyeti/env": "0.0.0-alpha.0",
+    "@frostyeti/fs": "0.0.0-alpha.0",
+    "@frostyeti/secrets": "0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "0.0.0-alpha.0",
+    "typescript": "^5.9.3"
+  }
+}
