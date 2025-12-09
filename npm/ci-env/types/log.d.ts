@@ -78,6 +78,25 @@ export declare function warn(
  * @returns the writer.
  */
 export declare function warn(message: string, ...args: unknown[]): void;
+/**
+ * Writes an warning message to the output.
+ * @param e The error.
+ * @param message The message to write.
+ * @param args The message arguments.
+ * @returns the writer.
+ */
+export declare function info(
+  e: Error,
+  message?: string,
+  ...args: unknown[]
+): void;
+/**
+ * Writes a warning message to the output.
+ * @param message The message to write.
+ * @param args The message arguments.
+ * @returns the writer.
+ */
+export declare function info(message: string, ...args: unknown[]): void;
 export declare function setDebug(enabled: boolean): void;
 export declare function isDebugEnabled(): boolean;
 /**

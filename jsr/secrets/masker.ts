@@ -79,7 +79,6 @@ export class DefaultSecretMasker {
             });
         }
 
-
         return this;
     }
 

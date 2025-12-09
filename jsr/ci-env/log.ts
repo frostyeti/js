@@ -15,7 +15,7 @@ import {
     yellow,
 } from "@frostyeti/ansi";
 import { secretMasker } from "@frostyeti/secrets";
-import { isSpaceAt} from "@frostyeti/chars/is-space";
+import { isSpaceAt } from "@frostyeti/chars/is-space";
 
 /**
  * Writes a message to the output.
@@ -24,8 +24,7 @@ import { isSpaceAt} from "@frostyeti/chars/is-space";
  */
 export function write(message: string, ...args: unknown[]): void {
     const formatted = args.length ? sprintf(message, ...args) : message;
-
-    stdout.write(new TextEncoder().encode(formatted));
+    stdout.writeSync(new TextEncoder().encode(formatted));
 }
 
 /**
@@ -35,8 +34,7 @@ export function write(message: string, ...args: unknown[]): void {
  */
 export function writeLine(message: string, ...args: unknown[]): void {
     const formatted = args.length ? sprintf(message, ...args) : message;
-
-    stdout.write(new TextEncoder().encode(formatted + "\n"));
+    stdout.writeSync(new TextEncoder().encode(formatted + "\n"));
 }
 
 /**
@@ -47,7 +45,7 @@ export function writeLine(message: string, ...args: unknown[]): void {
 export function writeError(message: string, ...args: unknown[]): void {
     const formatted = args.length ? sprintf(message, ...args) : message;
 
-    stderr.write(new TextEncoder().encode(formatted));
+    stderr.writeSync(new TextEncoder().encode(formatted));
 }
 
 /**
@@ -57,8 +55,7 @@ export function writeError(message: string, ...args: unknown[]): void {
  */
 export function writeErrorLine(message: string, ...args: unknown[]): void {
     const formatted = args.length ? sprintf(message, ...args) : message;
-
-    stderr.write(new TextEncoder().encode(formatted + "\n"));
+    stderr.writeSync(new TextEncoder().encode(formatted + "\n"));
 }
 
 /**
@@ -179,24 +176,26 @@ export function error(): void {
     const { msg, stack } = handleArguments(arguments);
     switch (CI_DRIVER) {
         case "github":
-            writeErrorLine(`::error::${msg} ${stack}`);
+            writeLine(`::error::${msg} ${stack}`);
             break;
         case "azdo":
-            writeErrorLine(`##[error]${msg} ${stack}`);
+            writeLine(`##[error]${msg} ${stack}`);
             break;
         default:
             if (isAtLeast8Bit) {
-                write(rgb24("❱ [ERROR]: ", 0xff0000));
+                writeError(rgb24("❱ [ERROR]: ", 0xff0000));
             } else if (colorEnabled) {
-                write(red("❱ [ERROR]: "));
+                writeError(red("❱ [ERROR]: "));
             } else {
-                write("❱ [ERROR]: ");
+                writeError("❱ [ERROR]: ");
             }
 
-            writeLine(msg || "");
+            writeError(msg || "");
             if (stack) {
-                writeLine(stack);
+                writeError(stack);
             }
+
+            writeErrorLine("");
 
             break;
     }
@@ -222,28 +221,64 @@ export function warn(): void {
 
     switch (CI_DRIVER) {
         case "github":
-            writeErrorLine(`::warning::${msg} ${stack}`);
+            writeLine(`::warning::${msg} ${stack}`);
             return;
         case "azdo":
-            writeErrorLine(`##[warning]${msg} ${stack}`);
+            writeLine(`##[warning]${msg} ${stack}`);
             return;
         default:
             {
                 if (isAtLeast8Bit) {
-                    write(rgb24("❱ [WARN]:  ", 0xff8700));
+                    writeError(rgb24("❱ [WARN]:  ", 0xff8700));
                 } else if (colorEnabled) {
-                    write(yellow("❱ [WARN]:  "));
+                    writeError(yellow("❱ [WARN]:  "));
                 } else {
-                    write("❱ [WARN]:  ");
+                    writeError("❱ [WARN]:  ");
                 }
 
-                writeLine(msg || "");
+                writeError(msg || "");
                 if (stack) {
-                    writeLine(stack);
+                    writeError(stack);
                 }
+
+                writeErrorLine("");
             }
             break;
     }
+}
+
+/**
+ * Writes an warning message to the output.
+ * @param e The error.
+ * @param message The message to write.
+ * @param args The message arguments.
+ * @returns the writer.
+ */
+export function info(e: Error, message?: string, ...args: unknown[]): void;
+/**
+ * Writes a warning message to the output.
+ * @param message The message to write.
+ * @param args The message arguments.
+ * @returns the writer.
+ */
+export function info(message: string, ...args: unknown[]): void;
+export function info(): void {
+    const { msg, stack } = handleArguments(arguments);
+
+    if (isAtLeast8Bit) {
+        writeError(rgb24("❱ [INFO]:  ", 0x00ffff));
+    } else if (colorEnabled) {
+        writeError(cyan("❱ [INFO]:  "));
+    } else {
+        writeError("❱ [INFO]:  ");
+    }
+
+    writeError(msg || "");
+    if (stack) {
+        writeError(stack);
+    }
+
+    writeErrorLine("");
 }
 
 let debugEnabled = get("DEBUG") === "true" || get("DEBUG") === "1" ||
@@ -281,14 +316,14 @@ export function debug(message: string, ...args: unknown[]): void {
         default:
             {
                 if (isAtLeast8Bit) {
-                    write(green("❱ [DEBUG]: "));
+                    writeError(green("❱ [DEBUG]: "));
                 } else if (colorEnabled) {
-                    write(green("❱ [DEBUG]: "));
+                    writeError(green("❱ [DEBUG]: "));
                 } else {
-                    write("❱ [DEBUG]: ");
+                    writeError("❱ [DEBUG]: ");
                 }
 
-                writeLine(formatted);
+                writeErrorLine(formatted);
             }
             break;
     }

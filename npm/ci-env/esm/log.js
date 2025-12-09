@@ -23,7 +23,7 @@ import { isSpaceAt } from "@frostyeti/chars/is-space";
  */
 export function write(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
-  stdout.write(new TextEncoder().encode(formatted));
+  stdout.writeSync(new TextEncoder().encode(formatted));
 }
 /**
  * Writes a line to the output.
@@ -32,7 +32,7 @@ export function write(message, ...args) {
  */
 export function writeLine(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
-  stdout.write(new TextEncoder().encode(formatted + "\n"));
+  stdout.writeSync(new TextEncoder().encode(formatted + "\n"));
 }
 /**
  * Writes an error message to the error output.
@@ -41,7 +41,7 @@ export function writeLine(message, ...args) {
  */
 export function writeError(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
-  stderr.write(new TextEncoder().encode(formatted));
+  stderr.writeSync(new TextEncoder().encode(formatted));
 }
 /**
  * Writes an error line to the error output.
@@ -50,7 +50,7 @@ export function writeError(message, ...args) {
  */
 export function writeErrorLine(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
-  stderr.write(new TextEncoder().encode(formatted + "\n"));
+  stderr.writeSync(new TextEncoder().encode(formatted + "\n"));
 }
 /**
  * Writes a progress message to the output.
@@ -141,23 +141,24 @@ export function error() {
   const { msg, stack } = handleArguments(arguments);
   switch (CI_DRIVER) {
     case "github":
-      writeErrorLine(`::error::${msg} ${stack}`);
+      writeLine(`::error::${msg} ${stack}`);
       break;
     case "azdo":
-      writeErrorLine(`##[error]${msg} ${stack}`);
+      writeLine(`##[error]${msg} ${stack}`);
       break;
     default:
       if (isAtLeast8Bit) {
-        write(rgb24("❱ [ERROR]: ", 0xff0000));
+        writeError(rgb24("❱ [ERROR]: ", 0xff0000));
       } else if (colorEnabled) {
-        write(red("❱ [ERROR]: "));
+        writeError(red("❱ [ERROR]: "));
       } else {
-        write("❱ [ERROR]: ");
+        writeError("❱ [ERROR]: ");
       }
-      writeLine(msg || "");
+      writeError(msg || "");
       if (stack) {
-        writeLine(stack);
+        writeError(stack);
       }
+      writeErrorLine("");
       break;
   }
 }
@@ -165,27 +166,43 @@ export function warn() {
   const { msg, stack } = handleArguments(arguments);
   switch (CI_DRIVER) {
     case "github":
-      writeErrorLine(`::warning::${msg} ${stack}`);
+      writeLine(`::warning::${msg} ${stack}`);
       return;
     case "azdo":
-      writeErrorLine(`##[warning]${msg} ${stack}`);
+      writeLine(`##[warning]${msg} ${stack}`);
       return;
     default:
       {
         if (isAtLeast8Bit) {
-          write(rgb24("❱ [WARN]:  ", 0xff8700));
+          writeError(rgb24("❱ [WARN]:  ", 0xff8700));
         } else if (colorEnabled) {
-          write(yellow("❱ [WARN]:  "));
+          writeError(yellow("❱ [WARN]:  "));
         } else {
-          write("❱ [WARN]:  ");
+          writeError("❱ [WARN]:  ");
         }
-        writeLine(msg || "");
+        writeError(msg || "");
         if (stack) {
-          writeLine(stack);
+          writeError(stack);
         }
+        writeErrorLine("");
       }
       break;
   }
+}
+export function info() {
+  const { msg, stack } = handleArguments(arguments);
+  if (isAtLeast8Bit) {
+    writeError(rgb24("❱ [INFO]:  ", 0x00ffff));
+  } else if (colorEnabled) {
+    writeError(cyan("❱ [INFO]:  "));
+  } else {
+    writeError("❱ [INFO]:  ");
+  }
+  writeError(msg || "");
+  if (stack) {
+    writeError(stack);
+  }
+  writeErrorLine("");
 }
 let debugEnabled = get("DEBUG") === "true" || get("DEBUG") === "1" ||
   get("SYSTEM_DEBUG") === "true" || get("SYSTEM_DEBUG") === "1" ||
@@ -217,13 +234,13 @@ export function debug(message, ...args) {
     default:
       {
         if (isAtLeast8Bit) {
-          write(green("❱ [DEBUG]: "));
+          writeError(green("❱ [DEBUG]: "));
         } else if (colorEnabled) {
-          write(green("❱ [DEBUG]: "));
+          writeError(green("❱ [DEBUG]: "));
         } else {
-          write("❱ [DEBUG]: ");
+          writeError("❱ [DEBUG]: ");
         }
-        writeLine(formatted);
+        writeErrorLine(formatted);
       }
       break;
   }
