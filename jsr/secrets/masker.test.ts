@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { secretMasker } from "./masker.ts";
+import { DefaultSecretMasker, secretMasker } from "./masker.ts";
 import { equal } from "@frostyeti/assert";
 
 test("secrets::SecretMasker", () => {
@@ -12,7 +12,7 @@ test("secrets::SecretMasker", () => {
 
 test("secrets::SecretMasker with generator", () => {
     const masker = secretMasker;
-    masker.add("super secret");
+    masker.add(/super secret/gi);
     masker.addGenerator((secret: string) => {
         return secret.toUpperCase();
     });
@@ -22,9 +22,9 @@ test("secrets::SecretMasker with generator", () => {
 });
 
 test("secrets::SecretMasker with generator and multiple secrets", () => {
-    const masker = secretMasker;
-    masker.add("super secret");
-    masker.add("another secret");
+    const masker = new DefaultSecretMasker();
+    masker.add(/super secret/gi);
+    masker.add(/another secret/gi);
     masker.addGenerator((secret: string) => {
         return secret.toUpperCase();
     });
@@ -36,7 +36,7 @@ test("secrets::SecretMasker with generator and multiple secrets", () => {
 });
 
 test("secrets::Lots of text", () => {
-    const masker = secretMasker;
+    const masker = new DefaultSecretMasker();
     masker.add("super secret");
     masker.add("another secret");
     masker.addGenerator((secret: string) => {

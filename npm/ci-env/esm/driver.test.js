@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import { ok } from "@frostyeti/assert";
 import { CI, CI_DRIVER } from "./driver.js";
+import { command, registerSecret } from "./log.js";
+const myValue = "tes";
+registerSecret(myValue);
+command("my-command", [" test ", "example", "two", "my test value"]);
 test("ci-env:: CI_DRIVER and CI is set", () => {
   ok(CI_DRIVER !== undefined, "CI_DRIVER is undefined");
   ok(CI !== undefined, "CI is undefined");

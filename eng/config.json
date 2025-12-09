@@ -163,7 +163,7 @@
     {
       "name": "secrets",
       "id": "@frostyeti/secrets",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.1",
       "dir": "jsr/secrets",
       "denoConfig": "jsr/secrets/deno.json",
       "packageJson": "npm/secrets/package.json",
@@ -181,7 +181,7 @@
     {
       "name": "ci-env",
       "id": "@frostyeti/ci-env",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.1",
       "dir": "jsr/ci-env",
       "denoConfig": "jsr/ci-env/deno.json",
       "packageJson": "npm/ci-env/package.json",

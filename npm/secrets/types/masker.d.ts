@@ -13,7 +13,7 @@ export interface SecretMasker {
    * @param value - The value to be added.
    * @returns The SecretMasker instance.
    */
-  add(value: string): SecretMasker;
+  add(value: string | RegExp): SecretMasker;
   /**
    * Adds a generator function to the SecretMasker.
    * @param generator - The generator function that takes a secret and returns a masked value.
@@ -41,7 +41,7 @@ export declare class DefaultSecretMasker {
    * @param value - The secret value to add.
    * @returns The SecretMasker instance for method chaining.
    */
-  add(value: string): SecretMasker;
+  add(value: string | RegExp): SecretMasker;
   /**
    * Adds a generator function to the masker.
    * @param generator - The generator function that takes a secret value and returns a masked value.

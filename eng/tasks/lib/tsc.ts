@@ -120,11 +120,16 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
 
                 if (dntConfig.dependencies) {
                     for (const [key, _] of Object.entries(dntConfig.dependencies)) {
+                        if (dntConfig.dependencies[key] !== '*') {
+                            continue;
+                        }
+                        
                         const projectDep = globalProjects.find((p) =>
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.dependencies[key] = projectDep.version ?? baseVersion;
+                            const v = projectDep.version ?? baseVersion;
+                            dntConfig.dependencies[key] = `^${v}`;
                         }
                     }
                 }
@@ -136,11 +141,16 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
                 if (dntConfig.devDependencies) {
                     console.log("devDependencies", dntConfig.devDependencies);
                     for (const [key, _] of Object.entries(dntConfig.devDependencies)) {
+                        if (dntConfig.devDependencies[key] !== '*') {
+                            continue;
+                        }
+
                         const projectDep = globalProjects.find((p) =>
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.devDependencies[key] = projectDep.version ?? baseVersion;
+                            const v = projectDep.version ?? baseVersion;
+                            dntConfig.devDependencies[key] = `^${v}`;
                         }
                     }
                 }
@@ -151,22 +161,32 @@ export async function runTsc(projectNames?: string[]): Promise<void> {
 
                 if (dntConfig.peerDependencies) {
                     for (const [key, _] of Object.entries(dntConfig.peerDependencies)) {
+                        if (dntConfig.peerDependencies[key] !== '*') {
+                            continue;
+                        }
+                        
                         const projectDep = globalProjects.find((p) =>
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.peerDependencies[key] = projectDep.version ?? baseVersion;
+                            const v = projectDep.version ?? baseVersion;
+                            dntConfig.peerDependencies[key] = `^${v}`;
                         }
                     }
                 }
 
                 if (dntConfig.optionalDependencies) {
                     for (const [key, _] of Object.entries(dntConfig.optionalDependencies)) {
+                        if (dntConfig.optionalDependencies[key] !== '*') {
+                            continue;
+                        }
+
                         const projectDep = globalProjects.find((p) =>
                             p.name === key || p.id === key
                         );
                         if (projectDep) {
-                            dntConfig.optionalDependencies[key] = projectDep.version ?? baseVersion;
+                            const v = projectDep.version ?? baseVersion;
+                            dntConfig.optionalDependencies[key] = `^${v}`;
                         }
                     }
                 }
