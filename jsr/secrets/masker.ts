@@ -1,3 +1,5 @@
+import { isNullOrSpace } from "@frostyeti/strings";
+
 /**
  * The SecretMasker module provides an interface and a default implementation for masking sensitive information in strings.
  * It allows you to add secret values and generator functions that can be used to mask those secrets in any given string.
@@ -35,7 +37,7 @@ export interface SecretMasker {
  * Represents a secret masker that can be used to mask sensitive information in strings.
  */
 export class DefaultSecretMasker {
-    #secrets: string[];
+    #secrets: (string | RegExp)[];
     #generators: Array<(secret: string) => string>;
 
     /**
@@ -51,17 +53,32 @@ export class DefaultSecretMasker {
      * @param value - The secret value to add.
      * @returns The SecretMasker instance for method chaining.
      */
-    add(value: string): SecretMasker {
+    add(value: string | RegExp): SecretMasker {
+        if (value === null || value === undefined) {
+            return this;
+        }
+
+        if (typeof value === "string") {
+            if (isNullOrSpace(value)) {
+                return this;
+            }
+
+            value = value.trim();
+        }
+
         if (!this.#secrets.includes(value)) {
             this.#secrets.push(value);
         }
 
-        this.#generators.forEach((generator) => {
-            const next = generator(value);
-            if (!this.#secrets.includes(next)) {
-                this.#secrets.push(next);
-            }
-        });
+        if (typeof value === "string") {
+            this.#generators.forEach((generator) => {
+                const next = generator(value);
+                if (!this.#secrets.includes(next)) {
+                    this.#secrets.push(next);
+                }
+            });
+        }
+
 
         return this;
     }
@@ -89,9 +106,11 @@ export class DefaultSecretMasker {
 
         let str: string = value;
         this.#secrets.forEach((next) => {
-            const regex = new RegExp(`${next}`, "gi");
+            if (next === "") {
+                return;
+            }
 
-            str = str.replace(regex, "*******");
+            str = str.replaceAll(next, "*******");
         });
 
         return str;
