@@ -298,3 +298,42 @@ export declare function bgRgb24(str: string, color: number | Rgb): string;
  * @param string to remove ANSI escape codes from
  */
 export declare function stripAnsiCode(string: string): string;
+/**
+ * Defines a color function that applies the appropriate color based on the current ANSI settings.
+ * @param trueColor The true color value (24-bit) as a number or Rgb object.
+ * @param color256 The 256-color palette index.
+ * @param color The fallback color function for standard colors.
+ * @returns A function that applies the appropriate color to a given string.
+ *
+ * @example
+ * ```ts
+ * import { defineColor, red } from "@frostyeti/ansi/styles";
+ *
+ * const redColor = defineColor(0xFF0000, 9, red);
+ * console.log(redColor("This text will be colored based on ANSI settings."));
+ * ```
+ */
+export declare function defineColor(
+  trueColor: number | Rgb,
+  color256: number,
+  color: (str: string) => string,
+): (str: string) => string;
+/**
+ * Defines a background color function that applies the appropriate background color based on the current ANSI settings.
+ * @param trueColor The true color value (24-bit) as a number or Rgb object.
+ * @param color256 The 256-color palette index.
+ * @param color The fallback background color function for standard colors.
+ * @returns A function that applies the appropriate background color to a given string.
+ * @example
+ * ```ts
+ * import { defineBgColor, bgRed } from "@frostyeti/ansi/styles";
+ *
+ * const redBgColor = defineBgColor(0xFF0000, 9, bgRed);
+ * console.log(redBgColor("This text will have a background color based on ANSI settings."));
+ * ```
+ */
+export declare function defineBgColor(
+  trueColor: number | Rgb,
+  color256: number,
+  color: (str: string) => string,
+): (str: string) => string;

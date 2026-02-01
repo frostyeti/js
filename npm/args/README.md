@@ -2,7 +2,7 @@
 
 ## Overview
 
-Split, join, splat commandline arguments/args for the current runtime.
+Split, join, splat command line arguments.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 
@@ -22,7 +22,7 @@ A list of other modules can be found at
 ```typescript
 import { join, splat, split } from "@frostyeti/args";
 
-console.log(split("echo hello world")); // ["echo", "hello", "world"]
+console.log(split("echo hello world --test")); // ["echo", "hello", "world", "--test"]
 
 console.log(join(["echo", "hello", "world"])); // "echo hello world"
 

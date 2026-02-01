@@ -1,6 +1,33 @@
 /**
- * The `split-arguments` module provides a function to split a string into an array of arguments.
- * It handles quoted arguments, space-separated arguments, and multiline strings.
+ * The `split` module provides a function to split a command line string
+ * into an array of arguments. Handles quoted strings, escaped characters,
+ * and multiline continuation for bash/PowerShell scripts.
+ *
+ * @example Basic splitting
+ * ```ts
+ * import { split } from "@frostyeti/args/split";
+ *
+ * split("echo hello world");  // ["echo", "hello", "world"]
+ * split("git commit -m 'Initial commit'");  // ["git", "commit", "-m", "Initial commit"]
+ * ```
+ *
+ * @example Quoted arguments with spaces
+ * ```ts
+ * import { split } from "@frostyeti/args/split";
+ *
+ * split('ls -la "my documents"');  // ["ls", "-la", "my documents"]
+ * split("grep 'hello world' file.txt");  // ["grep", "hello world", "file.txt"]
+ * ```
+ *
+ * @example Multiline continuation
+ * ```ts
+ * import { split } from "@frostyeti/args/split";
+ *
+ * const cmd = `docker run \\
+ *   --name myapp \\
+ *   -p 8080:80`;
+ * split(cmd);  // ["docker", "run", "--name", "myapp", "-p", "8080:80"]
+ * ```
  *
  * @module
  */
@@ -13,28 +40,48 @@ import {
   CHAR_SINGLE_QUOTE,
   CHAR_SPACE,
 } from "@frostyeti/chars/constants";
+import { toCharArray } from "@frostyeti/slices/utils";
 /**
- * Split a string into an array of arguments. The function will handle
- * arguments that are quoted, arguments that are separated by spaces, and multiline
- * strings that include a backslash (\\) or backtick (`) at the end of the line for cases
- * where the string uses bash or powershell multi line arguments.
- * @param value
- * @returns a `string[]` of arguments.
- * @example
+ * Splits a command line string into an array of arguments.
+ *
+ * Handles:
+ * - Space-separated arguments
+ * - Single and double quoted strings (preserving internal spaces)
+ * - Escaped quotes within strings
+ * - Multiline continuation with backslash (\) or backtick (`)
+ * - Bash and PowerShell multiline syntax
+ *
+ * @param value - The command line string to split.
+ * @returns An array of argument strings.
+ *
+ * @example Basic usage
  * ```ts
- * const args0 = splitArguments("hello world");
- * console.log(args0); // ["hello", "world"]
+ * split("hello world");  // ["hello", "world"]
+ * split("git clone https://example.com");  // ["git", "clone", "https://example.com"]
+ * ```
  *
- * const args1 = splitArguments("hello 'dog world'");
- * console.log(args1); // ["hello", "dog world"]
+ * @example Double quoted arguments
+ * ```ts
+ * split('echo "hello world"');  // ["echo", "hello world"]
+ * split('ls -la "my folder"');  // ["ls", "-la", "my folder"]
+ * ```
  *
- * const args2 = splitArguments("hello \"cat world\"");
- * console.log(args2); // ["hello", "cat world"]
+ * @example Single quoted arguments
+ * ```ts
+ * split("echo 'hello world'");  // ["echo", "hello world"]
+ * split("grep 'pattern with spaces' file.txt");  // ["grep", "pattern with spaces", "file.txt"]
+ * ```
  *
- * const myArgs = `--hello \
- * "world"`
- * const args3 = splitArguments(myArgs);
- * console.log(args3); // ["--hello", "world"]
+ * @example Escaped quotes
+ * ```ts
+ * split('echo \\"quoted\\"');  // ["echo", '\\"quoted\\"']
+ * ```
+ *
+ * @example Multiline with backslash continuation
+ * ```ts
+ * const cmd = `--hello \\
+ * "world"`;
+ * split(cmd);  // ["--hello", "world"]
  * ```
  */
 export function split(value) {
@@ -47,15 +94,13 @@ export function split(value) {
   let quote = Quote.None;
   const tokens = [];
   const sb = [];
-  for (let i = 0; i < value.length; i++) {
-    const c = value.codePointAt(i);
-    if (c === undefined) {
-      break;
-    }
+  const chars = toCharArray(value);
+  for (let i = 0; i < chars.length; i++) {
+    const c = chars[i];
     if (quote > Quote.None) {
       if (
         (c === CHAR_SINGLE_QUOTE || c === CHAR_DOUBLE_QUOTE) &&
-        value.codePointAt(i - 1) === CHAR_BACKWARD_SLASH
+        chars[i - 1] === CHAR_BACKWARD_SLASH
       ) {
         const copy = sb.slice(0, sb.length - 1);
         sb.length = 0; // clear the string builder
@@ -82,7 +127,7 @@ export function split(value) {
       continue;
     }
     if (c === CHAR_SPACE) {
-      const remaining = (value.length - 1) - i;
+      const remaining = (chars.length - 1) - i;
       if (remaining > 2) {
         // if the line ends with characters that normally allow for scripts with multiline
         // statements, consume token and skip characters.
@@ -90,8 +135,8 @@ export function split(value) {
         // ' \\\r\n'
         // ' `\n'
         // ' `\r\n'
-        const j = value.codePointAt(i + 1);
-        const k = value.codePointAt(i + 2);
+        const j = chars[i + 1];
+        const k = chars[i + 2];
         if (j === CHAR_SINGLE_QUOTE || j === CHAR_GRAVE_ACCENT) {
           if (k === CHAR_LINE_FEED) {
             i += 2;
@@ -102,7 +147,7 @@ export function split(value) {
             continue;
           }
           if (remaining > 3) {
-            const l = value.codePointAt(i + 3);
+            const l = chars[i + 3];
             if (k === CHAR_CARRIAGE_RETURN && l === CHAR_LINE_FEED) {
               i += 3;
               if (sb.length > 0) {
@@ -121,7 +166,7 @@ export function split(value) {
       continue;
     }
     if (c === CHAR_BACKWARD_SLASH) {
-      const next = value.codePointAt(i + 1);
+      const next = chars[i + 1];
       if (
         next === CHAR_SPACE || next === CHAR_SINGLE_QUOTE ||
         next === CHAR_DOUBLE_QUOTE
@@ -137,7 +182,7 @@ export function split(value) {
     }
     if (sb.length === 0) {
       if (c === CHAR_SINGLE_QUOTE || c === CHAR_DOUBLE_QUOTE) {
-        if (i > 0 && value.codePointAt(i - 1) === CHAR_BACKWARD_SLASH) {
+        if (i > 0 && chars[i - 1] === CHAR_BACKWARD_SLASH) {
           sb.push(c);
           continue;
         }

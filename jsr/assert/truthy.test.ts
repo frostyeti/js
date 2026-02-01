@@ -1,47 +1,134 @@
-import { test } from "node:test";
-import { truthy } from "./truthy.ts";
+import { test, describe } from "node:test";
+import { truthy, ok } from "./truthy.ts";
+import { equal } from "./equal.ts";
+import { AssertionError } from "./assertion-error.ts";
 
-test("assert::truthy", () => {
-    let thrown = false;
-    try {
-        truthy(false, "true is false");
-    } catch (e) {
-        thrown = true;
-        if (!(e instanceof Error)) {
-            throw new Error("Expected an error to be thrown");
-        }
+describe("assert::truthy", () => {
+    test("passes for true", () => {
+        truthy(true);
+    });
 
-        if (e.message !== "true is false") {
-            throw new Error("Expected the error message to be 'true is false'");
-        }
-    }
+    test("passes for non-zero numbers", () => {
+        truthy(1);
+        truthy(-1);
+        truthy(100);
+        truthy(0.5);
+        truthy(Infinity);
+        truthy(-Infinity);
+    });
 
-    if (!thrown) {
-        throw new Error("assert(false) should throw an error");
-    }
+    test("passes for non-empty strings", () => {
+        truthy("hello");
+        truthy("0");
+        truthy("false");
+        truthy(" ");
+    });
 
-    truthy(true, "true is true");
+    test("passes for objects", () => {
+        truthy({});
+        truthy({ a: 1 });
+        truthy([]);
+        truthy([1, 2, 3]);
+    });
 
-    truthy(true);
-    truthy(1);
-    truthy("1");
+    test("passes for functions", () => {
+        truthy(() => {});
+        truthy(function() {});
+    });
 
-    function throws(fn: () => void, msg: string) {
+    test("passes for symbols", () => {
+        truthy(Symbol("test"));
+        truthy(Symbol.for("test"));
+    });
+
+    test("throws for false", () => {
         let threw = false;
         try {
-            fn();
+            truthy(false);
+        } catch (e) {
+            threw = true;
+            equal(e instanceof AssertionError, true);
+        }
+        equal(threw, true);
+    });
+
+    test("throws for zero", () => {
+        let threw = false;
+        try {
+            truthy(0);
+        } catch (e) {
+            threw = true;
+        }
+        equal(threw, true);
+    });
+
+    test("throws for empty string", () => {
+        let threw = false;
+        try {
+            truthy("");
+        } catch (e) {
+            threw = true;
+        }
+        equal(threw, true);
+    });
+
+    test("throws for null", () => {
+        let threw = false;
+        try {
+            truthy(null);
+        } catch (e) {
+            threw = true;
+        }
+        equal(threw, true);
+    });
+
+    test("throws for undefined", () => {
+        let threw = false;
+        try {
+            truthy(undefined);
+        } catch (e) {
+            threw = true;
+        }
+        equal(threw, true);
+    });
+
+    test("throws for NaN", () => {
+        let threw = false;
+        try {
+            truthy(NaN);
+        } catch (e) {
+            threw = true;
+        }
+        equal(threw, true);
+    });
+
+    test("throws with custom message", () => {
+        let message = "";
+        try {
+            truthy(false, "custom error message");
+        } catch (e) {
+            message = (e as Error).message;
+        }
+        equal(message, "custom error message");
+    });
+});
+
+describe("assert::ok", () => {
+    test("ok is an alias for truthy", () => {
+        ok(true);
+        ok(1);
+        ok("hello");
+        ok({});
+    });
+
+    test("ok throws for falsy values", () => {
+        let threw = false;
+        try {
+            ok(false);
         } catch {
             threw = true;
         }
-
-        if (!threw) {
-            throw new Error(msg ?? "Expected function to throw");
-        }
-    }
-
-    throws(() => truthy(false), "Expected value to be truthy");
-    throws(() => truthy(0), "Expected value to be truthy");
-    throws(() => truthy(""), "Expected value to be truthy");
-    throws(() => truthy(null), "Expected value to be truthy");
-    throws(() => truthy(undefined), "Expected value to be truthy");
+        equal(threw, true);
+    });
 });
+

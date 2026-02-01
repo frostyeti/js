@@ -6,7 +6,7 @@
 /**
  * ANSI color mode enumeration.
  */
-export type AnsiMode = -1 | 0 | 1 | 2 | 4 | 8;
+export type AnsiMode = -1 | 0 | 3 | 4 | 8 | 24;
 /**
  * Contains ANSI color mode constants and utility functions for mode conversion.
  * @enum {number}
@@ -46,6 +46,7 @@ export declare const AnsiModes: {
    * 24-bit true color mode (16.7M colors).
    */
   TwentyFourBit: AnsiMode;
+  equals: (a: AnsiMode, b: AnsiMode | number | string) => boolean;
   /**
    * The ANSI mode names.
    * @returns {string[]} Array of mode names
@@ -69,6 +70,29 @@ export declare const AnsiModes: {
    */
   toString: (value: number) => string;
 };
+/**
+ * Compares two ANSI modes for equality.
+ * @param a The first ANSI mode.
+ * @param b The second ANSI mode, number, or string representation.
+ * @returns True if the modes are equal, false otherwise.
+ *
+ * @example
+ * ```typescript
+ * import { AnsiModes, equals } from '@frostyeti/ansi/enums';
+ *
+ * const mode1 = AnsiModes.FourBit;
+ * const mode2 = 4;
+ * const mode3 = "4bit";
+ *
+ * console.log(equals(mode1, mode2)); // true
+ * console.log(equals(mode1, mode3)); // true
+ * console.log(equals(mode2, mode3)); // true
+ * ```
+ */
+export declare function equals(
+  a: AnsiMode,
+  b: AnsiMode | number | string,
+): boolean;
 export type AnsiLogLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | number;
 /**
  * Enumeration of ANSI log levels with associated utility functions.

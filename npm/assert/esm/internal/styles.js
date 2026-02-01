@@ -12,7 +12,9 @@ function code(open, close) {
   };
 }
 function run(str, code) {
-  return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+  return enabled
+    ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}`
+    : str;
 }
 /**
  * Sets the style of text to be printed to bold.

@@ -66,6 +66,11 @@ const slice = new slices.Slice([0, 3, 4], 1);
 console.log(slice.at(0)); // 3
 console.log(slice.length); // 2
 
+const slice2 = slices.slice([0, 1, 2])
+const slice3 = slice2.slice(1)
+console.log(slice2).at(0); // 0
+console.log(slice3.at(0)); // 1
+
 ```
 
 ## Classes
@@ -81,6 +86,8 @@ console.log(slice.length); // 2
 
 - `camelize` - converts a word to camel case.
 - `capitalize` - capitalizes a word.
+- `charSlice` - creates a slice of characters from a string or Uint32Array.
+- `readonlyCharSlice` - creates a readonly slice of characters from a string or Uint32Array. 
 - `dasherize` - converts a word to hyphen/dash case.
 - `endsWith` - determines if a string or char array ends with characters.
 - `endsWithFold` - determines if a string or char array ends with characters using case insensitivity.
@@ -92,6 +99,8 @@ console.log(slice.length); // 2
 - `lastIndex` - determines the last index of a character or char array.
 - `ordinalize` - converts word/number to the ordinal case.
 - `pascalize` - converts a word to pascal case.
+- `slice` - creates a slice from an array
+- `readonlySlice` - creates a readonly slice from an array
 - `startsWith` - determines if a string or char array starts with another char array.
 - `startsWithFold` - determines if a string or char array starts with another char array using case insensitivity.
 - `titleize` - converts characters into title case.

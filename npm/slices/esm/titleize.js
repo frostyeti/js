@@ -1,5 +1,9 @@
 /**
- * titleize function that converts a string to title case.
+ * Provides a function to convert strings to title case.
+ *
+ * Title case capitalizes the first letter of each word, except for common
+ * articles, conjunctions, and prepositions (like "the", "and", "of").
+ *
  * @module
  */
 import { CHAR_SPACE, CHAR_UNDERSCORE } from "@frostyeti/chars/constants";
@@ -15,7 +19,19 @@ import { equalFold } from "./equal.js";
 import { Tokens } from "./tokens.js";
 import { toCharSliceLike } from "./utils.js";
 /**
- * @description This is a list of words that should not be capitalized for title case.
+ * A set of words that should not be capitalized in title case.
+ *
+ * Includes common articles ("a", "an", "the"), conjunctions ("and", "or", "but"),
+ * and prepositions ("of", "in", "on", "to", etc.).
+ *
+ * @example
+ * ```typescript
+ * import { NoCapitalizeWords } from '@frostyeti/slices/titleize';
+ *
+ * // Check if a word should not be capitalized
+ * NoCapitalizeWords.has("the");  // true
+ * NoCapitalizeWords.has("Hello"); // false
+ * ```
  */
 export const NoCapitalizeWords = new Tokens();
 [
@@ -43,16 +59,42 @@ export const NoCapitalizeWords = new Tokens();
   "for",
 ].forEach((o) => NoCapitalizeWords.addString(o));
 /**
- * Converts a an array of characters to title case.
+ * Converts a string or character buffer to title case.
  *
- * This function converts the first character of a string to uppercase and the rest to lowercase.
+ * Title case capitalizes the first letter of each word, with the exception
+ * of common articles, conjunctions, and prepositions (defined in {@link NoCapitalizeWords}).
  *
- * To avoid allocations, the function returns a Uint32Array that represents
- * the title case string.  To convert the Uint32Array to a string, use
- * see {@linkcode String.fromCharCode} or {@linkcode toCharSliceLike}.
+ * The function handles:
+ * - camelCase and PascalCase word boundaries
+ * - Underscore-separated words (snake_case)
+ * - Space-separated words
+ * - Unicode characters including accented letters
  *
- * @param s The string to convert to title case.
- * @returns A new `Uint32Array` with the title case string.
+ * To avoid allocations, the function returns a `Uint32Array` of code points.
+ * Use `String.fromCodePoint(...result)` to convert to a string.
+ *
+ * @param s - The string or character buffer to convert to title case.
+ * @returns A new `Uint32Array` containing the title case code points.
+ *
+ * @example
+ * ```typescript
+ * import { titleize } from '@frostyeti/slices/titleize';
+ *
+ * // Basic usage
+ * String.fromCodePoint(...titleize("hello world"));  // "Hello World"
+ *
+ * // camelCase to title case
+ * String.fromCodePoint(...titleize("helloWorld"));   // "Hello World"
+ *
+ * // snake_case to title case
+ * String.fromCodePoint(...titleize("bob_the_king")); // "Bob the King"
+ *
+ * // PascalCase with articles
+ * String.fromCodePoint(...titleize("BobTheKing"));   // "Bob the King"
+ *
+ * // Unicode support
+ * String.fromCodePoint(...titleize("hello wörld"));  // "Hello Wörld"
+ * ```
  */
 export function titleize(s) {
   if (typeof s === "string") {

@@ -1,15 +1,53 @@
 /**
- * trim functions that remove whitespace or characters from the start,
- * end, or both ends of a character buffer.
+ * Functions for trimming whitespace or characters from character buffers.
+ *
+ * This module provides functions to remove leading, trailing, or both
+ * leading and trailing characters from a `Uint32Array` of Unicode code points
+ * or a string. All functions return a new `Uint32Array` with the trimmed content.
+ *
+ * The functions come in three variants:
+ * - **Space variants** (`trimSpace`, `trimStartSpace`, `trimEndSpace`): Remove Unicode whitespace
+ * - **Char variants** (`trimChar`, `trimStartChar`, `trimEndChar`): Remove a single code point
+ * - **Slice variants** (`trimSlice`, `trimStartSlice`, `trimEndSlice`): Remove any of a set of code points
+ *
+ * The main `trim`, `trimStart`, and `trimEnd` functions dispatch to the appropriate
+ * variant based on the parameters provided.
+ *
+ * @example
+ * ```typescript
+ * import { trim, trimStart, trimEnd } from '@frostyeti/slices/trim';
+ *
+ * // Remove whitespace from both ends
+ * String.fromCodePoint(...trim("  hello world  ")); // "hello world"
+ *
+ * // Remove specific character from start
+ * String.fromCodePoint(...trimStart("...hello", ".")); // "hello"
+ *
+ * // Remove set of characters from end
+ * String.fromCodePoint(...trimEnd("hello!?!", "!?")); // "hello"
+ * ```
  *
  * @module
  */
 import { isSpace } from "@frostyeti/chars/is-space";
 import { toCharSliceLike } from "./utils.js";
 /**
- * Trims the trailing whitespace from the end of a character buffer.
- * @param buffer The string to trim.
- * @returns The buffer with the trailing whitespace removed.
+ * Trims trailing Unicode whitespace from the end of a character buffer.
+ *
+ * Removes all trailing characters that are classified as whitespace by
+ * the `isSpace` function (space, tab, newline, etc.).
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @returns A new `Uint32Array` with trailing whitespace removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimEndSpace } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimEndSpace("hello  ")); // "hello"
+ * String.fromCodePoint(...trimEndSpace("hello\t\n")); // "hello"
+ * String.fromCodePoint(...trimEndSpace("hello")); // "hello" (no change)
+ * ```
  */
 export function trimEndSpace(buffer) {
   const s = toCharSliceLike(buffer);
@@ -33,10 +71,22 @@ export function trimEndSpace(buffer) {
   return buffer2;
 }
 /**
- * Trims the trailing character from the end of a character buffer.
- * @param buffer The character buffer to trim.
- * @param suffix The character to remove.
- * @returns The buffer with the trailing whitespace removed.
+ * Trims occurrences of a specific character from the end of a character buffer.
+ *
+ * Removes all consecutive occurrences of the specified code point from
+ * the end of the buffer.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param suffix - The Unicode code point to remove.
+ * @returns A new `Uint32Array` with the trailing characters removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimEndChar } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimEndChar("hello...", 46)); // "hello" (46 = '.')
+ * String.fromCodePoint(...trimEndChar("hello", 46)); // "hello" (no change)
+ * ```
  */
 export function trimEndChar(buffer, suffix) {
   const s = toCharSliceLike(buffer);
@@ -61,10 +111,23 @@ export function trimEndChar(buffer, suffix) {
   return buffer2;
 }
 /**
- * Trims the trailing characters from the end of a character buffer.
- * @param buffer The character buffer to trim.
- * @param suffix The characters to remove.
- * @returns The buffer with the trailing characters removed.
+ * Trims any of a set of characters from the end of a character buffer.
+ *
+ * Removes all consecutive trailing characters that appear in the suffix set.
+ * Characters are removed individually, not as a sequence.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param suffix - The set of characters to remove (as string or `Uint32Array`).
+ * @returns A new `Uint32Array` with the trailing characters removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimEndSlice } from '@frostyeti/slices/trim';
+ *
+ * // Remove any combination of '!' and '?' from end
+ * String.fromCodePoint(...trimEndSlice("hello!?!", "!?")); // "hello"
+ * String.fromCodePoint(...trimEndSlice("hello???", "!?")); // "hello"
+ * ```
  */
 export function trimEndSlice(buffer, suffix) {
   const s = toCharSliceLike(buffer);
@@ -96,11 +159,30 @@ export function trimEndSlice(buffer, suffix) {
   return buffer2;
 }
 /**
- * Trims the trailing characters from the end of a character buffer.
- * @param buffer The character buffer to trim.
- * @param suffix The characters to remove. When this is undefined,
- * the trailing whitespace is removed.
- * @returns The buffer with the trailing characters removed.
+ * Trims trailing characters from the end of a character buffer.
+ *
+ * This is a convenience function that dispatches to:
+ * - `trimEndSpace` when no suffix is provided
+ * - `trimEndChar` when suffix is a single character
+ * - `trimEndSlice` when suffix contains multiple characters
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param suffix - The character(s) to remove. If undefined, removes whitespace.
+ * @returns A new `Uint32Array` with the trailing characters removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimEnd } from '@frostyeti/slices/trim';
+ *
+ * // Remove whitespace (default)
+ * String.fromCodePoint(...trimEnd("hello  ")); // "hello"
+ *
+ * // Remove single character
+ * String.fromCodePoint(...trimEnd("hello...", ".")); // "hello"
+ *
+ * // Remove set of characters
+ * String.fromCodePoint(...trimEnd("hello!?!", "!?")); // "hello"
+ * ```
  */
 export function trimEnd(buffer, suffix) {
   if (suffix === undefined) {
@@ -114,9 +196,22 @@ export function trimEnd(buffer, suffix) {
   return trimEndSlice(buffer, suffix);
 }
 /**
- * Trims the leading whitespace from the start of a character buffer.
- * @param buffer The character buffer to trim.
- * @returns The buffer with the leading whitespace removed.
+ * Trims leading Unicode whitespace from the start of a character buffer.
+ *
+ * Removes all leading characters that are classified as whitespace by
+ * the `isSpace` function (space, tab, newline, etc.).
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @returns A new `Uint32Array` with leading whitespace removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimStartSpace } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimStartSpace("  hello")); // "hello"
+ * String.fromCodePoint(...trimStartSpace("\t\nhello")); // "hello"
+ * String.fromCodePoint(...trimStartSpace("hello")); // "hello" (no change)
+ * ```
  */
 export function trimStartSpace(buffer) {
   const s = toCharSliceLike(buffer);
@@ -142,10 +237,23 @@ export function trimStartSpace(buffer) {
   return buffer2;
 }
 /**
- * Trims the leading character from the start of a character buffer.
- * @param buffer The character buffer to trim.
- * @param prefix The character to remove.
- * @returns The buffer with the leading character removed.
+ * Trims occurrences of a specific character from the start of a character buffer.
+ *
+ * Removes all consecutive occurrences of the specified code point from
+ * the start of the buffer.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param prefix - The Unicode code point to remove.
+ * @returns A new `Uint32Array` with the leading characters removed.
+ * @throws {RangeError} If the prefix is not a valid Unicode code point.
+ *
+ * @example
+ * ```typescript
+ * import { trimStartChar } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimStartChar("...hello", 46)); // "hello" (46 = '.')
+ * String.fromCodePoint(...trimStartChar("hello", 46)); // "hello" (no change)
+ * ```
  */
 export function trimStartChar(buffer, prefix) {
   if (!Number.isInteger(prefix) || prefix < 0 || prefix > 0x10FFFF) {
@@ -175,10 +283,23 @@ export function trimStartChar(buffer, prefix) {
   return buffer2;
 }
 /**
- * Trims the leading characters from the start of a character buffer.
- * @param buffer The character buffer to trim.
- * @param prefix The characters to remove.
- * @returns The buffer with the leading characters removed.
+ * Trims any of a set of characters from the start of a character buffer.
+ *
+ * Removes all consecutive leading characters that appear in the prefix set.
+ * Characters are removed individually, not as a sequence.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param prefix - The set of characters to remove (as string or `Uint32Array`).
+ * @returns A new `Uint32Array` with the leading characters removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimStartSlice } from '@frostyeti/slices/trim';
+ *
+ * // Remove any combination of '!' and '?' from start
+ * String.fromCodePoint(...trimStartSlice("!?!hello", "!?")); // "hello"
+ * String.fromCodePoint(...trimStartSlice("???hello", "!?")); // "hello"
+ * ```
  */
 export function trimStartSlice(buffer, prefix) {
   const s = toCharSliceLike(buffer);
@@ -212,11 +333,30 @@ export function trimStartSlice(buffer, prefix) {
   return buffer2;
 }
 /**
- * Trims the leading characters from the start of a character buffer.
- * @param buffer The character buffer to trim.
- * @param prefix  The characters to remove. When this is undefined,
- * the leading whitespace is removed.
- * @returns The buffer with the leading characters removed.
+ * Trims leading characters from the start of a character buffer.
+ *
+ * This is a convenience function that dispatches to:
+ * - `trimStartSpace` when no prefix is provided
+ * - `trimStartChar` when prefix is a single character
+ * - `trimStartSlice` when prefix contains multiple characters
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param prefix - The character(s) to remove. If undefined, removes whitespace.
+ * @returns A new `Uint32Array` with the leading characters removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimStart } from '@frostyeti/slices/trim';
+ *
+ * // Remove whitespace (default)
+ * String.fromCodePoint(...trimStart("  hello")); // "hello"
+ *
+ * // Remove single character
+ * String.fromCodePoint(...trimStart("...hello", ".")); // "hello"
+ *
+ * // Remove set of characters
+ * String.fromCodePoint(...trimStart("!?!hello", "!?")); // "hello"
+ * ```
  */
 export function trimStart(buffer, prefix) {
   if (prefix === undefined) {
@@ -225,14 +365,27 @@ export function trimStart(buffer, prefix) {
   if (prefix.length === 1) {
     const t = toCharSliceLike(prefix);
     const rune = t.at(0) ?? -1;
-    trimStartChar(buffer, rune);
+    return trimStartChar(buffer, rune);
   }
   return trimStartSlice(buffer, prefix);
 }
 /**
- * Trims the leading and trailing whitespace from a character buffer.
- * @param buffer The character buffer to trim.
- * @returns The buffer with the leading and trailing whitespace removed.
+ * Trims leading and trailing Unicode whitespace from a character buffer.
+ *
+ * Removes all leading and trailing characters that are classified as whitespace
+ * by the `isSpace` function (space, tab, newline, etc.).
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @returns A new `Uint32Array` with leading and trailing whitespace removed.
+ *
+ * @example
+ * ```typescript
+ * import { trimSpace } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimSpace("  hello  ")); // "hello"
+ * String.fromCodePoint(...trimSpace("\t\nhello\n\t")); // "hello"
+ * String.fromCodePoint(...trimSpace("hello")); // "hello" (no change)
+ * ```
  */
 export function trimSpace(buffer) {
   const s = toCharSliceLike(buffer);
@@ -268,10 +421,23 @@ export function trimSpace(buffer) {
   return buffer2;
 }
 /**
- * Trims the leading and trailing character from a character buffer.
- * @param buffer The character buffer to trim.
- * @param prefix The character to remove.
- * @returns The buffer with the leading character removed.
+ * Trims occurrences of a specific character from both ends of a character buffer.
+ *
+ * Removes all consecutive occurrences of the specified code point from
+ * both the start and end of the buffer.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param prefix - The Unicode code point to remove.
+ * @returns A new `Uint32Array` with the characters removed from both ends.
+ * @throws {RangeError} If the prefix is not a valid Unicode code point.
+ *
+ * @example
+ * ```typescript
+ * import { trimChar } from '@frostyeti/slices/trim';
+ *
+ * String.fromCodePoint(...trimChar("...hello...", 46)); // "hello" (46 = '.')
+ * String.fromCodePoint(...trimChar("hello", 46)); // "hello" (no change)
+ * ```
  */
 export function trimChar(buffer, prefix) {
   if (!Number.isInteger(prefix) || prefix < 0 || prefix > 0x10FFFF) {
@@ -310,10 +476,24 @@ export function trimChar(buffer, prefix) {
   return buffer2;
 }
 /**
- * The leading and trailing characters from a character buffer.
- * @param buffer The character buffer to trim.
- * @param chars The characters to remove.
- * @returns The buffer with the leading and trailing characters removed.
+ * Trims any of a set of characters from both ends of a character buffer.
+ *
+ * Removes all consecutive characters that appear in the chars set from
+ * both the start and end of the buffer. Characters are removed individually,
+ * not as a sequence.
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param chars - The set of characters to remove (as string or `Uint32Array`).
+ * @returns A new `Uint32Array` with the characters removed from both ends.
+ *
+ * @example
+ * ```typescript
+ * import { trimSlice } from '@frostyeti/slices/trim';
+ *
+ * // Remove any combination of '!' and '?' from both ends
+ * String.fromCodePoint(...trimSlice("!?hello!?", "!?")); // "hello"
+ * String.fromCodePoint(...trimSlice("???hello!!!", "!?")); // "hello"
+ * ```
  */
 export function trimSlice(buffer, chars) {
   const s = toCharSliceLike(buffer);
@@ -362,11 +542,30 @@ export function trimSlice(buffer, chars) {
   return buffer2;
 }
 /**
- * Trims the leading and trailing characters from a character buffer.
- * @param buffer The character buffer to trim.
- * @param chars The characters to remove. When this is undefined,
- * the leading and trailing whitespace is removed.
- * @returns The buffer with the leading and trailing characters removed.
+ * Trims characters from both ends of a character buffer.
+ *
+ * This is a convenience function that dispatches to:
+ * - `trimSpace` when no chars parameter is provided
+ * - `trimChar` when chars is a single character
+ * - `trimSlice` when chars contains multiple characters
+ *
+ * @param buffer - The character buffer or string to trim.
+ * @param chars - The character(s) to remove. If undefined, removes whitespace.
+ * @returns A new `Uint32Array` with characters removed from both ends.
+ *
+ * @example
+ * ```typescript
+ * import { trim } from '@frostyeti/slices/trim';
+ *
+ * // Remove whitespace (default)
+ * String.fromCodePoint(...trim("  hello  ")); // "hello"
+ *
+ * // Remove single character
+ * String.fromCodePoint(...trim("...hello...", ".")); // "hello"
+ *
+ * // Remove set of characters
+ * String.fromCodePoint(...trim("!?hello!?", "!?")); // "hello"
+ * ```
  */
 export function trim(buffer, chars) {
   if (chars === undefined) {

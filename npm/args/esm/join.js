@@ -1,31 +1,75 @@
+/**
+ * The `join` module provides functions to join command line arguments
+ * into a properly escaped string. Handles platform-specific escaping
+ * for Windows and Unix/Linux shells.
+ *
+ * @example Basic joining
+ * ```ts
+ * import { join } from "@frostyeti/args/join";
+ *
+ * join(["echo", "hello", "world"]);  // "echo hello world"
+ * join(["ls", "-la", "my documents"]);  // 'ls -la "my documents"'
+ * ```
+ *
+ * @example Platform-specific functions
+ * ```ts
+ * import { unixJoin, windowsJoin } from "@frostyeti/args/join";
+ *
+ * unixJoin(["echo", "$HOME"]);  // 'echo "\\$HOME"'
+ * windowsJoin(["echo", "hello world"]);  // 'echo "hello world"'
+ * ```
+ *
+ * @module
+ */
 import { WINDOWS } from "@frostyeti/globals/os";
 import { isSpace } from "@frostyeti/chars/is-space";
+import { toCharArray } from "@frostyeti/slices/utils";
 function containsWindowsSpecialChars(value) {
-  const set = [];
-  for (let i = 0; i < value.length; i++) {
-    const c = value.codePointAt(i);
+  const chars = toCharArray(value);
+  for (let i = 0; i < chars.length; i++) {
+    const c = chars[i];
     // space or double quote
     if (c === 32 || c === 34) { // double quote, single quote, backslash
       return { found: true, codePoints: undefined };
     }
-    set.push(c ?? 0);
   }
-  return { found: false, codePoints: set };
+  return { found: false, codePoints: chars };
 }
 function containsSpecialChars(value) {
-  const set = [];
-  for (let i = 0; i < value.length; i++) {
-    const c = value.codePointAt(i) ?? 0;
+  const chars = toCharArray(value);
+  for (let i = 0; i < chars.length; i++) {
+    const c = chars[i];
     // space, double quote, single quote, backslash
     if (
       c === 36 || c === 96 || c === 34 || c === 92 || c === 39 || isSpace(c)
     ) { // dollar sign, backtick, double quote, backslash, single quote
       return { found: true, codePoints: undefined };
     }
-    set.push(c ?? 0);
   }
-  return { found: false, codePoints: set };
+  return { found: false, codePoints: chars };
 }
+/**
+ * Joins command arguments into a Windows-compatible command string.
+ *
+ * Handles Windows-specific escaping rules:
+ * - Arguments with spaces or quotes are wrapped in double quotes
+ * - Backslashes before quotes are doubled
+ * - Internal quotes are escaped with backslash
+ *
+ * @param args - The command arguments to join.
+ * @returns A properly escaped Windows command string.
+ *
+ * @example Basic usage
+ * ```ts
+ * windowsJoin(["echo", "hello", "world"]);  // "echo hello world"
+ * windowsJoin(["echo", "hello world"]);  // 'echo "hello world"'
+ * ```
+ *
+ * @example With quotes
+ * ```ts
+ * windowsJoin(["echo", 'say "hi"']);  // 'echo "say \"hi\""'
+ * ```
+ */
 export function windowsJoin(args) {
   const sb = [];
   for (const arg of args) {
@@ -39,8 +83,9 @@ export function windowsJoin(args) {
     }
     let backslashCount = 0;
     sb.push(34); // open double quote
-    for (let i = 0; i < arg.length; i++) {
-      const c = arg.codePointAt(i);
+    const argChars = toCharArray(arg);
+    for (let i = 0; i < argChars.length; i++) {
+      const c = argChars[i];
       switch (c) {
         // backslash
         case 92:
@@ -65,7 +110,7 @@ export function windowsJoin(args) {
             }
             backslashCount = 0;
           }
-          sb.push(c ?? 0);
+          sb.push(c);
           continue;
       }
     }
@@ -83,6 +128,29 @@ export function windowsJoin(args) {
   sb.length = 0; // clear the buffer
   return ret;
 }
+/**
+ * Joins command arguments into a Unix/Linux-compatible command string.
+ *
+ * Handles Unix-specific escaping rules:
+ * - Arguments with special chars are wrapped in double quotes
+ * - Dollar signs, backticks, quotes, and backslashes are escaped
+ * - Preserves literal meaning of special shell characters
+ *
+ * @param args - The command arguments to join.
+ * @returns A properly escaped Unix command string.
+ *
+ * @example Basic usage
+ * ```ts
+ * unixJoin(["echo", "hello", "world"]);  // "echo hello world"
+ * unixJoin(["echo", "hello world"]);  // 'echo "hello world"'
+ * ```
+ *
+ * @example With special characters
+ * ```ts
+ * unixJoin(["echo", "$HOME"]);  // 'echo "\\$HOME"'
+ * unixJoin(["echo", "`date`"]);  // 'echo "\\`date\\`"'
+ * ```
+ */
 export function unixJoin(args) {
   const sb = [];
   for (let i = 0; i < args.length; i++) {
@@ -96,13 +164,14 @@ export function unixJoin(args) {
       continue;
     }
     sb.push(34); // open double quote
-    for (let j = 0; j < c.length; j++) {
-      const k = c.codePointAt(j);
+    const cChars = toCharArray(c);
+    for (let j = 0; j < cChars.length; j++) {
+      const k = cChars[j];
       // dollar sign, backtick, double quote, backslash
       if (k === 36 || k === 96 || k === 34 || k === 92) {
         sb.push(92); // add backslash before special character
       }
-      sb.push(k ?? 0);
+      sb.push(k);
     }
     sb.push(34); // close double quote
   }
@@ -111,9 +180,25 @@ export function unixJoin(args) {
   return ret;
 }
 /**
- * Joins command arguments into a single string.
- * @param args The command arguments to join.
- * @returns The joined command arguments.
+ * Joins command arguments into a platform-appropriate command string.
+ *
+ * Uses `windowsJoin` on Windows and `unixJoin` on Unix/Linux/macOS.
+ * Properly escapes special characters for the current platform's shell.
+ *
+ * @param args - The command arguments to join.
+ * @returns A properly escaped command string for the current platform.
+ *
+ * @example Basic usage
+ * ```ts
+ * join(["echo", "hello", "world"]);  // "echo hello world"
+ * join(["ls", "-la", "my folder"]);  // 'ls -la "my folder"'
+ * ```
+ *
+ * @example With special characters
+ * ```ts
+ * join(["echo", "Hello, World!"]);  // 'echo "Hello, World!"'
+ * join(["git", "commit", "-m", "Fix bug #123"]);  // 'git commit -m "Fix bug #123"'
+ * ```
  */
 export function join(args) {
   return WINDOWS ? windowsJoin(args) : unixJoin(args);

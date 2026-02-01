@@ -29,32 +29,48 @@ export const AnsiModes = {
   /**
    * 3-bit color mode (8 colors).
    */
-  ThreeBit: 1,
+  ThreeBit: 3,
   /**
    * 4-bit color mode (16 colors).
    */
-  FourBit: 2,
+  FourBit: 4,
   /**
    * 8-bit color mode (256 colors).
    */
-  EightBit: 4,
+  EightBit: 8,
   /**
    * 24-bit true color mode (16.7M colors).
    */
-  TwentyFourBit: 8,
+  TwentyFourBit: 24,
+  equals: function (a, b) {
+    if (typeof b === "string") {
+      return a === this.toValue(b);
+    } else if (typeof b === "number") {
+      return a === b;
+    } else {
+      return a === b;
+    }
+  },
   /**
    * The ANSI mode names.
    * @returns {string[]} Array of mode names
    */
   names: function () {
-    return ["auto", "none", "3bit", "4bit", "8bit", "24bit"];
+    return [
+      "auto",
+      "none",
+      "3bit",
+      "xterm-16color",
+      "xterm-256color",
+      "truecolor",
+    ];
   },
   /**
    * The ANSI mode values.
    * @returns {number[]} Array of mode values
    */
   values: function () {
-    return [-1, 0, 1, 2, 4, 8];
+    return [-1, 0, 3, 4, 8, 24];
   },
   /**
    * Gets the numeric value of the ANSI mode.
@@ -66,27 +82,89 @@ export const AnsiModes = {
       case "auto":
       case "Auto":
         return -1;
+      case "0":
+      case "no":
+      case "false":
+      case "False":
+      case "off":
+      case "Off":
       case "none":
       case "None":
+      case "NONE":
+      case "no-color":
+      case "No-Color":
+      case "nocolor":
+      case "Nocolor":
+      case "noColor":
         return 0;
+      case "3":
       case "3bit":
       case "3Bit":
       case "ThreeBit":
-        return 1;
+      case "threebit":
+      case "Threebit":
+        return 3;
+      case "4":
+      case "xterm-16color":
+      case "Xterm-16Color":
+      case "16color":
+      case "16Color":
+      case "vt100":
+      case "vt100-color":
+      case "vt200":
+      case "vt200-color":
+      case "screen":
+      case "linux":
+      case "cygwin":
+      case "ansi":
       case "4bit":
       case "4Bit":
       case "FourBit":
-        return 2;
+      case "4colors":
+      case "fourbit":
+      case "Fourbit":
+        return 4;
+      case "8":
       case "8bit":
       case "8Bit":
       case "EightBit":
-        return 4;
+      case "256":
+      case "256color":
+      case "256Color":
+      case "screen-256color":
+      case "Screen-256Color":
+      case "xterm-256color":
+      case "Xterm-256Color":
+        return 8;
+      case "true":
+      case "full":
+      case "24":
       case "24bit":
       case "24Bit":
       case "TwentyFourBit":
-      case "TrueColor":
       case "truecolor":
-        return 8;
+      case "TrueColor":
+      case "true-color":
+      case "True-Color":
+      case "xterm-truecolor":
+      case "Xterm-TrueColor":
+      case "gnome-terminal":
+      case "kitty":
+      case "iTerm2":
+      case "alacritty":
+      case "wezterm":
+      case "terminator":
+      case "hyper":
+      case "windows-terminal":
+      case "ms-terminal":
+      case "ghostty":
+      case "xterm-ghostty":
+      case "xterm-kitty":
+      case "alacritty-nightly":
+      case "terminology":
+      case "mintty":
+      case "terminus":
+        return 24;
     }
     return -1;
   },
@@ -101,18 +179,40 @@ export const AnsiModes = {
         return "auto";
       case 0:
         return "none";
-      case 1:
+      case 3:
         return "3bit";
-      case 2:
-        return "4bit";
       case 4:
-        return "8bit";
+        return "xterm-16color";
       case 8:
-        return "24bit";
+        return "xterm-256color";
+      case 24:
+        return "truecolor";
     }
     return "auto";
   },
 };
+/**
+ * Compares two ANSI modes for equality.
+ * @param a The first ANSI mode.
+ * @param b The second ANSI mode, number, or string representation.
+ * @returns True if the modes are equal, false otherwise.
+ *
+ * @example
+ * ```typescript
+ * import { AnsiModes, equals } from '@frostyeti/ansi/enums';
+ *
+ * const mode1 = AnsiModes.FourBit;
+ * const mode2 = 4;
+ * const mode3 = "4bit";
+ *
+ * console.log(equals(mode1, mode2)); // true
+ * console.log(equals(mode1, mode3)); // true
+ * console.log(equals(mode2, mode3)); // true
+ * ```
+ */
+export function equals(a, b) {
+  return AnsiModes.equals(a, b);
+}
 /**
  * Enumeration of ANSI log levels with associated utility functions.
  * @enum {number}

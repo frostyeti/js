@@ -28,8 +28,10 @@ export type CharBuffer =
   | CharSequence;
 /**
  * Converts a string to a Uint32Array of characters.
+ * Each element represents a Unicode code point, properly handling
+ * characters outside the BMP (like emoji) that use surrogate pairs.
  * @param s The string to convert.
- * @returns The Uint32Array of characters
+ * @returns The Uint32Array of characters (code points)
  */
 export declare function toCharArray(s: string): Uint32Array;
 /**

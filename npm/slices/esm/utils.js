@@ -5,15 +5,34 @@
  */
 /**
  * Converts a string to a Uint32Array of characters.
+ * Each element represents a Unicode code point, properly handling
+ * characters outside the BMP (like emoji) that use surrogate pairs.
  * @param s The string to convert.
- * @returns The Uint32Array of characters
+ * @returns The Uint32Array of characters (code points)
  */
 export function toCharArray(s) {
-  const set = new Uint32Array(s.length);
-  for (let i = 0; i < s.length; i++) {
-    set[i] = s.codePointAt(i) ?? 0;
+  const len = s.length;
+  // Allocate max possible size (all BMP characters = s.length)
+  // Actual size will be <= len since surrogate pairs reduce the count
+  const result = new Uint32Array(len);
+  let j = 0;
+  for (let i = 0; i < len; i++) {
+    const code = s.charCodeAt(i);
+    // Check for high surrogate (0xD800-0xDBFF)
+    if (code >= 0xD800 && code <= 0xDBFF && i + 1 < len) {
+      const low = s.charCodeAt(i + 1);
+      // Check for low surrogate (0xDC00-0xDFFF)
+      if (low >= 0xDC00 && low <= 0xDFFF) {
+        // Combine surrogate pair into code point
+        result[j++] = ((code - 0xD800) << 10) + (low - 0xDC00) + 0x10000;
+        i++; // Skip the low surrogate
+        continue;
+      }
+    }
+    result[j++] = code;
   }
-  return set;
+  // Return exact-sized array if we had surrogate pairs, otherwise return as-is
+  return j < len ? result.subarray(0, j) : result;
 }
 /**
  * Converts a CharBuffer to a string.
@@ -48,21 +67,24 @@ export function toString(buffer) {
  */
 export function toCharSliceLike(buffer) {
   if (typeof buffer === "string") {
+    const buf = toCharArray(buffer);
     return {
       at(i) {
-        return buffer.codePointAt(i);
+        return buf.at(i);
       },
-      length: buffer.length,
+      length: buf.length,
     };
   }
   if (buffer instanceof Uint32Array) {
     return buffer;
   }
   if (buffer instanceof Uint16Array) {
-    return new Uint32Array(buffer.buffer);
+    const buf = new Uint32Array(buffer.buffer);
+    return buf;
   }
   if (buffer instanceof Uint8Array) {
-    return new Uint32Array(buffer.buffer);
+    const buf = new Uint32Array(buffer.buffer);
+    return buf;
   }
   return buffer;
 }

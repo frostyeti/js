@@ -1,32 +1,79 @@
 /**
- * This module provides a function to convert a string to dasherized case.
- * Dasherized case is a form of kebab case where words are separated by hyphens
- * and all characters are lowercased.
+ * The `dasherize` module provides a function to convert strings to kebab-case
+ * (dash-separated lowercase). Handles camelCase, PascalCase, snake_case, and
+ * space-separated words.
  *
- * Dasherize is primarily used for converting camel case or pascal case strings
- * to a more readable format.
+ * @example Basic usage
+ * ```ts
+ * import { dasherize } from "@frostyeti/slices/dasherize";
+ *
+ * String.fromCodePoint(...dasherize("helloWorld"));  // "hello-world"
+ * String.fromCodePoint(...dasherize("HelloWorld"));  // "hello-world"
+ * String.fromCodePoint(...dasherize("hello_world"));  // "hello-world"
+ * ```
+ *
+ * @example With options
+ * ```ts
+ * // SCREAMING-KEBAB-CASE
+ * String.fromCodePoint(...dasherize("hello world", { screaming: true }));  // "HELLO-WORLD"
+ *
+ * // Preserve original case
+ * String.fromCodePoint(...dasherize("helloWorld", { preserveCase: true }));  // "hello-World"
+ * ```
+ *
  * @module
  */
 import { type CharBuffer } from "./utils.js";
 /**
- * DasherizeOptions is the options for the dasherize function.
- * @property screaming - If true, the first character will be uppercased.
- * @property preserveCase - If true, the case of the first character will be preserved.
+ * Options for the `dasherize` function.
  */
 export interface DasherizeOptions {
+  /**
+   * Convert all characters to uppercase (SCREAMING-KEBAB-CASE).
+   * Cannot be used with `preserveCase`.
+   */
   screaming?: boolean;
+  /**
+   * Preserve the original case of characters instead of lowercasing.
+   * Cannot be used with `screaming`.
+   */
   preserveCase?: boolean;
 }
 /**
- * Dasherize converts a string to kebab case, converting any `_`, `-`, ` ` to `-` and
- * prepending a `-` to any uppercase character unless the preserveCase option is set to true
- * or the screaming option is set to true, or it is the first character.
+ * Converts a string to kebab-case (dash-separated). Handles camelCase,
+ * PascalCase, snake_case, and space-separated input.
  *
- * Dasherize is primary for camel or pascal case strings.
+ * By default, converts all characters to lowercase. Use options to modify
+ * the case behavior.
  *
- * @param value The string to convert to dasherized case.
- * @param options The options for the function.
- * @returns The dasherized string as a Uint32Array.
+ * @param value - The string to convert to kebab-case.
+ * @param options - Options to control case handling.
+ * @returns The kebab-case string as a Uint32Array.
+ * @throws {Error} If both `preserveCase` and `screaming` are true.
+ *
+ * @example Basic conversions
+ * ```ts
+ * String.fromCodePoint(...dasherize("helloWorld"));  // "hello-world"
+ * String.fromCodePoint(...dasherize("HelloWorld"));  // "hello-world"
+ * String.fromCodePoint(...dasherize("hello_world"));  // "hello-world"
+ * String.fromCodePoint(...dasherize("hello world"));  // "hello-world"
+ * ```
+ *
+ * @example Screaming kebab-case
+ * ```ts
+ * String.fromCodePoint(...dasherize("helloWorld", { screaming: true }));  // "HELLO-WORLD"
+ * ```
+ *
+ * @example Preserve case
+ * ```ts
+ * String.fromCodePoint(...dasherize("helloWorld", { preserveCase: true }));  // "hello-World"
+ * ```
+ *
+ * @example With Unicode
+ * ```ts
+ * String.fromCodePoint(...dasherize("hello wörld"));  // "hello-wörld"
+ * String.fromCodePoint(...dasherize("caféLatte"));  // "café-latte"
+ * ```
  */
 export declare function dasherize(
   value: CharBuffer,

@@ -1,6 +1,15 @@
 /**
- * This module provides functions for manipulating strings and
- * character buffers, including converting strings to camel case.
+ * The `camelize` module provides a function to convert strings to camelCase.
+ * Handles snake_case, kebab-case, and space-separated words.
+ *
+ * @example Basic usage
+ * ```ts
+ * import { camelize } from "@frostyeti/slices/camelize";
+ *
+ * String.fromCodePoint(...camelize("hello_world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("hello-world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("hello world"));  // "helloWorld"
+ * ```
  *
  * @module
  */
@@ -10,34 +19,48 @@ import { type CharBuffer } from "./utils.js";
  */
 export interface CamelizeOptions {
   /**
-   * Preserve the case of the characters that are not
-   * the first character or after a `_`, `-`, or ` `.
+   * If true, preserves the case of characters that are not the first character
+   * or immediately after a separator. If false (default), the function preserves
+   * existing case but lowercases the first character.
    */
   preserveCase?: boolean;
 }
 /**
- * Camelize converts a string to camel case, removing any `_`, `-`, or ` ` characters
- * and capitalizing the first letter of each word.
+ * Converts a string to camelCase. Handles snake_case, kebab-case, and
+ * space-separated words by removing separators and capitalizing the
+ * following character.
  *
- * @description
- * This function is
- * primary for converting snake_case, kebab-case, or space separated
- * symbols to camel case.
+ * The first character is always lowercased. Characters after separators
+ * (`_`, `-`, or space) are uppercased.
  *
- * To avoid allocations, the function returns a Uint32Array that represents
- * the camel case string.  To convert the Uint32Array to a string, use
- * `String.fromCharCode(...camel)`.
+ * @param value - The string to convert to camelCase.
+ * @param options - Options to control case handling.
+ * @returns The camelCase string as a Uint32Array.
  *
- * @param value  The string to convert to camel case.
- * @param options The options for the function.
- * @returns The camel case string as a Uint32Array.
+ * @example Basic conversions
+ * ```ts
+ * String.fromCodePoint(...camelize("hello_world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("hello-world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("hello world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("HelloWorld"));   // "helloWorld"
+ * ```
  *
- * @example
- * ```typescript
- * import { camelize } from '@frostyeti/slices/camelize';
+ * @example Multiple separators
+ * ```ts
+ * String.fromCodePoint(...camelize("hello__world"));  // "helloWorld"
+ * String.fromCodePoint(...camelize("hello--world"));  // "helloWorld"
+ * ```
  *
- * const camel = camelize("hello_world");
- * console.log(String.fromCharCode(...camel)); // Output: "HelloWorld"
+ * @example With numbers
+ * ```ts
+ * String.fromCodePoint(...camelize("hello_world_123"));  // "helloWorld123"
+ * String.fromCodePoint(...camelize("version_2_0"));  // "version20"
+ * ```
+ *
+ * @example With Unicode
+ * ```ts
+ * String.fromCodePoint(...camelize("café_latte"));  // "caféLatte"
+ * String.fromCodePoint(...camelize("über_mensch"));  // "überMensch"
  * ```
  */
 export declare function camelize(

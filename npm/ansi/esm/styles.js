@@ -89,7 +89,9 @@ function code(open, close) {
  * @param code color code to apply
  */
 function run(str, code) {
-  return isColorEnabled() ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+  return isColorEnabled()
+    ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}`
+    : str;
 }
 /**
  * Applies multiple ansi codes and styles to the string.
@@ -541,4 +543,65 @@ const ANSI_PATTERN = new RegExp(
  */
 export function stripAnsiCode(string) {
   return string.replace(ANSI_PATTERN, "");
+}
+/**
+ * Defines a color function that applies the appropriate color based on the current ANSI settings.
+ * @param trueColor The true color value (24-bit) as a number or Rgb object.
+ * @param color256 The 256-color palette index.
+ * @param color The fallback color function for standard colors.
+ * @returns A function that applies the appropriate color to a given string.
+ *
+ * @example
+ * ```ts
+ * import { defineColor, red } from "@frostyeti/ansi/styles";
+ *
+ * const redColor = defineColor(0xFF0000, 9, red);
+ * console.log(redColor("This text will be colored based on ANSI settings."));
+ * ```
+ */
+export function defineColor(trueColor, color256, color) {
+  return function (str) {
+    if (isColorEnabled()) {
+      if (AnsiSettings.current.mode === 24) {
+        return rgb24(str, trueColor);
+      } else if (AnsiSettings.current.mode === 8) {
+        return rgb8(str, color256);
+      } else if (AnsiSettings.current.mode === 4) {
+        return color(str);
+      } else {
+        return str;
+      }
+    }
+    return str;
+  };
+}
+/**
+ * Defines a background color function that applies the appropriate background color based on the current ANSI settings.
+ * @param trueColor The true color value (24-bit) as a number or Rgb object.
+ * @param color256 The 256-color palette index.
+ * @param color The fallback background color function for standard colors.
+ * @returns A function that applies the appropriate background color to a given string.
+ * @example
+ * ```ts
+ * import { defineBgColor, bgRed } from "@frostyeti/ansi/styles";
+ *
+ * const redBgColor = defineBgColor(0xFF0000, 9, bgRed);
+ * console.log(redBgColor("This text will have a background color based on ANSI settings."));
+ * ```
+ */
+export function defineBgColor(trueColor, color256, color) {
+  return function (str) {
+    if (isColorEnabled()) {
+      if (AnsiSettings.current.mode === 24) {
+        return bgRgb24(str, trueColor);
+      } else if (AnsiSettings.current.mode === 8) {
+        return bgRgb8(str, color256);
+      } else if (AnsiSettings.current.mode === 4) {
+        return color(str);
+      } else {
+        return str;
+      }
+    }
+    return str;
+  };
 }

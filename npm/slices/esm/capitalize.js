@@ -1,31 +1,51 @@
 /**
- * This module provides a function to capitalize the first character of a string.
- * The capitalize function converts the first character of a string to uppercase
- * and the rest to lowercase by default. It can also preserve the case of the
- * characters that are not the first character if specified in the options.
+ * The `capitalize` module provides a function to capitalize the first character
+ * of a string while optionally lowercasing the rest.
+ *
+ * @example Basic usage
+ * ```ts
+ * import { capitalize } from "@frostyeti/slices/capitalize";
+ *
+ * String.fromCodePoint(...capitalize("hello"));  // "Hello"
+ * String.fromCodePoint(...capitalize("helloWorld"));  // "Helloworld"
+ * ```
+ *
+ * @example Preserve case
+ * ```ts
+ * String.fromCodePoint(...capitalize("helloWorld", { preserveCase: true }));  // "HelloWorld"
+ * ```
+ *
  * @module
  */
 import { toCharSliceLike } from "./utils.js";
 import { toLower } from "@frostyeti/chars/to-lower";
 import { toUpper } from "@frostyeti/chars/to-upper";
 /**
- * Capitalize converts the first character of a string to uppercase. By default, it
- * converts the first character to uppercase and the rest to lowercase.
+ * Capitalizes the first character of a string. By default, converts all other
+ * characters to lowercase. Use `preserveCase` option to keep original casing.
  *
- * @description
- * To avoid allocations, the function returns a Uint32Array that represents
- * the capitalized string.  To convert the Uint32Array to a string, use
- * `String.fromCharCode(...capitalized)`.
- *
- * @param value The string to capitalize.
- * @param options The options for the function.
+ * @param value - The string to capitalize.
+ * @param options - Options to control case handling.
  * @returns The capitalized string as a Uint32Array.
- * @example
- * ```typescript
- * import { capitalize } from '@frostyeti/slices/capitalize';
  *
- * const capitalized = capitalize("hello world");
- * console.log(String.fromCodePoint(...capitalized)); // Output: "Hello world"
+ * @example Basic capitalization
+ * ```ts
+ * String.fromCodePoint(...capitalize("hello"));  // "Hello"
+ * String.fromCodePoint(...capitalize("HELLO"));  // "Hello"
+ * String.fromCodePoint(...capitalize("hello world"));  // "Hello world"
+ * ```
+ *
+ * @example Preserve case
+ * ```ts
+ * String.fromCodePoint(...capitalize("helloWorld", { preserveCase: true }));  // "HelloWorld"
+ * String.fromCodePoint(...capitalize("HELLO", { preserveCase: true }));  // "HELLO"
+ * ```
+ *
+ * @example With Unicode
+ * ```ts
+ * String.fromCodePoint(...capitalize("école"));  // "École"
+ * String.fromCodePoint(...capitalize("über"));  // "Über"
+ * String.fromCodePoint(...capitalize("αβγ"));  // "Αβγ"
  * ```
  */
 export function capitalize(value, options) {
