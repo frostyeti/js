@@ -1,6 +1,38 @@
 /**
  * The `splat` module provides a function to convert an object
- * to an array of command line arguments.
+ * to an array of command line arguments. Useful for building CLI
+ * commands programmatically with type safety.
+ *
+ * @example Basic usage
+ * ```ts
+ * import { splat } from "@frostyeti/args/splat";
+ *
+ * splat({ version: true });  // ["--version"]
+ * splat({ output: "file.txt" });  // ["--output", "file.txt"]
+ * splat({ f: true });  // ["-f"] (short flag)
+ * ```
+ *
+ * @example With commands and options
+ * ```ts
+ * import { splat, SplatSymbols } from "@frostyeti/args/splat";
+ *
+ * splat({
+ *   [SplatSymbols.command]: "git clone",
+ *   depth: 1,
+ *   branch: "main"
+ * });  // ["git", "clone", "--depth", "1", "--branch", "main"]
+ * ```
+ *
+ * @example With positional and extra arguments
+ * ```ts
+ * import { splat } from "@frostyeti/args/splat";
+ *
+ * splat({
+ *   "*": ["src", "dest"],  // positional args
+ *   recursive: true,
+ *   "--": ["--verbose"]  // extra args after --
+ * });  // ["src", "dest", "--recursive", "--", "--verbose"]
+ * ```
  *
  * @module
  */

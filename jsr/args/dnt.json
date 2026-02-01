@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@frostyeti/chars": "*",
+        "@frostyeti/slices": "*",
         "@frostyeti/strings": "*"
     }
 }
