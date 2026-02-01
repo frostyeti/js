@@ -289,7 +289,10 @@ test("ansi::bgRed() with emoji", function () {
 });
 
 test("ansi::apply() with multiple styles", function () {
-    equal(c.apply("test", c.bold, c.red, c.bgBlue), "\x1b[44m\x1b[31m\x1b[1mtest\x1b[22m\x1b[39m\x1b[49m");
+    equal(
+        c.apply("test", c.bold, c.red, c.bgBlue),
+        "\x1b[44m\x1b[31m\x1b[1mtest\x1b[22m\x1b[39m\x1b[49m",
+    );
 });
 
 test("ansi::apply() with unicode", function () {
@@ -449,60 +452,60 @@ test("ansi::defineColor() returns function", function () {
 test("ansi::defineColor() with truecolor mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("test"), "\x1b[38;2;255;140;0mtest\x1b[39m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineColor() with 256-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.EightBit;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("test"), "\x1b[38;5;208mtest\x1b[39m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineColor() with 16-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.FourBit;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("test"), "\x1b[33mtest\x1b[39m"); // yellow fallback
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineColor() with no-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.None;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("test"), "test");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineColor() with RGB object", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const purple = c.defineColor({ r: 128, g: 0, b: 128 }, 129, c.magenta);
     equal(purple("test"), "\x1b[38;2;128;0;128mtest\x1b[39m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineColor() with unicode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("🍊 Orange"), "\x1b[38;2;255;140;0m🍊 Orange\x1b[39m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
@@ -510,10 +513,10 @@ test("ansi::defineColor() respects color disabled", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
     c.setColorEnabled(false);
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     equal(orange("test"), "test");
-    
+
     c.setColorEnabled(true);
     AnsiSettings.current.mode = originalMode;
 });
@@ -526,60 +529,60 @@ test("ansi::defineBgColor() returns function", function () {
 test("ansi::defineBgColor() with truecolor mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const bgOrange = c.defineBgColor(0xFF8C00, 208, c.bgYellow);
     equal(bgOrange("test"), "\x1b[48;2;255;140;0mtest\x1b[49m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineBgColor() with 256-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.EightBit;
-    
+
     const bgOrange = c.defineBgColor(0xFF8C00, 208, c.bgYellow);
     equal(bgOrange("test"), "\x1b[48;5;208mtest\x1b[49m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineBgColor() with 16-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.FourBit;
-    
+
     const bgOrange = c.defineBgColor(0xFF8C00, 208, c.bgYellow);
     equal(bgOrange("test"), "\x1b[43mtest\x1b[49m"); // bgYellow fallback
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineBgColor() with no-color mode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.None;
-    
+
     const bgPurple = c.defineBgColor(0x800080, 129, c.bgMagenta);
     equal(bgPurple("test"), "test");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineBgColor() with RGB object", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const bgPurple = c.defineBgColor({ r: 128, g: 0, b: 128 }, 129, c.bgMagenta);
     equal(bgPurple("test"), "\x1b[48;2;128;0;128mtest\x1b[49m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
 test("ansi::defineBgColor() with unicode", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const bgPurple = c.defineBgColor(0x800080, 129, c.bgMagenta);
     equal(bgPurple("test 🍇"), "\x1b[48;2;128;0;128mtest 🍇\x1b[49m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });
 
@@ -587,10 +590,10 @@ test("ansi::defineBgColor() respects color disabled", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
     c.setColorEnabled(false);
-    
+
     const bgPurple = c.defineBgColor(0x800080, 129, c.bgMagenta);
     equal(bgPurple("test"), "test");
-    
+
     c.setColorEnabled(true);
     AnsiSettings.current.mode = originalMode;
 });
@@ -598,12 +601,12 @@ test("ansi::defineBgColor() respects color disabled", function () {
 test("ansi::defineColor() and defineBgColor() combined", function () {
     const originalMode = AnsiSettings.current.mode;
     AnsiSettings.current.mode = AnsiModes.TwentyFourBit;
-    
+
     const orange = c.defineColor(0xFF8C00, 208, c.yellow);
     const bgPurple = c.defineBgColor(0x800080, 129, c.bgMagenta);
-    
+
     const styled = bgPurple(orange("Halloween"));
     equal(styled, "\x1b[48;2;128;0;128m\x1b[38;2;255;140;0mHalloween\x1b[39m\x1b[49m");
-    
+
     AnsiSettings.current.mode = originalMode;
 });

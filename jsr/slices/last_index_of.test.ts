@@ -33,8 +33,8 @@ test("slices::lastIndexOf with multiple occurrences", () => {
 test("slices::lastIndexOf with index limit", () => {
     // index param means search backwards starting from that position
     equal(lastIndexOf("foo bar foo", "foo", 7), 0); // Position 7 is before last "foo" at 8
-    equal(lastIndexOf("abcabcabc", "abc", 5), 3);   // Finds the middle one
-    equal(lastIndexOf("abcabcabc", "abc", 8), 6);   // Position 8 includes last match at 6
+    equal(lastIndexOf("abcabcabc", "abc", 5), 3); // Finds the middle one
+    equal(lastIndexOf("abcabcabc", "abc", 8), 6); // Position 8 includes last match at 6
 });
 
 test("slices::lastIndexOf with index at exact match position", () => {

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-console
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { almostEqual, notAlmostEqual } from "./almost-equal.ts";
 import { AssertionError } from "./assertion-error.ts";

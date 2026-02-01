@@ -116,24 +116,33 @@ describe("assert::deepEqual", () => {
         });
 
         test("returns true for nested objects", () => {
-            equal(deepEqual(
-                { a: { b: { c: 1 } } },
-                { a: { b: { c: 1 } } }
-            ), true);
+            equal(
+                deepEqual(
+                    { a: { b: { c: 1 } } },
+                    { a: { b: { c: 1 } } },
+                ),
+                true,
+            );
         });
 
         test("returns false for different nested values", () => {
-            equal(deepEqual(
-                { a: { b: { c: 1 } } },
-                { a: { b: { c: 2 } } }
-            ), false);
+            equal(
+                deepEqual(
+                    { a: { b: { c: 1 } } },
+                    { a: { b: { c: 2 } } },
+                ),
+                false,
+            );
         });
 
         test("handles objects with array values", () => {
-            equal(deepEqual(
-                { arr: [1, 2, 3] },
-                { arr: [1, 2, 3] }
-            ), true);
+            equal(
+                deepEqual(
+                    { arr: [1, 2, 3] },
+                    { arr: [1, 2, 3] },
+                ),
+                true,
+            );
         });
 
         test("order of keys doesn't matter", () => {
@@ -222,45 +231,63 @@ describe("assert::deepEqual", () => {
 
     describe("TypedArrays", () => {
         test("returns true for identical Uint8Arrays", () => {
-            equal(deepEqual(
-                new Uint8Array([1, 2, 3]),
-                new Uint8Array([1, 2, 3])
-            ), true);
+            equal(
+                deepEqual(
+                    new Uint8Array([1, 2, 3]),
+                    new Uint8Array([1, 2, 3]),
+                ),
+                true,
+            );
         });
 
         test("returns false for different Uint8Arrays", () => {
-            equal(deepEqual(
-                new Uint8Array([1, 2, 3]),
-                new Uint8Array([1, 2, 4])
-            ), false);
+            equal(
+                deepEqual(
+                    new Uint8Array([1, 2, 3]),
+                    new Uint8Array([1, 2, 4]),
+                ),
+                false,
+            );
         });
 
         test("returns false for different length TypedArrays", () => {
-            equal(deepEqual(
-                new Uint8Array([1, 2]),
-                new Uint8Array([1, 2, 3])
-            ), false);
+            equal(
+                deepEqual(
+                    new Uint8Array([1, 2]),
+                    new Uint8Array([1, 2, 3]),
+                ),
+                false,
+            );
         });
 
         test("works with Int32Array", () => {
-            equal(deepEqual(
-                new Int32Array([1, -2, 3]),
-                new Int32Array([1, -2, 3])
-            ), true);
+            equal(
+                deepEqual(
+                    new Int32Array([1, -2, 3]),
+                    new Int32Array([1, -2, 3]),
+                ),
+                true,
+            );
         });
 
         test("works with Float64Array", () => {
-            equal(deepEqual(
-                new Float64Array([1.5, 2.5]),
-                new Float64Array([1.5, 2.5])
-            ), true);
+            equal(
+                deepEqual(
+                    new Float64Array([1.5, 2.5]),
+                    new Float64Array([1.5, 2.5]),
+                ),
+                true,
+            );
         });
 
         test("works with BigInt64Array", () => {
-            equal(deepEqual(
-                new BigInt64Array([1n, 2n, 3n]),
-                new BigInt64Array([1n, 2n, 3n])
-            ), true);
+            equal(
+                deepEqual(
+                    new BigInt64Array([1n, 2n, 3n]),
+                    new BigInt64Array([1n, 2n, 3n]),
+                ),
+                true,
+            );
         });
     });
 
@@ -284,17 +311,23 @@ describe("assert::deepEqual", () => {
 
     describe("URL objects", () => {
         test("returns true for identical URLs", () => {
-            equal(deepEqual(
-                new URL("https://example.com/path"),
-                new URL("https://example.com/path")
-            ), true);
+            equal(
+                deepEqual(
+                    new URL("https://example.com/path"),
+                    new URL("https://example.com/path"),
+                ),
+                true,
+            );
         });
 
         test("returns false for different URLs", () => {
-            equal(deepEqual(
-                new URL("https://example.com/a"),
-                new URL("https://example.com/b")
-            ), false);
+            equal(
+                deepEqual(
+                    new URL("https://example.com/a"),
+                    new URL("https://example.com/b"),
+                ),
+                false,
+            );
         });
     });
 
@@ -321,7 +354,7 @@ describe("assert::deepEqual", () => {
             throws(
                 () => deepEqual(new WeakMap(), new WeakMap()),
                 TypeError,
-                "cannot compare WeakMap instances"
+                "cannot compare WeakMap instances",
             );
         });
 
@@ -329,7 +362,7 @@ describe("assert::deepEqual", () => {
             throws(
                 () => deepEqual(new WeakSet(), new WeakSet()),
                 TypeError,
-                "cannot compare WeakSet instances"
+                "cannot compare WeakSet instances",
             );
         });
     });

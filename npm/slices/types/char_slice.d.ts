@@ -1487,6 +1487,21 @@ export declare function charSlice(
   start?: number,
   end?: number,
 ): CharSlice;
+/**
+ * Creates a `ReadonlyCharSlice` from the given buffer.
+ * @param buffer The buffer to create the `ReadonlyCharSlice` from. Can be a `Uint32Array`, an array of numbers, or a string.
+ * @param start  The start index of the slice. Defaults to `0`.
+ * @param end The end index of the slice (exclusive). Defaults to the length of the buffer.
+ * @returns A new `ReadonlyCharSlice` instance.
+ *
+ * @example
+ * ```typescript
+ * import { readonlyCharSlice } from '@frostyeti/slices/char-slice';
+ *
+ * const slice1 = readonlyCharSlice("Hello, World!", 7, 12);
+ * console.log(slice1.toString()); // Output: "World"
+ * ```
+ */
 export declare function readonlyCharSlice(
   buffer: Uint32Array | number[] | string,
   start?: number,

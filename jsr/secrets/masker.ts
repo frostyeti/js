@@ -99,7 +99,7 @@ export class DefaultSecretMasker {
      * ```typescript
      * const masker = new DefaultSecretMasker();
      * masker.addGenerator((secret) => secret.split("").reverse().join(""));
-     * ``` 
+     * ```
      */
     addGenerator(generator: (secret: string) => string): SecretMasker {
         this.#generators.push(generator);
@@ -111,7 +111,7 @@ export class DefaultSecretMasker {
      * Masks a given value by replacing any occurrences of secrets with asterisks.
      * @param value - The value to mask.
      * @returns The masked value.
-     * 
+     *
      * @example
      * ```typescript
      * const masker = new DefaultSecretMasker();

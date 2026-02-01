@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { instanceOf } from "./instance-of.ts";
 import { notInstanceOf } from "./not-instance-of.ts";
@@ -85,7 +85,7 @@ describe("assert::instanceOf", () => {
 
     test("works with Function instances", () => {
         instanceOf(() => {}, Function);
-        instanceOf(function() {}, Function);
+        instanceOf(function () {}, Function);
     });
 });
 

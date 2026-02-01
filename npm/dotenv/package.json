@@ -78,14 +78,14 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@frostyeti/chars": "0.0.0-alpha.0",
-    "@frostyeti/globals": "0.0.0-alpha.0",
-    "@frostyeti/strings": "0.0.0-alpha.0",
-    "@frostyeti/env": "0.0.0-alpha.0"
+    "@frostyeti/chars": "^0.0.0-alpha.0",
+    "@frostyeti/globals": "^0.0.0-alpha.0",
+    "@frostyeti/strings": "^0.0.0-alpha.0",
+    "@frostyeti/env": "^0.0.0-alpha.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "@frostyeti/assert": "0.0.0-alpha.0",
+    "@frostyeti/assert": "^0.0.0-alpha.0",
     "typescript": "^5.9.3"
   }
 }

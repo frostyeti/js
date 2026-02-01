@@ -28,21 +28,17 @@ export function execPath(): string {
 
     if (globals.Deno) {
         try {
-            let readPermission = globals.Deno.permissions.requestSync({ name: "read" });
-            if (readPermission.state === "prompt") {
-                console.log("Read permission is requred for Deno.execPath()");
-                readPermission = globals.Deno.permissions.requestSync({ name: "read" });
-            }
+            const readPermission = globals.Deno.permissions.querySync({ name: "read" });
 
             if (readPermission.state === "granted") {
                 ep = globals.Deno.execPath();
             } else {
-                console.warn("Deno.execPath() permission denied. setting to empty string");
+                // Permission denied or not granted - return empty string
                 ep = "";
             }
             return ep ??= "";
         } catch {
-            console.warn("Deno.execPath() permission denied. setting to empty string");
+            // Permission check failed - return empty string
             ep = "";
             return ep;
         }

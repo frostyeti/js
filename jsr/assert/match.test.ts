@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { match } from "./match.ts";
 import { notMatch } from "./not-match.ts";

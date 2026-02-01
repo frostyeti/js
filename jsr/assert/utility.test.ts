@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { unreachable } from "./unreachable.ts";
 import { unimplemented } from "./unimplemented.ts";
@@ -32,7 +32,7 @@ describe("assert::unreachable", () => {
     test("can be used in switch statements", () => {
         const value = "a" as "a" | "b";
         let result = "";
-        
+
         switch (value) {
             case "a":
                 result = "got a";
@@ -40,9 +40,9 @@ describe("assert::unreachable", () => {
             case "b":
                 result = "got b";
                 break;
-            // In real code: default: unreachable();
+                // In real code: default: unreachable();
         }
-        
+
         equal(result, "got a");
     });
 });

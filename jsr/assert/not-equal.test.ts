@@ -44,7 +44,7 @@ describe("assert::notEqual", () => {
         test("passes for nested objects with differences", () => {
             notEqual(
                 { a: { b: 1 } },
-                { a: { b: 2 } }
+                { a: { b: 2 } },
             );
         });
     });
@@ -71,7 +71,7 @@ describe("assert::notEqual", () => {
         test("passes for Maps with different values", () => {
             notEqual(
                 new Map([["a", 1]]),
-                new Map([["a", 2]])
+                new Map([["a", 2]]),
             );
         });
 
@@ -136,7 +136,7 @@ describe("assert::notEqual", () => {
             try {
                 notEqual(
                     { a: [1, 2], b: { c: 3 } },
-                    { a: [1, 2], b: { c: 3 } }
+                    { a: [1, 2], b: { c: 3 } },
                 );
             } catch {
                 threw = true;
@@ -159,7 +159,7 @@ describe("assert::notEqual", () => {
             try {
                 notEqual(
                     new Map([["a", 1], ["b", 2]]),
-                    new Map([["a", 1], ["b", 2]])
+                    new Map([["a", 1], ["b", 2]]),
                 );
             } catch {
                 threw = true;

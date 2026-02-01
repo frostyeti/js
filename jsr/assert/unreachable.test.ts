@@ -46,9 +46,12 @@ describe("assert::unreachable", () => {
             type Color = "red" | "green" | "blue";
             function getColorCode(color: Color): number {
                 switch (color) {
-                    case "red": return 0xFF0000;
-                    case "green": return 0x00FF00;
-                    case "blue": return 0x0000FF;
+                    case "red":
+                        return 0xFF0000;
+                    case "green":
+                        return 0x00FF00;
+                    case "blue":
+                        return 0x0000FF;
                     default:
                         // This ensures all cases are handled
                         unreachable(`Unknown color: ${color}`);
@@ -61,7 +64,7 @@ describe("assert::unreachable", () => {
 
         test("can be used after type guards", () => {
             type Shape = { kind: "circle"; radius: number } | { kind: "square"; side: number };
-            
+
             function getArea(shape: Shape): number {
                 if (shape.kind === "circle") {
                     return Math.PI * shape.radius ** 2;
@@ -71,7 +74,7 @@ describe("assert::unreachable", () => {
                 }
                 unreachable("Unknown shape");
             }
-            
+
             equal(getArea({ kind: "circle", radius: 1 }), Math.PI);
             equal(getArea({ kind: "square", side: 2 }), 4);
         });
@@ -86,7 +89,7 @@ describe("assert::unreachable", () => {
                 }
                 unreachable("Unexpected type");
             }
-            
+
             equal(process("hello"), "HELLO");
             equal(process(42), "42");
         });

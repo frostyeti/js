@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { strictEquals } from "./strict-equal.ts";
 import { notStrictEquals } from "./not-strict-equal.ts";

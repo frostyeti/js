@@ -66,7 +66,7 @@ The char module provides functions common character functions:
 - `isChar` - `true` when a number value is a valid character.
 - `isControl` - `true` when a character is a control character.
 - `isDigit` - `true` when a character is a digit.
-- `isLatin` - `true` when a character is in the latin charset.
+- `isLatin1` - `true` when a character is in the latin charset.
 - `isLetterOrDigit` - `true` when a character is a letter or digit.
 - `isLetter` - `true` when a charater is a letter.
 - `isLower` - `true` when a character is a lower case letter.

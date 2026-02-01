@@ -435,7 +435,10 @@ export function parseDocument(content: string): DotEnvDocument {
             // Handle command substitution $(...) in double-quoted strings
             if (quote === Quotes.Double) {
                 // Check for $( start of command substitution
-                if (char === CHAR_DOLLAR && i < last && content.charCodeAt(i + 1) === CHAR_OPEN_PAREN) {
+                if (
+                    char === CHAR_DOLLAR && i < last &&
+                    content.charCodeAt(i + 1) === CHAR_OPEN_PAREN
+                ) {
                     commandSubDepth++;
                     sb.appendChar(char);
                     continue;

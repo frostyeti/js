@@ -72,15 +72,13 @@ function getNodeUtil(): any {
             const utils = require("node:util");
             return utils;
         } catch (_) {
-            console.log("require failed, falling back to JSON.stringify");
-            // ignore
+            // Bun doesn't support require, fall through to fallback
         }
     }
 
     return {
         // deno-lint-ignore no-unused-vars
         inspect: (value: unknown, options?: InspectOptions): string => {
-            console.log("NodeJS environment detected, using JSON.stringify");
             return JSON.stringify(value, null, 2);
         },
     };

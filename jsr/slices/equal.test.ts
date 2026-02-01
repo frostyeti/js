@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { equal as assertEqual, ok } from "@frostyeti/assert";
+import { ok } from "@frostyeti/assert";
 import { equal, equalFold } from "./equal.ts";
 
 // =============================================================================

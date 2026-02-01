@@ -48,7 +48,7 @@ describe("assert::truthy", () => {
     let threw = false;
     try {
       truthy(0);
-    } catch (e) {
+    } catch {
       threw = true;
     }
     equal(threw, true);
@@ -57,7 +57,7 @@ describe("assert::truthy", () => {
     let threw = false;
     try {
       truthy("");
-    } catch (e) {
+    } catch {
       threw = true;
     }
     equal(threw, true);
@@ -66,7 +66,7 @@ describe("assert::truthy", () => {
     let threw = false;
     try {
       truthy(null);
-    } catch (e) {
+    } catch {
       threw = true;
     }
     equal(threw, true);
@@ -75,7 +75,7 @@ describe("assert::truthy", () => {
     let threw = false;
     try {
       truthy(undefined);
-    } catch (e) {
+    } catch {
       threw = true;
     }
     equal(threw, true);
@@ -84,7 +84,7 @@ describe("assert::truthy", () => {
     let threw = false;
     try {
       truthy(NaN);
-    } catch (e) {
+    } catch {
       threw = true;
     }
     equal(threw, true);

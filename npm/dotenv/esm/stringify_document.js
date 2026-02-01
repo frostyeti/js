@@ -1,11 +1,29 @@
 import { StringBuilder } from "@frostyeti/strings";
 import { EOL } from "./globals.js";
 /**
- * Converts a DotEnvDocument into a string representation.
+ * Converts a DotEnvDocument into a dotenv-formatted string.
  *
- * @param document - The DotEnvDocument to be converted.
- * @param options - Optional settings to customize the stringification process.
- * @returns The string representation of the DotEnvDocument.
+ * This function preserves all tokens including comments, newlines, and key-value pairs,
+ * allowing for round-trip parsing and stringifying of dotenv files.
+ *
+ * @param document - The DotEnvDocument to convert.
+ * @param options - Optional settings to customize the stringification.
+ * @returns A dotenv-formatted string representation of the document.
+ *
+ * @example Stringify a document with comments
+ * ```ts
+ * import { DotEnvDocument, stringifyDocument } from "@frostyeti/dotenv";
+ *
+ * const doc = new DotEnvDocument();
+ * doc.comment("API Configuration");
+ * doc.newline();
+ * doc.item("API_KEY", "secret123");
+ *
+ * console.log(stringifyDocument(doc));
+ * // #API Configuration
+ * //
+ * // API_KEY='secret123'
+ * ```
  */
 export function stringifyDocument(document, options) {
   const sb = new StringBuilder();

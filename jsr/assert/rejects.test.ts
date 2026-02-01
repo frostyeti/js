@@ -10,6 +10,7 @@ describe("assert::rejects", () => {
 
         test("passes when async function throws", async () => {
             await rejects(async () => {
+                await Promise.resolve();
                 throw new Error("async error");
             });
         });
@@ -27,7 +28,7 @@ describe("assert::rejects", () => {
         test("throws when async function returns", async () => {
             let threw = false;
             try {
-                await rejects(async () => "returned value");
+                await rejects(() => Promise.resolve("returned value"));
             } catch {
                 threw = true;
             }
@@ -39,7 +40,7 @@ describe("assert::rejects", () => {
         test("passes when error matches expected class", async () => {
             await rejects(
                 () => Promise.reject(new TypeError("type error")),
-                TypeError
+                TypeError,
             );
         });
 
@@ -47,7 +48,7 @@ describe("assert::rejects", () => {
             class CustomError extends Error {}
             await rejects(
                 () => Promise.reject(new CustomError("custom")),
-                Error
+                Error,
             );
         });
 
@@ -56,7 +57,7 @@ describe("assert::rejects", () => {
             try {
                 await rejects(
                     () => Promise.reject(new TypeError("type error")),
-                    SyntaxError
+                    SyntaxError,
                 );
             } catch {
                 threw = true;
@@ -67,14 +68,14 @@ describe("assert::rejects", () => {
         test("passes with RangeError", async () => {
             await rejects(
                 () => Promise.reject(new RangeError("out of range")),
-                RangeError
+                RangeError,
             );
         });
 
         test("passes with ReferenceError", async () => {
             await rejects(
                 () => Promise.reject(new ReferenceError("undefined variable")),
-                ReferenceError
+                ReferenceError,
             );
         });
     });
@@ -84,7 +85,7 @@ describe("assert::rejects", () => {
             await rejects(
                 () => Promise.reject(new Error("validation failed")),
                 Error,
-                "validation"
+                "validation",
             );
         });
 
@@ -94,7 +95,7 @@ describe("assert::rejects", () => {
                 await rejects(
                     () => Promise.reject(new Error("validation failed")),
                     Error,
-                    "not found"
+                    "not found",
                 );
             } catch {
                 threw = true;
@@ -106,7 +107,7 @@ describe("assert::rejects", () => {
             await rejects(
                 () => Promise.reject(new Error("User not found in database")),
                 Error,
-                "not found"
+                "not found",
             );
         });
     });
@@ -117,7 +118,7 @@ describe("assert::rejects", () => {
             try {
                 await rejects(
                     () => Promise.resolve("ok"),
-                    "should have rejected"
+                    "should have rejected",
                 );
             } catch (e) {
                 message = (e as Error).message;
@@ -132,7 +133,7 @@ describe("assert::rejects", () => {
                     () => Promise.reject(new TypeError("type")),
                     SyntaxError,
                     undefined,
-                    "custom assertion message"
+                    "custom assertion message",
                 );
             } catch (e) {
                 message = (e as Error).message;
@@ -152,7 +153,7 @@ describe("assert::rejects", () => {
             const error = new TypeError("type error");
             const result = await rejects(
                 () => Promise.reject(error),
-                TypeError
+                TypeError,
             );
             equal(result instanceof TypeError, true);
             equal(result.message, "type error");
@@ -172,7 +173,7 @@ describe("assert::rejects", () => {
 
         test("handles delayed rejection", async () => {
             await rejects(async () => {
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise((resolve) => setTimeout(resolve, 10));
                 throw new Error("delayed error");
             });
         });

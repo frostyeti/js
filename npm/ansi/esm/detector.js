@@ -34,7 +34,8 @@ function detectCi() {
         "DRONE",
         "TF_BUILD",
         "AGENT_NAME",
-      ].some((sign) => has(sign)) ||
+      ]
+        .some((sign) => has(sign)) ||
       get("CI_NAME") === "codeship"
     ) {
       return AnsiModes.FourBit;

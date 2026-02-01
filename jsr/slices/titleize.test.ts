@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import { equal, ok } from "@frostyeti/assert";
-import { titleize, NoCapitalizeWords } from "./titleize.ts";
+import { NoCapitalizeWords, titleize } from "./titleize.ts";
 import { toCharArray } from "./utils.ts";
 
 // Helper to convert titleize result to string

@@ -251,8 +251,6 @@ test("slices::ReadOnlyCharSlice.indexOfFold case-insensitive search", () => {
     equal(6, s.indexOfFold(toUint32Array("world")));
 });
 
-
-
 test("slices::ReadOnlyCharSlice.forEach iterates over code points", () => {
     const s = ReadonlyCharSlice.fromString("abc");
     const result: number[] = [];
@@ -277,8 +275,6 @@ test("slices::ReadOnlyCharSlice.map transforms code points", () => {
     const mapped = s.map((cp) => cp + 1);
     equal("bcd", mapped.toString());
 });
-
-
 
 test("slices::ReadOnlyCharSlice iterator works with for...of", () => {
     const s = ReadonlyCharSlice.fromString("abc");
@@ -311,8 +307,6 @@ test("slices::CharSlice.set throws on invalid index", () => {
     throws(() => s.set(-1, "x".codePointAt(0)!));
     throws(() => s.set(5, "x".codePointAt(0)!));
 });
-
-
 
 test("slices::CharSlice.replace updates slice content", () => {
     const s = CharSlice.fromString("hello");
@@ -350,8 +344,6 @@ test("slices::CharSlice.captialize on empty slice", () => {
     equal("", s.toString());
 });
 
-
-
 test("slices::CharSlice.findIndex finds matching element", () => {
     const s = CharSlice.fromString("hello");
     const index = s.findIndex((c) => c === "l".codePointAt(0));
@@ -387,8 +379,6 @@ test("slices::CharSlice.slice creates mutable subslice", () => {
     sub.set(0, "H".codePointAt(0)!);
     equal("Hello world", s.toString()); // Original modified
 });
-
-
 
 test("slices::CharSlice.map transforms in place", () => {
     const s = CharSlice.fromString("abc");

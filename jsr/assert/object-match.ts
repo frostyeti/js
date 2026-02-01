@@ -190,7 +190,9 @@ export function objectMatch(
     if (!deepEqual(filteredActual, filteredExpected)) {
         const msgSuffix = msg ? `: ${msg}` : ".";
         throw new AssertionError(
-            `Expected object to match${msgSuffix}\nActual: ${JSON.stringify(filteredActual)}\nExpected: ${JSON.stringify(filteredExpected)}`,
+            `Expected object to match${msgSuffix}\nActual: ${
+                JSON.stringify(filteredActual)
+            }\nExpected: ${JSON.stringify(filteredExpected)}`,
         );
     }
 }

@@ -92,12 +92,14 @@ export { proxy };
  *
  * @param name - The name of the environment variable.
  * @returns The value of the environment variable, or `undefined` if it is not set.
- * @example
- * ```ts
- * import { get } from "@frostyeti/env";
  *
- * console.log(set("MY_VAR", "test")); // test
- * console.log(get("MY_VAR")); // test
+ * @example Get an environment variable
+ * ```ts
+ * import { get, set } from "@frostyeti/env";
+ *
+ * set("MY_VAR", "test");
+ * console.log(get("MY_VAR")); // "test"
+ * console.log(get("UNDEFINED_VAR")); // undefined
  * ```
  */
 export function get(name) {
@@ -105,15 +107,33 @@ export function get(name) {
 }
 /**
  * Expands a template string using the current environment variables.
- * @param template The template string to expand.
- * @param options
- * @returns The expanded string.
- * ```ts
- * import { expand } from "@frostyeti/env";
  *
- * console.log(expand("${HOME}")); // /home/alice
- * console.log(expand("${HOME:-/home/default}")); // /home/alice
- * console.log(expand("${HOME:=/home/default}")); // /home/alice
+ * Supports bash-style variable expansion including:
+ * - `${VAR}` - Simple variable expansion
+ * - `${VAR:-default}` - Use default if VAR is unset
+ * - `${VAR:=default}` - Assign default if VAR is unset
+ * - `${VAR:?error}` - Throw error if VAR is unset
+ * - `%VAR%` - Windows-style expansion (optional)
+ *
+ * @param template - The template string to expand.
+ * @param options - Optional substitution options to customize expansion behavior.
+ * @returns The expanded string with variables replaced.
+ *
+ * @example Expand bash-style variables
+ * ```ts
+ * import { expand, set } from "@frostyeti/env";
+ *
+ * set("NAME", "Alice");
+ * console.log(expand("Hello, ${NAME}!")); // "Hello, Alice!"
+ * console.log(expand("${UNSET:-default}")); // "default"
+ * ```
+ *
+ * @example Windows-style expansion
+ * ```ts
+ * import { expand, set } from "@frostyeti/env";
+ *
+ * set("USER", "Bob");
+ * console.log(expand("%USER%", { windowsExpansion: true })); // "Bob"
  * ```
  */
 export function expand(template, options) {
@@ -121,27 +141,32 @@ export function expand(template, options) {
 }
 /**
  * Sets the value of the specified environment variable.
- * @param name The name of the environment variable.
- * @param value The value to set.
+ *
+ * @param name - The name of the environment variable.
+ * @param value - The value to set.
+ *
+ * @example Set an environment variable
  * ```ts
  * import { set, get } from "@frostyeti/env";
  *
- * console.log(set("MY_VAR", "test")); // test
- * console.log(get("MY_VAR")); // test
+ * set("MY_VAR", "test");
+ * console.log(get("MY_VAR")); // "test"
  * ```
  */
 export function set(name, value) {
   proxy[name] = value;
 }
 /**
- * Sets the value of the specified environment variable if it is not already set.
- * @param name The name of the environment variable.
- * @param value The value to set.
+ * Removes the specified environment variable from the environment.
+ *
+ * @param name - The name of the environment variable to remove.
+ *
+ * @example Remove an environment variable
  * ```ts
  * import { remove, get, set } from "@frostyeti/env";
  *
- * set("MY_VAR", "test")
- * console.log(get("MY_VAR")); // test
+ * set("MY_VAR", "test");
+ * console.log(get("MY_VAR")); // "test"
  * remove("MY_VAR");
  * console.log(get("MY_VAR")); // undefined
  * ```
@@ -151,8 +176,11 @@ export function remove(name) {
 }
 /**
  * Determines if the specified environment variable is set.
- * @param name The name of the environment variable.
+ *
+ * @param name - The name of the environment variable.
  * @returns `true` if the environment variable is set, `false` otherwise.
+ *
+ * @example Check if variable exists
  * ```ts
  * import { has, set } from "@frostyeti/env";
  *
@@ -165,14 +193,18 @@ export function has(name) {
   return proxy[name] !== undefined;
 }
 /**
- * Clones and returns the environment variables as a record of key-value pairs.
- * @returns The environment variables as a record of key-value pairs.
+ * Clones and returns all environment variables as a record of key-value pairs.
+ *
+ * @returns A shallow copy of all environment variables as an object.
+ *
+ * @example Get all environment variables
  * ```ts
  * import { toObject, set } from "@frostyeti/env";
  *
  * set("MY_VAR", "test");
- * // may include other environment variables
- * console.log(toObject()); // { MY_VAR: "test" }
+ * const env = toObject();
+ * console.log(env.MY_VAR); // "test"
+ * // Note: Will also include other system environment variables
  * ```
  */
 export function toObject() {
@@ -180,16 +212,20 @@ export function toObject() {
 }
 /**
  * Merges the provided environment variables into the current environment.
- * @remarks
+ *
  * This function will overwrite existing values in the environment with the provided values.
- * If a value is `undefined`, it will be removed from the environment.
- * @param values The values to merge into the environment.
+ * If a value is `undefined` or `null`, the corresponding variable will be removed.
+ *
+ * @param values - A record of environment variables to merge.
+ *
+ * @example Merge environment variables
  * ```ts
- * import { merge, set, toObject } from "@frostyeti/env";
+ * import { merge, set, get } from "@frostyeti/env";
  *
  * set("MY_VAR", "test");
  * merge({ "MY_VAR": undefined, "MY_VAR2": "test2" });
- * console.log(toObject()); // { MY_VAR2: "test2" }
+ * console.log(get("MY_VAR")); // undefined (removed)
+ * console.log(get("MY_VAR2")); // "test2"
  * ```
  */
 export function merge(values) {
@@ -202,19 +238,21 @@ export function merge(values) {
   }
 }
 /**
- * Union of the provided environment variables into the current environment.
+ * Unions the provided environment variables into the current environment.
  *
- * @remarks
  * This function will only add new values to the environment if they do not already exist.
- * If a value is `undefined`, it will be ignored.
+ * Existing values are preserved and `undefined` values in the input are ignored.
  *
- * @param values The values to merge into the environment.
+ * @param values - A record of environment variables to add.
+ *
+ * @example Union environment variables
  * ```ts
- * import { union, set, toObject } from "@frostyeti/env";
+ * import { union, set, get } from "@frostyeti/env";
  *
- * set("MY_VAR", "test");
- * union({ "MY_VAR": undefined, "MY_VAR2": "test2" });
- * console.log(toObject()); // { MY_VAR: "test", MY_VAR2: "test2" }
+ * set("MY_VAR", "original");
+ * union({ "MY_VAR": "ignored", "MY_VAR2": "new" });
+ * console.log(get("MY_VAR")); // "original" (preserved)
+ * console.log(get("MY_VAR2")); // "new"
  * ```
  */
 export function union(values) {
@@ -228,14 +266,17 @@ export function union(values) {
   }
 }
 /**
- * Gets the environment path.
- * @remarks
- * This function retrieves the environment path as a string.
- * @returns The environment path as a string.
+ * Gets the system PATH environment variable.
+ *
+ * Returns the PATH (Unix) or Path (Windows) environment variable.
+ *
+ * @returns The PATH as a string, or empty string if not set.
+ *
+ * @example Get the PATH
  * ```ts
  * import { getPath } from "@frostyeti/env";
  *
- * console.log(getPath()); // /usr/local/bin:/usr/bin:/bin
+ * console.log(getPath()); // "/usr/local/bin:/usr/bin:/bin"
  * ```
  */
 export function getPath() {
@@ -246,31 +287,39 @@ export function getPath() {
   return value;
 }
 /**
- * Sets the environment path.
- * @remarks
- * This function sets the environment path to the specified value.
- * @param value The value to set.
+ * Sets the system PATH environment variable.
+ *
+ * Replaces the entire PATH (Unix) or Path (Windows) with the specified value.
+ *
+ * @param value - The new PATH value to set.
+ *
+ * @example Set the PATH
  * ```ts
- * import { setPath } from "@frostyeti/env";
+ * import { setPath, getPath } from "@frostyeti/env";
  *
  * setPath("/usr/local/bin:/usr/bin:/bin");
- * console.log(getPath()); // /usr/local/bin:/usr/bin:/bin
+ * console.log(getPath()); // "/usr/local/bin:/usr/bin:/bin"
  * ```
  */
 export function setPath(value) {
   set(PATH_NAME, value);
 }
 /**
- * Determines if the specified path exists in the environment path.
- * @param value The path to check.
- * @param paths The paths to check against. If not provided, the current environment path will be used.
- * @returns `true` if the path exists, `false` otherwise.
- * ```ts
- * import { hasPath, getPath } from "@frostyeti/env";
+ * Checks if a path exists in the system PATH environment variable.
  *
+ * On Windows, comparison is case-insensitive.
+ *
+ * @param value - The path to check for.
+ * @param paths - Optional array of paths to check against. If not provided, uses the current PATH.
+ * @returns `true` if the path exists in PATH, `false` otherwise.
+ *
+ * @example Check if path exists
+ * ```ts
+ * import { hasPath, appendPath } from "@frostyeti/env";
+ *
+ * appendPath("/usr/local/bin");
  * console.log(hasPath("/usr/local/bin")); // true
- * console.log(hasPath("/usr/local/bin", getPath().split(":"))); // true
- * console.log(hasPath("/usr/local/bin", ["/usr/bin", "/bin"])); // false
+ * console.log(hasPath("/nonexistent")); // false
  * ```
  */
 export function hasPath(value, paths) {
@@ -280,28 +329,38 @@ export function hasPath(value, paths) {
   return paths.some((path) => WIN_DESKTOP ? equalFold(path, value) : path === value);
 }
 /**
- * Joins the provided paths into a single string.
- * @param paths The paths to join.
- * @returns the joined path as a string.
+ * Joins an array of paths into a single PATH string.
  *
+ * Uses the appropriate separator (`:` on Unix, `;` on Windows).
+ *
+ * @param paths - The array of paths to join.
+ * @returns The joined path string.
+ *
+ * @example Join paths
  * ```ts
  * import { joinPath } from "@frostyeti/env";
  *
- * console.log(joinPath(["/usr/local/bin", "/usr/bin", "/bin"])); // /usr/local/bin:/usr/bin:/bin
+ * // On Unix:
+ * console.log(joinPath(["/usr/local/bin", "/usr/bin"])); // "/usr/local/bin:/usr/bin"
  * ```
  */
 export function joinPath(paths) {
   return paths.join(SEP);
 }
 /**
- * Splits the environment path into an array of paths.
- * @returns The environment path as an array of paths
- * as long as the path is not empty.
+ * Splits the PATH environment variable into an array of paths.
+ *
+ * Empty paths are filtered out from the result.
+ *
+ * @param path - Optional path string to split. If not provided, uses the current PATH.
+ * @returns An array of non-empty path strings.
+ *
+ * @example Split the PATH
  * ```ts
  * import { splitPath } from "@frostyeti/env";
  *
  * console.log(splitPath()); // ["/usr/local/bin", "/usr/bin", "/bin"]
- * console.log(splitPath("/usr/local/bin:/usr/bin:/bin")); // ["/usr/local/bin", "/usr/bin", "/bin"]
+ * console.log(splitPath("/a:/b")); // ["/a", "/b"]
  * ```
  */
 export function splitPath(path) {
@@ -310,15 +369,20 @@ export function splitPath(path) {
     .filter((p) => p.length > 0);
 }
 /**
- * Appends the specified path to the environment path.
- * @param path The path to append.
- * @param force Force the append even if the path already exists.
+ * Appends a path to the end of the system PATH environment variable.
+ *
+ * By default, the path is not added if it already exists.
+ *
+ * @param path - The path to append.
+ * @param force - If `true`, appends even if the path already exists.
+ *
+ * @example Append to PATH
  * ```ts
- * import { appendPath, setPath } from "@frostyeti/env";
+ * import { appendPath, getPath, setPath } from "@frostyeti/env";
  *
  * setPath("/usr/bin:/bin");
  * appendPath("/usr/local/bin");
- * console.log(getPath()); // /usr/bin:/bin:/usr/local/bin
+ * console.log(getPath()); // "/usr/bin:/bin:/usr/local/bin"
  * ```
  */
 export function appendPath(path, force = false) {
@@ -329,15 +393,20 @@ export function appendPath(path, force = false) {
   }
 }
 /**
- * Prepends the specified path to the environment path.
- * @param path The path to prepend.
- * @param force Force the prepend even if the path already exists.
+ * Prepends a path to the beginning of the system PATH environment variable.
+ *
+ * By default, the path is not added if it already exists.
+ *
+ * @param path - The path to prepend.
+ * @param force - If `true`, prepends even if the path already exists.
+ *
+ * @example Prepend to PATH
  * ```ts
- * import { prependPath, setPath } from "@frostyeti/env";
+ * import { prependPath, getPath, setPath } from "@frostyeti/env";
  *
  * setPath("/usr/bin:/bin");
  * prependPath("/usr/local/bin");
- * console.log(getPath()); // /usr/local/bin:/usr/bin:/bin
+ * console.log(getPath()); // "/usr/local/bin:/usr/bin:/bin"
  * ```
  */
 export function prependPath(path, force = false) {
@@ -348,14 +417,20 @@ export function prependPath(path, force = false) {
   }
 }
 /**
- * Removes the specified path from the environment path.
- * @param path - The path to remove.
- * ```ts
- * import { removePath, setPath, getPath } from "@frostyeti/env";
+ * Removes a path from the system PATH environment variable.
  *
- * setPath("/usr/bin:/bin:/usr/local/bin");
- * removePath("/usr/local/bin");
- * console.log(getPath()); // /usr/bin:/bin
+ * On Windows, comparison is case-insensitive.
+ *
+ * @param path - The path to remove.
+ *
+ * @example Remove from PATH
+ * ```ts
+ * import { removePath, appendPath, hasPath } from "@frostyeti/env";
+ *
+ * appendPath("/custom/bin");
+ * console.log(hasPath("/custom/bin")); // true
+ * removePath("/custom/bin");
+ * console.log(hasPath("/custom/bin")); // false
  * ```
  */
 export function removePath(path) {
@@ -367,15 +442,22 @@ export function removePath(path) {
   }
 }
 /**
- * Replaces the specified old path with the new path in the environment path.
- * @param oldPath - The path to replace.
- * @param newPath - The new path.
- * ```ts
- * import { replacePath, setPath, getPath } from "@frostyeti/env";
+ * Replaces a path in the system PATH environment variable with a new path.
  *
- * setPath("/usr/bin:/bin:/usr/local/bin");
- * replacePath("/usr/local/bin", "/opt/local/bin");
- * console.log(getPath()); // /usr/bin:/bin:/opt/local/bin
+ * If the old path is not found, no changes are made.
+ * On Windows, comparison is case-insensitive.
+ *
+ * @param oldPath - The path to replace.
+ * @param newPath - The new path to use.
+ *
+ * @example Replace a path in PATH
+ * ```ts
+ * import { replacePath, appendPath, hasPath } from "@frostyeti/env";
+ *
+ * appendPath("/old/bin");
+ * replacePath("/old/bin", "/new/bin");
+ * console.log(hasPath("/old/bin")); // false
+ * console.log(hasPath("/new/bin")); // true
  * ```
  */
 export function replacePath(oldPath, newPath) {
@@ -387,60 +469,85 @@ export function replacePath(oldPath, newPath) {
   }
 }
 /**
- * Gets the current user's home directory using the HOME or USERPROFILE environment variable.
- * @returns The current user's home directory.
+ * Gets the current user's home directory.
+ *
+ * Returns the value of `HOME` (Unix) or `USERPROFILE` (Windows) environment variable.
+ *
+ * @returns The home directory path, or `undefined` if not set.
+ *
+ * @example Get home directory
  * ```ts
  * import { home } from "@frostyeti/env";
  *
- * console.log(home()); // /home/alice
+ * console.log(home()); // "/home/alice" (Unix) or "C:\Users\Alice" (Windows)
  * ```
  */
 export function home() {
   return get("HOME") ?? get("USERPROFILE") ?? undefined;
 }
 /**
- * Gets the current user's name using the USER or USERNAME environment variable.
- * @returns The current user's name.
+ * Gets the current user's name.
+ *
+ * Returns the value of `USER` (Unix) or `USERNAME` (Windows) environment variable.
+ *
+ * @returns The username, or `undefined` if not set.
+ *
+ * @example Get current username
  * ```ts
  * import { user } from "@frostyeti/env";
  *
- * console.log(user()); // alice
+ * console.log(user()); // "alice"
  * ```
  */
 export function user() {
   return get("USER") ?? get("USERNAME") ?? undefined;
 }
 /**
- * Gets the current user's shell using the SHELL or ComSpec environment variable.
- * @returns The current user's shell.
+ * Gets the current user's default shell.
+ *
+ * Returns the value of `SHELL` (Unix) or `ComSpec` (Windows) environment variable.
+ *
+ * @returns The shell path, or `undefined` if not set.
+ *
+ * @example Get default shell
  * ```ts
  * import { shell } from "@frostyeti/env";
  *
- * console.log(shell()); // /bin/bash
+ * console.log(shell()); // "/bin/bash" (Unix) or "C:\Windows\System32\cmd.exe" (Windows)
  * ```
  */
 export function shell() {
   return get("SHELL") ?? get("ComSpec") ?? undefined;
 }
 /**
- * Gets the current user's hostname using the HOSTNAME or COMPUTERNAME environment variable.
- * @returns The current user's hostname.
+ * Gets the machine's hostname.
+ *
+ * Returns the value of `HOSTNAME` (Unix) or `COMPUTERNAME` (Windows) environment variable.
+ *
+ * @returns The hostname, or `undefined` if not set.
+ *
+ * @example Get hostname
  * ```ts
  * import { hostname } from "@frostyeti/env";
  *
- * console.log(hostname()); // my-computer
+ * console.log(hostname()); // "my-computer"
  * ```
  */
 export function hostname() {
   return get("HOSTNAME") ?? get("COMPUTERNAME") ?? undefined;
 }
 /**
- * Gets the current os using the OS or OSTYPE environment variable.
- * @returns The current operating system.
+ * Gets the operating system type.
+ *
+ * Returns the value of `OS` or `OSTYPE` environment variable.
+ *
+ * @returns The OS type string, or `undefined` if not set.
+ *
+ * @example Get OS type
  * ```ts
  * import { os } from "@frostyeti/env";
  *
- * console.log(os()); // linux-gnu
+ * console.log(os()); // "linux-gnu" (Unix) or "Windows_NT" (Windows)
  * ```
  */
 export function os() {

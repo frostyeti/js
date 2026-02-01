@@ -1,5 +1,5 @@
-import { test, describe } from "node:test";
-import { truthy, ok } from "./truthy.ts";
+import { describe, test } from "node:test";
+import { ok, truthy } from "./truthy.ts";
 import { equal } from "./equal.ts";
 import { AssertionError } from "./assertion-error.ts";
 
@@ -33,7 +33,7 @@ describe("assert::truthy", () => {
 
     test("passes for functions", () => {
         truthy(() => {});
-        truthy(function() {});
+        truthy(function () {});
     });
 
     test("passes for symbols", () => {
@@ -56,7 +56,7 @@ describe("assert::truthy", () => {
         let threw = false;
         try {
             truthy(0);
-        } catch (e) {
+        } catch {
             threw = true;
         }
         equal(threw, true);
@@ -66,7 +66,7 @@ describe("assert::truthy", () => {
         let threw = false;
         try {
             truthy("");
-        } catch (e) {
+        } catch {
             threw = true;
         }
         equal(threw, true);
@@ -76,7 +76,7 @@ describe("assert::truthy", () => {
         let threw = false;
         try {
             truthy(null);
-        } catch (e) {
+        } catch {
             threw = true;
         }
         equal(threw, true);
@@ -86,7 +86,7 @@ describe("assert::truthy", () => {
         let threw = false;
         try {
             truthy(undefined);
-        } catch (e) {
+        } catch {
             threw = true;
         }
         equal(threw, true);
@@ -96,7 +96,7 @@ describe("assert::truthy", () => {
         let threw = false;
         try {
             truthy(NaN);
-        } catch (e) {
+        } catch {
             threw = true;
         }
         equal(threw, true);
@@ -131,4 +131,3 @@ describe("assert::ok", () => {
         equal(threw, true);
     });
 });
-

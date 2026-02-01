@@ -630,30 +630,33 @@ export function stripAnsiCode(string: string): string {
     return string.replace(ANSI_PATTERN, "");
 }
 
-
 /**
  * Defines a color function that applies the appropriate color based on the current ANSI settings.
  * @param trueColor The true color value (24-bit) as a number or Rgb object.
  * @param color256 The 256-color palette index.
  * @param color The fallback color function for standard colors.
  * @returns A function that applies the appropriate color to a given string.
- * 
+ *
  * @example
  * ```ts
  * import { defineColor, red } from "@frostyeti/ansi/styles";
- * 
+ *
  * const redColor = defineColor(0xFF0000, 9, red);
  * console.log(redColor("This text will be colored based on ANSI settings."));
  * ```
  */
-export function defineColor(trueColor: number | Rgb, color256: number, color: (str: string) => string): (str: string) => string {
+export function defineColor(
+    trueColor: number | Rgb,
+    color256: number,
+    color: (str: string) => string,
+): (str: string) => string {
     return function (str: string): string {
         if (isColorEnabled()) {
             if (AnsiSettings.current.mode === 24) {
                 return rgb24(str, trueColor);
             } else if (AnsiSettings.current.mode === 8) {
                 return rgb8(str, color256);
-            } else if (AnsiSettings.current.mode  === 4) {
+            } else if (AnsiSettings.current.mode === 4) {
                 return color(str);
             } else {
                 return str;
@@ -673,19 +676,23 @@ export function defineColor(trueColor: number | Rgb, color256: number, color: (s
  * @example
  * ```ts
  * import { defineBgColor, bgRed } from "@frostyeti/ansi/styles";
- * 
+ *
  * const redBgColor = defineBgColor(0xFF0000, 9, bgRed);
  * console.log(redBgColor("This text will have a background color based on ANSI settings."));
  * ```
  */
-export function defineBgColor(trueColor: number | Rgb, color256: number, color: (str: string) => string): (str: string) => string {
+export function defineBgColor(
+    trueColor: number | Rgb,
+    color256: number,
+    color: (str: string) => string,
+): (str: string) => string {
     return function (str: string): string {
         if (isColorEnabled()) {
             if (AnsiSettings.current.mode === 24) {
                 return bgRgb24(str, trueColor);
             } else if (AnsiSettings.current.mode === 8) {
                 return bgRgb8(str, color256);
-            } else if (AnsiSettings.current.mode  === 4) {
+            } else if (AnsiSettings.current.mode === 4) {
                 return color(str);
             } else {
                 return str;

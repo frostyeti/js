@@ -66,7 +66,7 @@ describe("assert::arrayIncludes", () => {
         test("passes with nested objects", () => {
             arrayIncludes(
                 [{ user: { name: "Alice" } }, { user: { name: "Bob" } }],
-                [{ user: { name: "Alice" } }]
+                [{ user: { name: "Alice" } }],
             );
         });
 

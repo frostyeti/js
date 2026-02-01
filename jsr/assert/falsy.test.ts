@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { falsy, nope, notOk } from "./falsy.ts";
 import { AssertionError } from "./assertion-error.ts";

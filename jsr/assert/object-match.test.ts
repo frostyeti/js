@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { objectMatch } from "./object-match.ts";
 import { AssertionError } from "./assertion-error.ts";
@@ -18,22 +18,22 @@ describe("assert::objectMatch", () => {
     test("passes with nested objects", () => {
         objectMatch(
             { foo: { bar: 3, baz: 4 } },
-            { foo: { bar: 3 } }
+            { foo: { bar: 3 } },
         );
         objectMatch(
             { a: { b: { c: 1, d: 2 } } },
-            { a: { b: { c: 1 } } }
+            { a: { b: { c: 1 } } },
         );
     });
 
     test("passes with arrays inside objects", () => {
         objectMatch(
             { foo: [1, 2, 3], bar: true },
-            { foo: [1, 2, 3] }
+            { foo: [1, 2, 3] },
         );
         objectMatch(
             { items: [{ id: 1 }, { id: 2 }] },
-            { items: [{ id: 1 }] }
+            { items: [{ id: 1 }] },
         );
     });
 
@@ -64,7 +64,7 @@ describe("assert::objectMatch", () => {
         try {
             objectMatch(
                 { foo: { bar: 1 } },
-                { foo: { bar: 2 } }
+                { foo: { bar: 2 } },
             );
         } catch (e) {
             threw = true;
@@ -128,20 +128,20 @@ describe("assert::objectMatch", () => {
                     level2: {
                         level3: {
                             value: 42,
-                            extra: "ignored"
-                        }
-                    }
-                }
+                            extra: "ignored",
+                        },
+                    },
+                },
             },
             {
                 level1: {
                     level2: {
                         level3: {
-                            value: 42
-                        }
-                    }
-                }
-            }
+                            value: 42,
+                        },
+                    },
+                },
+            },
         );
     });
 
@@ -153,7 +153,7 @@ describe("assert::objectMatch", () => {
     test("works with arrays of objects", () => {
         objectMatch(
             { users: [{ name: "Alice", age: 30 }, { name: "Bob", age: 25 }] },
-            { users: [{ name: "Alice" }] }
+            { users: [{ name: "Alice" }] },
         );
     });
 });

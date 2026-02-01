@@ -5,11 +5,11 @@ import { toCharArray } from "./utils.ts";
 /**
  * Represents a mutable string of characters that are stored
  * as code points in a Uint32Array.
- * 
+ *
  * @example
  * ```typescript
  * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
- * 
+ *
  * const builder = new CharArrayBuilder();
  * builder.appendString("Hello, ");
  * builder.appendString("World!");
@@ -23,11 +23,11 @@ export class CharArrayBuilder {
     /**
      * Creates a new instance of the StringBuilder class.
      * @param capacity The initial capacity of the char builder. Default is 16.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder(32);
      * ```
      */
@@ -38,11 +38,11 @@ export class CharArrayBuilder {
 
     /**
      * Gets the length of the char or string builder.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.append("Hello");
      * console.log(builder.length); // Output: 5
@@ -56,11 +56,11 @@ export class CharArrayBuilder {
      * Appends a value to the string builder.
      * @param value The value to append to the string builder.
      * @returns The updated `StringBuilder` or `CharArrayBuilder` instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.append("Hello, ");
      * builder.append("World!");
@@ -106,11 +106,11 @@ export class CharArrayBuilder {
      * Appends a Unicode character to the string builder.
      * @param value The Unicode character (codepoint) to append.
      * @returns The update `StringBuilder` or `CharArrayBuilder` instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendChar(65); // Appends 'A'
      * builder.appendChar(66); // Appends 'B'
@@ -132,11 +132,11 @@ export class CharArrayBuilder {
      * Appends a char slice to the string builder.
      * @param value The slice to append.
      * @returns The updated string builder.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * const slice: CharBuffer = new Uint32Array([72, 101, 108, 108, 111]); // "Hello"
      * builder.appendSlice(slice);
@@ -161,11 +161,11 @@ export class CharArrayBuilder {
      * Appends a string to the end of the string builder.
      * @param value The string to append.
      * @returns The updated `CharArrayBuilder` instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendString("Hello, World!");
      * console.log(builder.toString()); // Output: "Hello, World!"
@@ -179,11 +179,11 @@ export class CharArrayBuilder {
      * Appends a character array to the end of the string builder.
      * @param value The character array to append.
      * @returns The updated `CharArrayBuilder` instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * const charArray = new Uint32Array([72, 101, 108, 108, 111]); // "Hello"
      * builder.appendCharArray(charArray);
@@ -200,11 +200,11 @@ export class CharArrayBuilder {
      * Appends a string followed by a line break to the string builder.
      * @param value The string to append.
      * @returns The updated string builder.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendLine("Hello, World!");
      * console.log(builder.toString()); // Output on Windows: "Hello, World!\r\n" | Output on Unix: "Hello, World!\n"
@@ -228,11 +228,11 @@ export class CharArrayBuilder {
      * @param capacity The new capacity of the string builder.
      * @returns The updated StringBuilder instance.
      * @throws ArgumentRangeError if the capacity is less than 0.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder(50);
      * builder.append("Hello, World!");
      * builder.shrinkTo(20);
@@ -253,11 +253,11 @@ export class CharArrayBuilder {
     /**
      * Clears the string builder.
      * @returns The updated `CharArrayBuilder` instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendString("Hello, World!");
      * builder.clear();
@@ -273,11 +273,11 @@ export class CharArrayBuilder {
     /**
      * Trims excess capacity from the string builder.
      * @returns The updated StringBuilder instance.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendString("Hello, World!");
      * builder.trimExcess();
@@ -295,7 +295,7 @@ export class CharArrayBuilder {
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendString("Hello");
      * const charArray = builder.toArray();
@@ -311,11 +311,11 @@ export class CharArrayBuilder {
     /**
      * Converts the string builder to a string.
      * @returns The string representation of the string builder.
-     * 
+     *
      * @example
      * ```typescript
      * import { CharArrayBuilder } from '@frostyeti/slices/char-array-builder';
-     * 
+     *
      * const builder = new CharArrayBuilder();
      * builder.appendString("Hello, World!");
      * const str = builder.toString();

@@ -330,7 +330,9 @@ test("args::split with npm command", () => {
 });
 
 test("args::split with complex curl command", () => {
-    const args = split(`curl -X POST -H "Content-Type: application/json" -d '{"key": "value"}' https://api.example.com`);
+    const args = split(
+        `curl -X POST -H "Content-Type: application/json" -d '{"key": "value"}' https://api.example.com`,
+    );
     equal(args.length, 8);
     equal(args[0], "curl");
     equal(args[1], "-X");

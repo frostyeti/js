@@ -26,16 +26,15 @@ if (globals.Deno) {
  */
 function detectCi(): AnsiMode | null {
     if (has("CI")) {
-        if (has("GITHUB_ACTIONS") || has("GITEA_ACTIONS")|| has("CIRCLECI")) {
+        if (has("GITHUB_ACTIONS") || has("GITEA_ACTIONS") || has("CIRCLECI")) {
             return AnsiModes.TwentyFourBit;
         }
 
         if (
-            ["TRAVIS", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE", "TF_BUILD", "AGENT_NAME"].some((sign) =>
-                has(sign)
-            ) ||
+            ["TRAVIS", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE", "TF_BUILD", "AGENT_NAME"]
+                .some((sign) => has(sign)) ||
             get("CI_NAME") === "codeship"
-        ) { 
+        ) {
             return AnsiModes.FourBit;
         }
 
@@ -55,7 +54,7 @@ function detectCi(): AnsiMode | null {
 /**
  * Detects the ANSI mode of the terminal.
  * @returns The ANSI mode of the terminal.
- * 
+ *
  * @example
  * ```typescript
  * import { detectMode, AnsiModes } from '@frostyeti/ansi/detector';
@@ -122,7 +121,7 @@ export function detectMode(): AnsiMode {
         if (term === "dumb") {
             return AnsiModes.None;
         }
-        
+
         const mode = AnsiModes.toValue(term) as AnsiMode;
         if (mode > -1) {
             return mode;
@@ -150,7 +149,7 @@ export function detectMode(): AnsiMode {
         }
     }
 
-    if (term) {       
+    if (term) {
         if (/-256(color)?$/i.test(term)) {
             return AnsiModes.EightBit;
         }

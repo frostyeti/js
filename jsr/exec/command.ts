@@ -83,7 +83,6 @@ export class Command {
             this.file = a.shift() ?? "";
             this.args = a;
         }
-            
 
         options.stdin ??= "inherit";
         options.stderr ??= "piped";

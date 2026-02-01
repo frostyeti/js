@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { AssertionError } from "./assertion-error.ts";
 
@@ -118,7 +118,7 @@ describe("assert::equal", () => {
     test("works with nested structures", () => {
         equal(
             { a: [1, { b: [2, { c: 3 }] }] },
-            { a: [1, { b: [2, { c: 3 }] }] }
+            { a: [1, { b: [2, { c: 3 }] }] },
         );
     });
 

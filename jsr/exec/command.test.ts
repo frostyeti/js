@@ -157,13 +157,14 @@ test("exec::Command - set cwd", async (t) => {
         return;
     }
 
-    const dir = dirname(fromFileUrl(import.meta.url));
+    let dir = import.meta.dirname;
+    dir ??= dirname(fromFileUrl(import.meta.url));
     const cmd2 = new Command(["ls", "-l"], { cwd: dir });
     const output2 = await cmd2.output();
     equal(output2.code, 0);
     ok(output2.text().includes("command.ts") || output2.text().includes("command.js"));
 
-    const home = env.get("HOME") || env.get("USERPROFILE") || ".";
+    const home = (env.get("HOME") ?? env.get("USERPROFILE")) ?? ("/home/" + (env.get("USERNAME") ?? env.get("USER")));
     const cmd = new Command(["ls", "-l"], { cwd: home });
     const output = await cmd.output();
     equal(output.code, 0);
@@ -183,7 +184,7 @@ test("exec::Command - spawn", async (t) => {
         return;
     }
 
-    const cmd = new Command(["echo", "hello"])
+    const cmd = new Command(["echo", "hello"]);
     const process = cmd.spawn();
     const output = await process.output();
     equal(output.code, 0);

@@ -207,15 +207,15 @@ export const AnsiModes = {
  * @param a The first ANSI mode.
  * @param b The second ANSI mode, number, or string representation.
  * @returns True if the modes are equal, false otherwise.
- * 
+ *
  * @example
  * ```typescript
  * import { AnsiModes, equals } from '@frostyeti/ansi/enums';
- * 
+ *
  * const mode1 = AnsiModes.FourBit;
  * const mode2 = 4;
  * const mode3 = "4bit";
- * 
+ *
  * console.log(equals(mode1, mode2)); // true
  * console.log(equals(mode1, mode3)); // true
  * console.log(equals(mode2, mode3)); // true

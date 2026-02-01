@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { rejects } from "./rejects.ts";
 import { isError } from "./is-error.ts";
@@ -12,7 +12,7 @@ describe("assert::rejects", () => {
     test("passes when promise rejects with expected error type", async () => {
         await rejects(
             () => Promise.reject(new TypeError("test")),
-            TypeError
+            TypeError,
         );
     });
 
@@ -20,7 +20,7 @@ describe("assert::rejects", () => {
         await rejects(
             () => Promise.reject(new Error("test error message")),
             Error,
-            "test error"
+            "test error",
         );
     });
 
@@ -40,7 +40,7 @@ describe("assert::rejects", () => {
         try {
             await rejects(
                 () => Promise.reject(new Error("test")),
-                TypeError
+                TypeError,
             );
         } catch (e) {
             threw = true;
@@ -54,7 +54,7 @@ describe("assert::rejects", () => {
         try {
             await rejects(
                 () => Promise.resolve(),
-                "should have rejected"
+                "should have rejected",
             );
         } catch (e) {
             message = (e as Error).message;
@@ -64,13 +64,14 @@ describe("assert::rejects", () => {
 
     test("returns the error when successful", async () => {
         const error = await rejects(
-            () => Promise.reject(new Error("test message"))
+            () => Promise.reject(new Error("test message")),
         );
         equal(error instanceof Error, true);
     });
 
     test("works with async functions", async () => {
         await rejects(async () => {
+            await Promise.resolve();
             throw new Error("async error");
         });
     });
@@ -82,10 +83,10 @@ describe("assert::rejects", () => {
                 this.name = "CustomError";
             }
         }
-        
+
         await rejects(
             () => Promise.reject(new CustomError("custom")),
-            CustomError
+            CustomError,
         );
     });
 });

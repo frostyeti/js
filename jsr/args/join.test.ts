@@ -189,11 +189,17 @@ test("args::join with git command", () => {
 });
 
 test("args::join with docker command", () => {
-    equal(join(["docker", "run", "-d", "-p", "8080:80", "nginx"]), "docker run -d -p 8080:80 nginx");
+    equal(
+        join(["docker", "run", "-d", "-p", "8080:80", "nginx"]),
+        "docker run -d -p 8080:80 nginx",
+    );
 });
 
 test("args::join with npm command", () => {
-    equal(join(["npm", "install", "--save-dev", "typescript"]), "npm install --save-dev typescript");
+    equal(
+        join(["npm", "install", "--save-dev", "typescript"]),
+        "npm install --save-dev typescript",
+    );
 });
 
 test("args::join with path containing spaces", () => {

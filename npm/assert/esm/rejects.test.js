@@ -7,7 +7,7 @@ describe("assert::rejects", () => {
       await rejects(() => Promise.reject(new Error("fail")));
     });
     test("passes when async function throws", async () => {
-      await rejects(async () => {
+      await rejects(() => {
         throw new Error("async error");
       });
     });
@@ -23,7 +23,7 @@ describe("assert::rejects", () => {
     test("throws when async function returns", async () => {
       let threw = false;
       try {
-        await rejects(async () => "returned value");
+        await rejects(() => Promise.resolve("returned value"));
       } catch {
         threw = true;
       }

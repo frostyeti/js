@@ -1,4 +1,4 @@
-import { test, describe } from "node:test";
+import { describe, test } from "node:test";
 import { equal } from "./equal.ts";
 import { stringIncludes } from "./string-includes.ts";
 import { arrayIncludes } from "./array-includes.ts";
@@ -136,7 +136,7 @@ describe("assert::arrayIncludes", () => {
     test("works with TypedArrays", () => {
         arrayIncludes(
             Uint8Array.from([1, 2, 3, 4]),
-            Uint8Array.from([1, 2])
+            Uint8Array.from([1, 2]),
         );
     });
 

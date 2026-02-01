@@ -1,6 +1,6 @@
 /**
  * The `stringify` module provides functionality to convert an object of environment variables
- * into a string representation.
+ * into a dotenv-formatted string representation.
  *
  * @module
  */
@@ -9,18 +9,36 @@
  */
 export interface StringifyOptions {
   /**
-   * If set to true, only line feed (`\n`) will be used as the newline character.
-   * Otherwise, the default newline character for the environment will be used.
+   * If `true`, uses only line feed (`\n`) as the newline character.
+   * If `false`, uses the platform-specific end-of-line sequence (CRLF on Windows, LF elsewhere).
+   * @default false
    */
   onlyLineFeed?: boolean;
 }
 /**
- * Converts an environment variables object into a string representation.
+ * Converts an environment variables object into a dotenv-formatted string.
+ *
+ * Values are automatically quoted. Single quotes are preferred unless the value
+ * contains single quotes or newlines, in which case double quotes are used
+ * and internal double quotes are escaped.
  *
  * @param env - An object containing environment variables as key-value pairs.
  * @param options - Optional settings for stringifying.
- * @param options.onlyLineFeed - If true, use only line feed (`\n`) for new lines instead of the default end-of-line sequence.
- * @returns The stringified representation of the environment variables.
+ * @returns A dotenv-formatted string representation of the environment variables.
+ *
+ * @example Stringify environment variables
+ * ```ts
+ * import { stringify } from "@frostyeti/dotenv";
+ *
+ * const output = stringify({
+ *   API_KEY: "secret",
+ *   MESSAGE: "Hello\nWorld"
+ * });
+ * console.log(output);
+ * // API_KEY='secret'
+ * // MESSAGE="Hello
+ * // World"
+ * ```
  */
 export declare function stringify(
   env: Record<string, string>,
