@@ -1,18 +1,56 @@
 /**
- * This module provides functions to compare two arrays of characters
- * for equality, both case-sensitive and case-insensitive.
- * It includes the `equal` and `equalFold` functions.
+ * The `equal` module provides functions to compare two character buffers
+ * for equality. Supports both case-sensitive and case-insensitive (fold)
+ * comparison with full Unicode support.
+ *
+ * @example Case-sensitive equality
+ * ```ts
+ * import { equal } from "@frostyeti/slices/equal";
+ *
+ * equal("hello", "hello");  // Returns true
+ * equal("Hello", "hello");  // Returns false
+ * ```
+ *
+ * @example Case-insensitive equality
+ * ```ts
+ * import { equalFold } from "@frostyeti/slices/equal";
+ *
+ * equalFold("HELLO", "hello");  // Returns true
+ * equalFold("Café", "CAFÉ");  // Returns true
+ * ```
+ *
  * @module
  */
 import { simpleFold } from "@frostyeti/chars/simple-fold";
 import { type CharBuffer, toCharSliceLike } from "./utils.ts";
 
 /**
- * Determines if two arrays of characters are equal using a
- * case-insensitive comparison.
- * @param value The characters to check.
- * @param test The characters to compare.
- * @returns `true` if the arrays are equal; otherwise `false`.
+ * Determines if two character buffers are equal using case-insensitive
+ * (fold) comparison.
+ *
+ * Uses Unicode case folding for proper comparison of international characters
+ * including accented letters, Greek, Cyrillic, and other scripts.
+ *
+ * @param value - The first character buffer to compare.
+ * @param test - The second character buffer to compare.
+ * @returns `true` if the buffers are equal (case-insensitive); otherwise `false`.
+ *
+ * @example Basic case-insensitive comparison
+ * ```ts
+ * equalFold("Hello", "HELLO");  // Returns true
+ * equalFold("ABC", "abc");  // Returns true
+ * ```
+ *
+ * @example With accented characters
+ * ```ts
+ * equalFold("café", "CAFÉ");  // Returns true
+ * equalFold("über", "ÜBER");  // Returns true
+ * ```
+ *
+ * @example Different lengths return false
+ * ```ts
+ * equalFold("hello", "hello ");  // Returns false
+ * ```
  */
 export function equalFold(value: CharBuffer, test: CharBuffer): boolean {
     const s = toCharSliceLike(value);
@@ -98,10 +136,28 @@ export function equalFold(value: CharBuffer, test: CharBuffer): boolean {
 }
 
 /**
- * Determines if two arrays of characters are equal.
- * @param value The characters to check.
- * @param test The characters to compare.
- * @returns The characters to compare.
+ * Determines if two character buffers are equal using case-sensitive comparison.
+ *
+ * @param value - The first character buffer to compare.
+ * @param test - The second character buffer to compare.
+ * @returns `true` if the buffers are exactly equal; otherwise `false`.
+ *
+ * @example Basic comparison
+ * ```ts
+ * equal("hello", "hello");  // Returns true
+ * equal("Hello", "hello");  // Returns false (case mismatch)
+ * ```
+ *
+ * @example With Unicode
+ * ```ts
+ * equal("café", "café");  // Returns true
+ * equal("你好", "你好");  // Returns true
+ * ```
+ *
+ * @example Different lengths return false
+ * ```ts
+ * equal("hello", "hello ");  // Returns false
+ * ```
  */
 export function equal(value: CharBuffer, test: CharBuffer): boolean {
     const s = toCharSliceLike(value);

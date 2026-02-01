@@ -135,6 +135,14 @@ export function unixJoin(args: string[]): string {
  * Joins command arguments into a single string.
  * @param args The command arguments to join.
  * @returns The joined command arguments.
+ *
+ * @example
+ * ```typescript
+ * import { join } from '@frostyeti/args/join';
+ *
+ * const command = join(['echo', 'Hello, World!']);
+ * console.log(command); // Output on Unix: echo "Hello, World!" | Output on Windows: echo "Hello, World!"
+ * ```
  */
 export function join(args: string[]): string {
     return WINDOWS ? windowsJoin(args) : unixJoin(args);

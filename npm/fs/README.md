@@ -66,7 +66,7 @@ await remove("/home/my_user/test", { recursive: true });
 - `link` &amp; `linkSync` - Creates a hard link.
 - `lstat` &amp; `lstatSync` - Invokes link stat on path to get system system
   information.
-- `makeDir` &amp; `makeDirSync` - Creates a new directory.
+- `makeDir` &amp; `mkdirSync` - Creates a new directory.
 - `makeTempDir` &amp; `makeTempDirSync` - Creates a new temporary directory.
 - `makeTempFile` &amp; `makeTempFileSync` - Creates a new temporary file.
 - `move` &amp; `moveSync` - Moves a file, directory, or symlink to the

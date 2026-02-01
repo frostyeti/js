@@ -1,10 +1,10 @@
 import { test } from "node:test";
 import { ok, rejects, throws } from "@frostyeti/assert";
-import { remove, removeSync } from "./remove.ts";
+import { rm, rmSync } from "./rm.ts";
 import { join } from "@frostyeti/path";
 import { globals } from "./globals.ts";
 import { exists } from "./exists.ts";
-import { makeDir } from "./make_dir.ts";
+import { mkdir } from "./mkdir.ts";
 import { writeTextFile } from "./write_text_file.ts";
 
 // deno-lint-ignore no-explicit-any
@@ -13,41 +13,41 @@ const g = globals as Record<string, any>;
 const testData = join(import.meta.dirname!, "test-data", "remove");
 
 test("fs::remove deletes a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test1.txt");
 
     try {
         await writeTextFile(filePath, "test content");
-        await remove(filePath);
+        await rm(filePath);
         const e = await exists(filePath);
         ok(!e, "File should be deleted");
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::removeSync deletes a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test2.txt");
 
     try {
         await writeTextFile(filePath, "test content");
-        removeSync(filePath);
+        rmSync(filePath);
         const e = await exists(filePath);
         ok(!e, "File should be deleted");
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::remove with non-existent file throws error", async () => {
     const nonExistentPath = join(testData, "non-existent.txt");
-    await rejects(() => remove(nonExistentPath));
+    await rejects(() => rm(nonExistentPath));
 });
 
 test("fs::removeSync with non-existent file throws error", () => {
     const nonExistentPath = join(testData, "non-existent.txt");
-    throws(() => removeSync(nonExistentPath));
+    throws(() => rmSync(nonExistentPath));
 });
 
 test("fs::remove uses Deno.remove when available", async () => {
@@ -63,7 +63,7 @@ test("fs::remove uses Deno.remove when available", async () => {
             },
         };
 
-        await remove("test.txt");
+        await rm("test.txt");
         ok(removeCalled, "Deno.remove should be called");
     } finally {
         globals.Deno = originalDeno;
@@ -82,7 +82,7 @@ test("fs::removeSync uses Deno.removeSync when available", () => {
             },
         };
 
-        removeSync("test.txt");
+        rmSync("test.txt");
         ok(removeSyncCalled, "Deno.removeSync should be called");
     } finally {
         globals.Deno = originalDeno;

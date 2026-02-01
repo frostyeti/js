@@ -27,7 +27,7 @@ export interface WalkEntry extends DirectoryInfo {
 export interface RemoveOptions {
   recursive?: boolean;
 }
-/** Options for  {@linkcode makeDir} and {@linkcode makeDirSync}  */
+/** Options for  {@linkcode makeDir} and {@linkcode mkdirSync}  */
 export interface CreateDirectoryOptions {
   recursive?: boolean;
   mode?: number;

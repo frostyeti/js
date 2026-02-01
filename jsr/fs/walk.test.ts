@@ -3,8 +3,8 @@ import { test } from "node:test";
 import { walk, WalkError, type WalkOptions, walkSync } from "./walk.ts";
 import { arrayIncludes, equal, rejects, throws } from "@frostyeti/assert";
 import { fromFileUrl, resolve } from "@frostyeti/path";
-import { makeDir } from "./make_dir.ts";
-import { remove } from "./remove.ts";
+import { mkdir } from "./mkdir.ts";
+import { rm } from "./rm.ts";
 import { exists as existsAsync } from "./exists.ts";
 import { globals, WIN } from "./globals.ts";
 import { exec } from "./_testutils.ts";
@@ -49,27 +49,27 @@ function assertWalkSyncPaths(
 test("fs::walk() returns current dir for empty dir", async () => {
     const emptyDir = resolve(testdataDir, "empty_dir");
     if (await existsAsync(emptyDir)) {
-        await remove(emptyDir);
+        await rm(emptyDir);
     }
-    await makeDir(emptyDir);
+    await mkdir(emptyDir);
     try {
         await assertWalkPaths("empty_dir", ["."]);
     } finally {
-        await remove(emptyDir);
+        await rm(emptyDir);
     }
 });
 
 test("fs::walkSync() returns current dir for empty dir", async () => {
     const emptyDir = resolve(testdataDir, "empty_dir");
     if (await existsAsync(emptyDir)) {
-        await remove(emptyDir);
+        await rm(emptyDir);
     }
-    await makeDir(emptyDir);
+    await mkdir(emptyDir);
 
     try {
         assertWalkSyncPaths("empty_dir", ["."]);
     } finally {
-        await remove(emptyDir);
+        await rm(emptyDir);
     }
 });
 
@@ -189,7 +189,7 @@ test("fs::walk() walks fifo files on unix", o, async () => {
             followSymlinks: true,
         });
     } finally {
-        await remove(resolve(testdataDir, "fifo", "fifo"));
+        await rm(resolve(testdataDir, "fifo", "fifo"));
     }
 });
 
@@ -209,22 +209,22 @@ test("fs::walkSync() walks fifo files on unix", o, async () => {
             followSymlinks: true,
         });
     } finally {
-        await remove(resolve(testdataDir, "fifo", "fifo"));
+        await rm(resolve(testdataDir, "fifo", "fifo"));
     }
 });
 
 test("fs::walk() rejects with WalkError when root is removed during execution", async () => {
     const root = resolve(testdataDir, "error");
-    await makeDir(root);
+    await mkdir(root);
     try {
         await rejects(async () => {
             await Array.fromAsync(
                 walk(root),
-                async () => await remove(root, { recursive: true }),
+                async () => await rm(root, { recursive: true }),
             );
         }, WalkError);
     } catch (err) {
-        await remove(root, { recursive: true });
+        await rm(root, { recursive: true });
         throw err;
     }
 });
@@ -254,7 +254,7 @@ if (globals.Deno) {
                     followSymlinks: true,
                 });
             } finally {
-                await remove(path);
+                await rm(path);
             }
         },
     });
@@ -271,7 +271,7 @@ if (globals.Deno) {
                     followSymlinks: true,
                 });
             } finally {
-                await remove(path);
+                await rm(path);
             }
         },
     });

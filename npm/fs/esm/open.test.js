@@ -89,7 +89,7 @@ import { test } from "node:test";
 import { equal, ok, rejects, throws } from "@frostyeti/assert";
 import { ext, open, openSync } from "./open.js";
 import { join } from "@frostyeti/path";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.js";
 import { remove, removeSync } from "./remove.js";
 import { readTextFile, readTextFileSync } from "./read_text_file.js";
@@ -153,7 +153,7 @@ test("fs::open opens file with write access", async () => {
   }
 });
 test("fs::openSync opens file with read access", () => {
-  makeDirSync(testData, { recursive: true });
+  mkdirSync(testData, { recursive: true });
   const filePath = join(testData, "read-sync.txt");
   const content = "test sync content";
   try {
@@ -182,7 +182,7 @@ test("fs::openSync opens file with read access", () => {
   }
 });
 test("fs::openSync opens file with write access", () => {
-  makeDirSync(testData, { recursive: true });
+  mkdirSync(testData, { recursive: true });
   const filePath = join(testData, "write-sync.txt");
   const content = "test sync write content";
   try {

@@ -7,7 +7,7 @@
 import { toPathString } from "./utils.js";
 import { join } from "@frostyeti/path";
 import { isNotFoundError } from "./errors.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { readDir, readDirSync } from "./read_dir.js";
 import { remove, removeSync } from "./remove.js";
 /**
@@ -79,6 +79,6 @@ export function emptyDirSync(dir) {
       throw err;
     }
     // if not exist. then create it
-    makeDirSync(dir, { recursive: true });
+    mkdirSync(dir, { recursive: true });
   }
 }

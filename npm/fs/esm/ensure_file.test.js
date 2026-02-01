@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureFile, ensureFileSync } from "./ensure_file.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { remove, removeSync } from "./remove.js";
 import { stat, statSync } from "./stat.js";
 import { writeFile, writeFileSync } from "./write_file.js";
@@ -49,7 +49,7 @@ test("fs::ensureFileSync() ensures existing file exists", function () {
   const testDir = path.join(testdataDir, "ensure_file_4");
   const testFile = path.join(testDir, "test.txt");
   try {
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     writeFileSync(testFile, new Uint8Array());
     ensureFileSync(testFile);
     // test file should exists.
@@ -76,7 +76,7 @@ test("fs::ensureFile() rejects if input is dir", async function () {
 test("fs::ensureFileSync() throws if input is dir", function () {
   const testDir = path.join(testdataDir, "ensure_file_6");
   try {
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     throws(
       () => {
         ensureFileSync(testDir);

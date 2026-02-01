@@ -42,6 +42,10 @@ export class DefaultSecretMasker {
 
     /**
      * Creates a new instance of DefaultSecretMasker.
+     * @example
+     * ```typescript
+     * const masker = new DefaultSecretMasker();
+     * ```
      */
     constructor() {
         this.#secrets = [];
@@ -52,6 +56,11 @@ export class DefaultSecretMasker {
      * Adds a secret value to the masker.
      * @param value - The secret value to add.
      * @returns The SecretMasker instance for method chaining.
+     * @example
+     * ```typescript
+     * const masker = new DefaultSecretMasker();
+     * masker.add("mysecret");
+     * ```
      */
     add(value: string | RegExp): SecretMasker {
         if (value === null || value === undefined) {
@@ -86,6 +95,11 @@ export class DefaultSecretMasker {
      * Adds a generator function to the masker.
      * @param generator - The generator function that takes a secret value and returns a masked value.
      * @returns The SecretMasker instance for method chaining.
+     * @example
+     * ```typescript
+     * const masker = new DefaultSecretMasker();
+     * masker.addGenerator((secret) => secret.split("").reverse().join(""));
+     * ``` 
      */
     addGenerator(generator: (secret: string) => string): SecretMasker {
         this.#generators.push(generator);
@@ -97,6 +111,14 @@ export class DefaultSecretMasker {
      * Masks a given value by replacing any occurrences of secrets with asterisks.
      * @param value - The value to mask.
      * @returns The masked value.
+     * 
+     * @example
+     * ```typescript
+     * const masker = new DefaultSecretMasker();
+     * masker.add("mysecret");
+     * const masked = masker.mask("This is mysecret value.");
+     * console.log(masked); // Output: "This is ******* value."
+     * ```
      */
     mask(value: string | null): string | null {
         if (value === null) {

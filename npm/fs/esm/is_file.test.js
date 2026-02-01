@@ -2,7 +2,7 @@ import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
 import { isFile, isFileSync } from "./is_file.js";
 import { join } from "@frostyeti/path";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { writeTextFile } from "./write_text_file.js";
 import { remove } from "./remove.js";
 const testData = join(import.meta.dirname, "test-data", "is_file");
@@ -31,7 +31,7 @@ test("fs::isFile returns false for non-existent path", async () => {
   equal(result, false);
 });
 test("fs::isFileSync returns true for existing file", async () => {
-  await makeDirSync(testData, { recursive: true });
+  await mkdirSync(testData, { recursive: true });
   const filePath = join(testData, "test.txt");
   try {
     await writeTextFile(filePath, "test content");
@@ -42,7 +42,7 @@ test("fs::isFileSync returns true for existing file", async () => {
   }
 });
 test("fs::isFileSync returns false for directory", async () => {
-  makeDirSync(testData, { recursive: true });
+  mkdirSync(testData, { recursive: true });
   try {
     const result = isFileSync(testData);
     equal(result, false);

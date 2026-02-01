@@ -2,14 +2,14 @@ import { test } from "node:test";
 import { equal, ok, rejects } from "@frostyeti/assert";
 import { readFile, readFileSync } from "./read_file.ts";
 import { join } from "@frostyeti/path";
-import { makeDir } from "./make_dir.ts";
-import { remove } from "./remove.ts";
+import { mkdir } from "./mkdir.ts";
+import { rm } from "./rm.ts";
 import { writeTextFile } from "./write_text_file.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "read_file");
 
 test("fs::readFile reads file contents", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test.txt");
     const content = "test content";
 
@@ -19,7 +19,7 @@ test("fs::readFile reads file contents", async () => {
         ok(data instanceof Uint8Array);
         equal(new TextDecoder().decode(data).trim(), content);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
@@ -33,7 +33,7 @@ test("fs::readFile with aborted signal rejects", async () => {
 });
 
 test("fs::readFileSync reads file contents", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test-sync.txt");
     const content = "test sync content";
 
@@ -43,6 +43,6 @@ test("fs::readFileSync reads file contents", async () => {
         ok(data instanceof Uint8Array);
         equal(new TextDecoder().decode(data).trim(), content);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });

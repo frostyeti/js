@@ -12,7 +12,7 @@ import { getFileInfoType, toPathString } from "./utils.ts";
 import type { SymlinkOptions } from "./types.ts";
 import { AlreadyExistsError, isAlreadyExistsError } from "./errors.ts";
 import { lstat, lstatSync } from "./lstat.ts";
-import { readLink, readLinkSync } from "./read_link.ts";
+import { readlink, readlinkSync } from "./readlink.ts";
 import { symlink, symlinkSync } from "./symlink.ts";
 import { WIN } from "./globals.ts";
 
@@ -75,7 +75,7 @@ export async function ensureSymlink(
                 `A '${type}' already exists at the path: ${linkName}`,
             );
         }
-        const linkPath = await readLink(linkName);
+        const linkPath = await readlink(linkName);
         const linkRealPath = resolve(linkPath);
         if (linkRealPath !== targetRealPath) {
             throw new AlreadyExistsError(
@@ -133,7 +133,7 @@ export function ensureSymlinkSync(
                 `A '${type}' already exists at the path: ${linkName}`,
             );
         }
-        const linkPath = readLinkSync(linkName);
+        const linkPath = readlinkSync(linkName);
         const linkRealPath = resolve(linkPath);
         if (linkRealPath !== targetRealPath) {
             throw new AlreadyExistsError(

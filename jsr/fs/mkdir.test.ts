@@ -1,11 +1,11 @@
 import { test } from "node:test";
 import { equal, ok, rejects } from "@frostyeti/assert";
-import { makeDir, makeDirSync } from "./make_dir.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
 import { join } from "@frostyeti/path";
 import { exec, output } from "./_testutils.ts";
 import { globals } from "./globals.ts";
 import { statSync } from "./stat.ts";
-import { removeSync } from "./remove.ts";
+import { rmSync } from "./rm.ts";
 
 // deno-lint-ignore no-explicit-any
 const g = globals as Record<string, any>;
@@ -14,9 +14,9 @@ const testData = join(import.meta.dirname!, "test-data", "make_dir");
 
 test("fs::makeDir creates a directory", async () => {
     const dirPath = join(testData, "new-dir");
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     try {
-        await makeDir(dirPath);
+        await mkdir(dirPath);
         const o = await output("test", ["-d", dirPath]);
         equal(o.code, 0);
     } finally {
@@ -26,10 +26,10 @@ test("fs::makeDir creates a directory", async () => {
 
 test("fs::makeDir throws when directory already exists", async () => {
     const dirPath = join(testData, "existing-dir");
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     try {
-        await makeDir(dirPath, { recursive: true });
-        await rejects(async () => await makeDir(dirPath));
+        await mkdir(dirPath, { recursive: true });
+        await rejects(async () => await mkdir(dirPath));
     } finally {
         await exec("rm", ["-rf", dirPath]);
     }
@@ -46,26 +46,26 @@ test("fs::makeDir uses Deno.mkdir when available", async () => {
                 called = true;
             },
         };
-        await makeDir("test");
+        await mkdir("test");
         ok(called);
     } finally {
         globals.Deno = od;
     }
 });
 
-test("fs::makeDirSync creates a directory synchronously", () => {
+test("fs::mkdirSync creates a directory synchronously", () => {
     const dirPath = join(testData, "new-dir-sync");
 
     try {
-        makeDirSync(dirPath);
+        mkdirSync(dirPath);
         const result = statSync(dirPath);
         ok(result.isDirectory);
     } finally {
-        removeSync(dirPath, { recursive: true });
+        rmSync(dirPath, { recursive: true });
     }
 });
 
-test("fs::makeDirSync uses Deno.mkdirSync when available", () => {
+test("fs::mkdirSync uses Deno.mkdirSync when available", () => {
     const { Deno: od } = globals;
     delete g["Deno"];
 
@@ -76,7 +76,7 @@ test("fs::makeDirSync uses Deno.mkdirSync when available", () => {
                 called = true;
             },
         };
-        makeDirSync("test");
+        mkdirSync("test");
         ok(called);
     } finally {
         globals.Deno = od;

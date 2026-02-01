@@ -5,40 +5,43 @@ import { AnsiLogLevels, AnsiModes } from "./enums.ts";
 test("ansi::AnsiModes.constants", () => {
     equal(AnsiModes.Auto, -1);
     equal(AnsiModes.None, 0);
-    equal(AnsiModes.ThreeBit, 1);
-    equal(AnsiModes.FourBit, 2);
-    equal(AnsiModes.EightBit, 4);
-    equal(AnsiModes.TwentyFourBit, 8);
+    equal(AnsiModes.ThreeBit, 3);
+    equal(AnsiModes.FourBit, 4);
+    equal(AnsiModes.EightBit, 8);
+    equal(AnsiModes.TwentyFourBit, 24);
 });
 
 test("ansi::AnsiModes.names", () => {
     const names = AnsiModes.names();
-    equal(names, ["auto", "none", "3bit", "4bit", "8bit", "24bit"]);
+    equal(names, ["auto", "none", "3bit", "xterm-16color", "xterm-256color", "truecolor"]);
 });
 
 test("ansi::AnsiModes.values", () => {
     const values = AnsiModes.values();
-    equal(values, [-1, 0, 1, 2, 4, 8]);
+    equal(values, [-1, 0, 3, 4, 8, 24]);
 });
 
 test("ansi::AnsiModes.toValue", () => {
     equal(AnsiModes.toValue("auto"), -1);
     equal(AnsiModes.toValue("Auto"), -1);
     equal(AnsiModes.toValue("none"), 0);
-    equal(AnsiModes.toValue("3bit"), 1);
-    equal(AnsiModes.toValue("4bit"), 2);
-    equal(AnsiModes.toValue("8bit"), 4);
-    equal(AnsiModes.toValue("24bit"), 8);
+    equal(AnsiModes.toValue("3bit"), 3);
+    equal(AnsiModes.toValue("4bit"), 4);
+    equal(AnsiModes.toValue("8bit"), 8);
+    equal(AnsiModes.toValue("24bit"), 24);
+    equal(AnsiModes.toValue("truecolor"), 24);
+    equal(AnsiModes.toValue("xterm-256color"), 8);
+    equal(AnsiModes.toValue("xterm-16color"), 4);
     equal(AnsiModes.toValue("invalid"), -1);
 });
 
 test("ansi::AnsiModes.toString", () => {
     equal(AnsiModes.toString(-1), "auto");
     equal(AnsiModes.toString(0), "none");
-    equal(AnsiModes.toString(1), "3bit");
-    equal(AnsiModes.toString(2), "4bit");
-    equal(AnsiModes.toString(4), "8bit");
-    equal(AnsiModes.toString(8), "24bit");
+    equal(AnsiModes.toString(3), "3bit");
+    equal(AnsiModes.toString(4), "xterm-16color");
+    equal(AnsiModes.toString(8), "xterm-256color");
+    equal(AnsiModes.toString(24), "truecolor");
     equal(AnsiModes.toString(999), "auto");
 });
 

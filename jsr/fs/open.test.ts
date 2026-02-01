@@ -2,16 +2,16 @@ import { test } from "node:test";
 import { equal, ok, rejects, throws } from "@frostyeti/assert";
 import { ext, open, openSync } from "./open.ts";
 import { join } from "@frostyeti/path";
-import { makeDir, makeDirSync } from "./make_dir.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.ts";
-import { remove, removeSync } from "./remove.ts";
+import { rm, rmSync } from "./rm.ts";
 import { readTextFile, readTextFileSync } from "./read_text_file.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "open");
 const g: Record<string, unknown> = globalThis as Record<string, unknown>;
 
 test("fs::open opens file with read access", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "read1.txt");
     const content = "test content";
 
@@ -26,12 +26,12 @@ test("fs::open opens file with read access", async () => {
         const text = new TextDecoder().decode(buffer.subarray(0, bytesRead!));
         equal(text.trim(), content);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::open opens file with write access", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "write.txt");
     const content = "test write content";
 
@@ -46,12 +46,12 @@ test("fs::open opens file with write access", async () => {
         const fileContent = await readTextFile(filePath);
         equal(fileContent, content);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::openSync opens file with read access", () => {
-    makeDirSync(testData, { recursive: true });
+    mkdirSync(testData, { recursive: true });
     const filePath = join(testData, "read-sync.txt");
     const content = "test sync content";
 
@@ -66,12 +66,12 @@ test("fs::openSync opens file with read access", () => {
         const text = new TextDecoder().decode(buffer.subarray(0, bytesRead!));
         equal(text.trim(), content);
     } finally {
-        removeSync(filePath);
+        rmSync(filePath);
     }
 });
 
 test("fs::openSync opens file with write access", () => {
-    makeDirSync(testData, { recursive: true });
+    mkdirSync(testData, { recursive: true });
     const filePath = join(testData, "write-sync.txt");
     const content = "test sync write content";
 
@@ -86,7 +86,7 @@ test("fs::openSync opens file with write access", () => {
         const fileContent = readTextFileSync(filePath);
         equal(fileContent.trim(), content);
     } finally {
-        removeSync(filePath);
+        rmSync(filePath);
     }
 });
 
@@ -113,7 +113,7 @@ test("fs::open file supports lock operations", async (t) => {
         return;
     }
 
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "lock.txt");
 
     try {
@@ -123,7 +123,7 @@ test("fs::open file supports lock operations", async (t) => {
         await file.lock();
         await file.unlock();
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
@@ -140,7 +140,7 @@ test("fs::open file supports seek operations", async (t) => {
         return;
     }
 
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "seek.txt");
     const content = "test seek content";
 
@@ -156,12 +156,12 @@ test("fs::open file supports seek operations", async (t) => {
         const text = new TextDecoder().decode(buffer.subarray(0, bytesRead!));
         equal(text.trim(), content.slice(5));
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::open file supports stat operations", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "stat.txt");
     const content = "test stat content";
 
@@ -175,6 +175,6 @@ test("fs::open file supports stat operations", async () => {
         ok(stat.mtime instanceof Date);
         ok(stat.atime instanceof Date);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });

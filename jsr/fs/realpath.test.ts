@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import { equal, rejects, throws } from "@frostyeti/assert";
-import { realPath, realPathSync } from "./realpath.ts";
+import { realpath, realpathSync } from "./realpath.ts";
 import { globals } from "./globals.ts";
 import { join } from "@frostyeti/path";
 import { exec } from "./_testutils.ts";
@@ -18,7 +18,7 @@ test("fs::realPath resolves path when Deno exists", async () => {
         g.Deno = {
             realPath: (_: string) => Promise.resolve("/real/path"),
         };
-        const result = await realPath("/test/path");
+        const result = await realpath("/test/path");
         equal(result, "/real/path");
     } finally {
         globals.Deno = od;
@@ -31,7 +31,7 @@ test("fs::realPath resolves path using node fs", async () => {
     await exec("touch", [testFile]);
 
     try {
-        const result = await realPath(testFile);
+        const result = await realpath(testFile);
         equal(result.endsWith("realpath-test.txt"), true);
     } finally {
         await exec("rm", ["-f", testFile]);
@@ -45,7 +45,7 @@ test("fs::realPath throws when no fs module available", async () => {
     delete g["require"];
 
     try {
-        await rejects(() => realPath("/test/path"), Error);
+        await rejects(() => realpath("/test/path"), Error);
     } finally {
         globals.Deno = od;
         globals.process = op;
@@ -53,7 +53,7 @@ test("fs::realPath throws when no fs module available", async () => {
     }
 });
 
-test("fs::realPathSync resolves path when Deno exists", () => {
+test("fs::realpathSync resolves path when Deno exists", () => {
     const { Deno: od } = globals;
     delete g["Deno"];
 
@@ -61,33 +61,33 @@ test("fs::realPathSync resolves path when Deno exists", () => {
         g.Deno = {
             realPathSync: (_: string) => "/real/path",
         };
-        const result = realPathSync("/test/path");
+        const result = realpathSync("/test/path");
         equal(result, "/real/path");
     } finally {
         globals.Deno = od;
     }
 });
 
-test("fs::realPathSync resolves path using node fs", async () => {
+test("fs::realpathSync resolves path using node fs", async () => {
     const testFile = join(testData, "realpath-sync-test.txt");
     await exec("touch", [testFile]);
 
     try {
-        const result = realPathSync(testFile);
+        const result = realpathSync(testFile);
         equal(result.endsWith("realpath-sync-test.txt"), true);
     } finally {
         await exec("rm", ["-f", testFile]);
     }
 });
 
-test("fs::realPathSync throws when no fs module available", () => {
+test("fs::realpathSync throws when no fs module available", () => {
     const { Deno: od, process: op, require: or } = globals;
     delete g["Deno"];
     delete g["process"];
     delete g["require"];
 
     try {
-        throws(() => realPathSync("/test/path"), Error);
+        throws(() => realpathSync("/test/path"), Error);
     } finally {
         globals.Deno = od;
         globals.process = op;

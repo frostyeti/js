@@ -3,13 +3,13 @@ import { equal, rejects } from "@frostyeti/assert";
 import { writeFile, writeFileSync } from "./write_file.ts";
 import { join } from "@frostyeti/path";
 import { readTextFile } from "./read_text_file.ts";
-import { makeDir } from "./make_dir.ts";
-import { remove } from "./remove.ts";
+import { mkdir } from "./mkdir.ts";
+import { rm } from "./rm.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "write_file");
 
 test("fs::writeFile writes data to a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test.txt");
     const content = new TextEncoder().encode("test content");
 
@@ -18,12 +18,12 @@ test("fs::writeFile writes data to a file", async () => {
         const result = await readTextFile(filePath);
         equal(result, "test content");
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::writeFile appends data when append option is true", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "append.txt");
     const content1 = new TextEncoder().encode("first ");
     const content2 = new TextEncoder().encode("second");
@@ -34,12 +34,12 @@ test("fs::writeFile appends data when append option is true", async () => {
         const result = await readTextFile(filePath);
         equal(result, "first second");
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::writeFile handles ReadableStream input", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "stream.txt");
     const content = "stream content";
     const stream = new ReadableStream({
@@ -54,12 +54,12 @@ test("fs::writeFile handles ReadableStream input", async () => {
         const result = await readTextFile(filePath);
         equal(result, content);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::writeFileSync writes data to a file synchronously", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "sync.txt");
     const content = new TextEncoder().encode("sync content");
 
@@ -68,12 +68,12 @@ test("fs::writeFileSync writes data to a file synchronously", async () => {
         const result = await readTextFile(filePath);
         equal(result, "sync content");
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::writeFile handles abort signal", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "abort.txt");
     const content = new TextEncoder().encode("abort content");
     const controller = new AbortController();
@@ -85,6 +85,6 @@ test("fs::writeFile handles abort signal", async () => {
             Error,
         );
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });

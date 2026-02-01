@@ -27,7 +27,7 @@ import { stat, statSync } from "./stat.ts";
  * checkFile();
  * ```
  */
-export function isFile(path: string | URL): Promise<boolean> {
+export function isfile(path: string | URL): Promise<boolean> {
     return stat(path)
         .then((stat) => stat.isFile)
         .catch(() => false);
@@ -42,10 +42,10 @@ export function isFile(path: string | URL): Promise<boolean> {
  * Since it uses a try/catch internally, this should not be used in a loop where performance is critical.
  * @example
  * ```ts
- * import { isFileSync } from "@frostyeti/fs/is-file";
+ * import { isfileSync } from "@frostyeti/fs/isfile";
  * function checkFile() {
  *     try {
- *         const result = isFileSync("example.txt");
+ *         const result = isfileSync("example.txt");
  *         console.log(`Is it a file? ${result}`);
  *     } catch (error) {
  *         console.error("Error checking file:", error);
@@ -54,7 +54,7 @@ export function isFile(path: string | URL): Promise<boolean> {
  * checkFile();
  * ```
  */
-export function isFileSync(path: string | URL): boolean {
+export function isfileSync(path: string | URL): boolean {
     try {
         return statSync(path).isFile;
     } catch {

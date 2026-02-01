@@ -2,10 +2,10 @@ import { test } from "node:test";
 import { equal, rejects, throws } from "@frostyeti/assert";
 import { copyFile, copyFileSync } from "./copy_file.ts";
 import { join } from "@frostyeti/path";
-import { makeDir } from "./make_dir.ts";
+import { mkdir } from "./mkdir.ts";
 import { writeTextFile } from "./write_text_file.ts";
 import { readTextFile } from "./read_text_file.ts";
-import { remove } from "./remove.ts";
+import { rm } from "./rm.ts";
 
 const testDir = join(import.meta.dirname!, "test-data", "cp");
 const sourceFile1 = join(testDir, "source1.txt");
@@ -16,14 +16,14 @@ const content = "test content";
 
 test("fs::copyFile copies file asynchronously", async () => {
     try {
-        await makeDir(testDir, { recursive: true });
+        await mkdir(testDir, { recursive: true });
         await writeTextFile(sourceFile1, content);
         await copyFile(sourceFile1, destFile1);
 
         const copied = await readTextFile(destFile1);
         equal(copied, content);
     } finally {
-        await remove(testDir, { recursive: true });
+        await rm(testDir, { recursive: true });
     }
 });
 
@@ -33,14 +33,14 @@ test("fs::copyFile throws when source doesn't exist", () => {
 
 test("fs::copyFileSync copies file synchronously", async () => {
     try {
-        await makeDir(testDir, { recursive: true });
+        await mkdir(testDir, { recursive: true });
         await writeTextFile(sourceFile2, content);
         copyFileSync(sourceFile2, destFile2);
 
         const copied = await readTextFile(destFile2);
         equal(copied, content);
     } finally {
-        await remove(testDir, { recursive: true });
+        await rm(testDir, { recursive: true });
     }
 });
 

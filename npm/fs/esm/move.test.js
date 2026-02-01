@@ -8,7 +8,7 @@ import { ensureFile, ensureFileSync } from "./ensure_file.js";
 import { ensureDir, ensureDirSync } from "./ensure_dir.js";
 import { exists as existsAsync, existsSync } from "./exists.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { readFileSync } from "./read_file.js";
 import { readTextFile, readTextFileSync } from "./read_text_file.js";
 import { remove, removeSync } from "./remove.js";
@@ -188,7 +188,7 @@ test("fs::moveSync() creates dest dir if it does not exist", function () {
   if (existsSync(destDir)) {
     removeSync(destDir, { recursive: true });
   }
-  makeDirSync(srcDir, { recursive: true });
+  mkdirSync(srcDir, { recursive: true });
   // if dest directory not exist
   throws(
     () => {
@@ -206,7 +206,7 @@ test("fs::moveSync() creates dest dir if it does not exist and overwrite option 
   if (existsSync(destDir)) {
     removeSync(destDir, { recursive: true });
   }
-  makeDirSync(srcDir, { recursive: true });
+  mkdirSync(srcDir, { recursive: true });
   // if dest directory not exist width overwrite
   throws(
     () => {
@@ -271,7 +271,7 @@ test("fs::moveSync() moves dir", function () {
   const srcFile = path.join(srcDir, "test.txt");
   const destFile = path.join(destDir, "test.txt");
   const srcContent = new TextEncoder().encode("src");
-  makeDirSync(srcDir, { recursive: true });
+  mkdirSync(srcDir, { recursive: true });
   equal(existsSync(srcDir), true);
   writeFileSync(srcFile, srcContent);
   moveSync(srcDir, destDir);
@@ -289,8 +289,8 @@ test("fs::moveSync() moves files if src and dest exist and can overwrite content
   const destFile = path.join(destDir, "test.txt");
   const srcContent = new TextEncoder().encode("src");
   const destContent = new TextEncoder().encode("dest");
-  makeDirSync(srcDir, { recursive: true });
-  makeDirSync(destDir, { recursive: true });
+  mkdirSync(srcDir, { recursive: true });
+  mkdirSync(destDir, { recursive: true });
   equal(existsSync(srcDir), true);
   equal(existsSync(destDir), true);
   writeFileSync(srcFile, srcContent);

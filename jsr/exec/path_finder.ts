@@ -9,7 +9,7 @@ import { equalFold } from "@frostyeti/strings/equal";
 import { expand, get } from "@frostyeti/env";
 import { underscore } from "@frostyeti/strings/underscore";
 import { which, whichSync } from "./which.ts";
-import { isFile, isFileSync } from "@frostyeti/fs";
+import { isfile, isfileSync } from "@frostyeti/fs";
 import { DARWIN, WIN } from "./globals.ts";
 
 /**
@@ -226,7 +226,7 @@ export class PathFinder {
                 return envPath;
             }
 
-            if (envPath && await isFile(envPath)) {
+            if (envPath && await isfile(envPath)) {
                 options.cached = envPath;
                 return envPath;
             }
@@ -248,7 +248,7 @@ export class PathFinder {
                     let next = path;
                     next = expand(next);
 
-                    if (await isFile(next)) {
+                    if (await isfile(next)) {
                         options.cached = next;
                         return next;
                     }
@@ -264,7 +264,7 @@ export class PathFinder {
                     let next = path;
                     next = expand(next);
 
-                    if (await isFile(next)) {
+                    if (await isfile(next)) {
                         options.cached = next;
                         return next;
                     }
@@ -280,7 +280,7 @@ export class PathFinder {
                 let next = path;
                 next = expand(next);
 
-                if (await isFile(next)) {
+                if (await isfile(next)) {
                     options.cached = next;
                     return next;
                 }
@@ -318,7 +318,7 @@ export class PathFinder {
             }
 
             if (envPath) {
-                if (envPath && isFileSync(envPath)) {
+                if (envPath && isfileSync(envPath)) {
                     options.cached = envPath;
                     return envPath;
                 }
@@ -345,7 +345,7 @@ export class PathFinder {
                         continue;
                     }
 
-                    if (isFileSync(next)) {
+                    if (isfileSync(next)) {
                         options.cached = next;
                         return next;
                     }
@@ -366,7 +366,7 @@ export class PathFinder {
                         continue;
                     }
 
-                    if (isFileSync(next)) {
+                    if (isfileSync(next)) {
                         options.cached = next;
                         return next;
                     }
@@ -386,7 +386,7 @@ export class PathFinder {
                     continue;
                 }
 
-                if (isFileSync(next)) {
+                if (isfileSync(next)) {
                     options.cached = next;
                     return next;
                 }

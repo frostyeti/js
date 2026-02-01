@@ -17,7 +17,7 @@ let rmDirAsync: typeof import("node:fs/promises").rmdir | undefined = undefined;
  * @param options The options for removing the file or directory (optional).
  * @returns A promise that resolves when the operation is complete.
  */
-export function remove(
+export function rm(
     path: string | URL,
     options?: RemoveOptions,
 ): Promise<void> {
@@ -64,7 +64,7 @@ export function remove(
  * @param path The path to the file or directory.
  * @param options The options for removing the file or directory (optional).
  */
-export function removeSync(path: string | URL, options?: RemoveOptions): void {
+export function rmSync(path: string | URL, options?: RemoveOptions): void {
     if (globals.Deno) {
         return globals.Deno.removeSync(path, options);
     }

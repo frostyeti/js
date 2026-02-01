@@ -6,7 +6,7 @@ import { join } from "@frostyeti/path";
 import { uid } from "./uid.ts";
 import { stat } from "./stat.ts";
 import { exists } from "./exists.ts";
-import { remove } from "./remove.ts";
+import { rm } from "./rm.ts";
 import { ok } from "node:assert";
 
 const testFile1 = join(import.meta.dirname!, "chown_test.txt");
@@ -29,7 +29,7 @@ test("chown::chown changes the owner async", async (t) => {
     }
 
     if (await exists(testFile2)) {
-        await remove(testFile2);
+        await rm(testFile2);
     }
 
     await exec("touch", [testFile2]);
@@ -61,7 +61,7 @@ test("chown::chownSync changes the owner", async (t) => {
     }
 
     if (await exists(testFile1)) {
-        await remove(testFile1);
+        await rm(testFile1);
     }
 
     await exec("touch", [testFile1]);

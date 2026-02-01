@@ -39,7 +39,7 @@ function randomName(prefix?: string, suffix?: string): string {
  * @param options The options for creating the temporary directory (optional).
  * @returns A promise that resolves with the path to the created temporary directory.
  */
-export async function makeTempDir(options?: MakeTempOptions): Promise<string> {
+export async function mkdtemp(options?: MakeTempOptions): Promise<string> {
     if (globals.Deno) {
         return globals.Deno.makeTempDir(options);
     }
@@ -77,7 +77,7 @@ export async function makeTempDir(options?: MakeTempOptions): Promise<string> {
  * @param options The options for creating the temporary directory (optional).
  * @returns The path to the created temporary directory.
  */
-export function makeTempDirSync(options?: MakeTempOptions): string {
+export function mkdtempSync(options?: MakeTempOptions): string {
     if (globals.Deno) {
         return globals.Deno.makeTempDirSync(options);
     }

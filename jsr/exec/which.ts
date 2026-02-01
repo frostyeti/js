@@ -7,7 +7,7 @@
 
 import { expand, get, getPath, splitPath } from "@frostyeti/env";
 import { basename, extname, isAbsolute, join, resolve } from "@frostyeti/path";
-import { isDir, isDirSync, isFile, isFileSync, readDir, readDirSync } from "@frostyeti/fs";
+import { isdir, isdirSync, isfile, isfileSync, readdir, readdirSync } from "@frostyeti/fs";
 import { WIN } from "./globals.ts";
 import { isNullOrSpace } from "@frostyeti/strings/is-space";
 import { isNullOrEmpty } from "@frostyeti/strings/is-empty";
@@ -48,7 +48,7 @@ export function whichSync(
         return location;
     }
 
-    if (isAbsolute(fileName) && isFileSync(fileName)) {
+    if (isAbsolute(fileName) && isfileSync(fileName)) {
         location = fileName;
         if (useCache) {
             executableCache[rootName] = location;
@@ -87,7 +87,7 @@ export function whichSync(
     }
 
     for (const pathSegment of pathSegments) {
-        if (isNullOrEmpty(pathSegment) || !isDirSync(pathSegment)) {
+        if (isNullOrEmpty(pathSegment) || !isdirSync(pathSegment)) {
             continue;
         }
 
@@ -100,7 +100,7 @@ export function whichSync(
                 try {
                     let first: { name: string | undefined } | undefined;
 
-                    for (const entry of readDirSync(pathSegment)) {
+                    for (const entry of readdirSync(pathSegment)) {
                         if (entry.isFile) {
                             for (const ext of pathExtSegments) {
                                 if (entry.name?.toLowerCase() === baseNameLowered + ext) {
@@ -130,7 +130,7 @@ export function whichSync(
             } else {
                 try {
                     let first: { name: string | undefined } | undefined;
-                    for (const entry of readDirSync(pathSegment)) {
+                    for (const entry of readdirSync(pathSegment)) {
                         if (entry.isFile && entry.name?.toLowerCase() === baseNameLowered) {
                             first = entry;
                             break;
@@ -153,7 +153,7 @@ export function whichSync(
         } else {
             try {
                 let first: { name: string | undefined } | undefined;
-                for (const entry of readDirSync(pathSegment)) {
+                for (const entry of readdirSync(pathSegment)) {
                     if (entry.isFile && entry.name?.toLowerCase() === baseNameLowered) {
                         first = entry;
                         break;
@@ -211,7 +211,7 @@ export async function which(
         return location;
     }
 
-    if (isAbsolute(fileName) && await isFile(fileName)) {
+    if (isAbsolute(fileName) && await isfile(fileName)) {
         location = fileName;
         if (useCache) {
             executableCache[rootName] = location;
@@ -254,7 +254,7 @@ export async function which(
             continue;
         }
 
-        const isDirectory = await isDir(pathSegment);
+        const isDirectory = await isdir(pathSegment);
         if (!isDirectory) {
             continue;
         }
@@ -267,7 +267,7 @@ export async function which(
             if (!hasPathExt) {
                 try {
                     let first: { name: undefined | string } | undefined;
-                    for await (const entry of readDir(pathSegment)) {
+                    for await (const entry of readdir(pathSegment)) {
                         if (!entry.isDirectory) {
                             for (const ext of pathExtSegments) {
                                 if (entry.name?.toLowerCase() === baseNameLowered + ext) {
@@ -297,7 +297,7 @@ export async function which(
             } else {
                 try {
                     let first: { name: undefined | string } | undefined;
-                    for await (const entry of readDir(pathSegment)) {
+                    for await (const entry of readdir(pathSegment)) {
                         if (
                             !entry.isDirectory &&
                             entry.name?.toLowerCase() === baseNameLowered
@@ -323,7 +323,7 @@ export async function which(
         } else {
             try {
                 let first: { name: undefined | string } | undefined;
-                for await (const entry of readDir(pathSegment)) {
+                for await (const entry of readdir(pathSegment)) {
                     if (
                         !entry.isDirectory && entry.name?.toLowerCase() === baseNameLowered
                     ) {

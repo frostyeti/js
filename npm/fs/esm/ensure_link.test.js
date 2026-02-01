@@ -5,7 +5,7 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureLink, ensureLinkSync } from "./ensure_link.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { remove, removeSync } from "./remove.js";
 import { writeFile, writeFileSync } from "./write_file.js";
 import { writeTextFile } from "./write_text_file.js";
@@ -62,7 +62,7 @@ test("fs::ensureLinkSync() ensures dest links to the src", function () {
   const testDir = path.join(testdataDir, "ensure_link_4");
   const testFile = path.join(testDir, "test.txt");
   const linkFile = path.join(testDir, "link.txt");
-  makeDirSync(testDir, { recursive: true });
+  mkdirSync(testDir, { recursive: true });
   writeFileSync(testFile, new Uint8Array());
   ensureLinkSync(testFile, linkFile);
   const srcStat = lstatSync(testFile);
@@ -99,7 +99,7 @@ test("fs::ensureLinkSync() throws if link does not exist", function () {
   const testDir = path.join(testdataDir, "ensure_link_origin_3");
   const linkDir = path.join(testdataDir, "ensure_link_link_3");
   const testFile = path.join(testDir, "test.txt");
-  makeDirSync(testDir, { recursive: true });
+  mkdirSync(testDir, { recursive: true });
   writeFileSync(testFile, new Uint8Array());
   throws(() => {
     ensureLinkSync(testDir, linkDir);

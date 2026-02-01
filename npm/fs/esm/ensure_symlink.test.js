@@ -5,7 +5,7 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureSymlink, ensureSymlinkSync } from "./ensure_symlink.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { readLink, readLinkSync } from "./read_link.js";
 import { readTextFile, readTextFileSync } from "./read_text_file.js";
 import { stat, statSync } from "./stat.js";
@@ -60,7 +60,7 @@ test("ensureSymlinkSync() ensures linkName links to target", function () {
   const testFile = path.join(testDir, "test.txt");
   const linkFile = path.join(testDir, "link.txt");
   try {
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     writeFileSync(testFile, new Uint8Array());
     ensureSymlinkSync(testFile, linkFile);
     ensureSymlinkSync(testFile, linkFile);
@@ -104,9 +104,9 @@ test("ensureSymlinkSync() throws if the linkName path already exist", function (
   const linkDir = path.join(testDir, "test_dir");
   const linkSymlink = path.join(testDir, "test_symlink");
   const targetFile = path.join(testDir, "target.txt");
-  makeDirSync(testDir, { recursive: true });
+  mkdirSync(testDir, { recursive: true });
   writeTextFileSync(linkFile, "linkFile");
-  makeDirSync(linkDir);
+  mkdirSync(linkDir);
   symlinkSync("non-existent", linkSymlink, { type: "file" });
   writeTextFileSync(targetFile, "targetFile");
   throws(() => {
@@ -148,7 +148,7 @@ test("ensureSymlinkSync() ensures dir linkName links to dir target", function ()
   const testDir = path.join(testdataDir, "link_file_origin_3");
   const linkDir = path.join(testdataDir, "link_file_link_3");
   const testFile = path.join(testDir, "test.txt");
-  makeDirSync(testDir, { recursive: true });
+  mkdirSync(testDir, { recursive: true });
   writeFileSync(testFile, new Uint8Array());
   ensureSymlinkSync(testDir, linkDir);
   ensureSymlinkSync(testDir, linkDir);
@@ -180,7 +180,7 @@ test("ensureSymlinkSync() creates symlink with relative target", function () {
   const testDir = path.join(testdataDir, "symlink-relative-sync");
   const testLinkName = path.join(testDir, "link.txt");
   const testFile = path.join(testDir, "target.txt");
-  makeDirSync(testDir);
+  mkdirSync(testDir);
   writeFileSync(testFile, new Uint8Array());
   ensureSymlinkSync("target.txt", testLinkName);
   const testDirStat = lstatSync(testDir);

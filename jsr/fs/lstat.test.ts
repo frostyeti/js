@@ -2,14 +2,14 @@ import { test } from "node:test";
 import { equal, ok } from "@frostyeti/assert";
 import { join } from "@frostyeti/path";
 import { lstat, lstatSync } from "./lstat.ts";
-import { makeDir } from "./make_dir.ts";
-import { remove } from "./remove.ts";
+import { mkdir } from "./mkdir.ts";
+import { rm } from "./rm.ts";
 import { writeTextFile } from "./write_text_file.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "lstat");
 
 test("fs::lstat returns file info for a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test.txt");
     const content = "test content";
 
@@ -22,24 +22,24 @@ test("fs::lstat returns file info for a file", async () => {
         equal(info.path, filePath);
         ok(info.size > 0);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::lstat returns file info for a directory", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
 
     try {
         const info = await lstat(testData);
         ok(info.isDirectory);
         ok(!info.isFile);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::lstatSync returns file info for a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test-sync.txt");
     const content = "test content";
 
@@ -52,12 +52,12 @@ test("fs::lstatSync returns file info for a file", async () => {
         equal(info.path, filePath);
         ok(info.size > 0);
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 
 test("fs::lstat handles URL paths", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "url-test.txt");
     const fileUrl = new URL(`file://${filePath}`);
     const content = "url test content";
@@ -70,7 +70,7 @@ test("fs::lstat handles URL paths", async () => {
         equal(info.name, "url-test.txt");
         equal(info.path, fileUrl.toString());
     } finally {
-        await remove(filePath);
+        await rm(filePath);
     }
 });
 

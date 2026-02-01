@@ -56,7 +56,7 @@
  * - `isFile` &amp; `isFile` - Determines if a path exists and is a file.
  * - `link` &amp; `linkSync` - Creates a hard link.
  * - `lstat` &amp; `lstatSync` - Invokes link stat on path to get system system information.
- * - `makeDir` &amp; `makeDirSync` - Creates a new directory.
+ * - `makeDir` &amp; `mkdirSync` - Creates a new directory.
  * - `makeTempDir` &amp; `makeTempDirSync` - Creates a new temporary directory.
  * - `makeTempFile` &amp; `makeTempFileSync` - Creates a new temporary file.
  * - `move` &amp; `moveSync` - Moves a file, directory, or symlink to the destination.
@@ -125,21 +125,21 @@ export * from "./ensure_symlink.ts";
 export * from "./errors.ts";
 export * from "./exists.ts";
 export * from "./expand_glob.ts";
-export * from "./is_dir.ts";
-export * from "./is_file.ts";
+export * from "./isdir.ts";
+export * from "./isfile.ts";
 export * from "./link.ts";
 export * from "./lstat.ts";
-export * from "./make_dir.ts";
-export * from "./make_temp_dir.ts";
-export * from "./make_temp_file.ts";
+export * from "./mkdir.ts";
+export * from "./mkdtemp.ts";
+export * from "./mktemp.ts";
 export * from "./move.ts";
 export * from "./open.ts";
-export * from "./read_dir.ts";
+export * from "./readdir.ts";
 export * from "./read_file.ts";
-export * from "./read_link.ts";
+export * from "./readlink.ts";
 export * from "./read_text_file.ts";
 export * from "./realpath.ts";
-export * from "./remove.ts";
+export * from "./rm.ts";
 export * from "./rename.ts";
 export * from "./stat.ts";
 export * from "./symlink.ts";

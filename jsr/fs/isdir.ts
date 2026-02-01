@@ -14,10 +14,10 @@ import { stat, statSync } from "./stat.ts";
  * @returns A promise that resolves with a boolean indicating whether the path is a directory.
  * @example
  * ```ts
- * import { isDir } from "@frostyeti/fs/is-dir";
+ * import { isdir } from "@frostyeti/fs/isdir";
  * async function checkDirectory() {
  *     try {
- *         const result = await isDir("example_directory");
+ *         const result = await isdir("example_directory");
  *         console.log(`Is it a directory? ${result}`);
  *     } catch (error) {
  *         console.error("Error checking directory:", error);
@@ -26,7 +26,7 @@ import { stat, statSync } from "./stat.ts";
  * checkDirectory();
  * ```
  */
-export function isDir(path: string | URL): Promise<boolean> {
+export function isdir(path: string | URL): Promise<boolean> {
     return stat(path)
         .then((stat) => stat.isDirectory)
         .catch(() => false);
@@ -41,10 +41,10 @@ export function isDir(path: string | URL): Promise<boolean> {
  * @returns A boolean indicating whether the path is a directory.
  * @example
  * ```ts
- * import { isDirSync } from "@frostyeti/fs/is-dir";
+ * import { isdirSync } from "@frostyeti/fs/isdir";
  * function checkDirectory() {
  *     try {
- *         const result = isDirSync("example_directory");
+ *         const result = isdirSync("example_directory");
  *         console.log(`Is it a directory? ${result}`);
  *     } catch (error) {
  *         console.error("Error checking directory:", error);
@@ -53,7 +53,7 @@ export function isDir(path: string | URL): Promise<boolean> {
  * checkDirectory();
  * ```
  */
-export function isDirSync(path: string | URL): boolean {
+export function isdirSync(path: string | URL): boolean {
     try {
         return statSync(path).isDirectory;
     } catch {

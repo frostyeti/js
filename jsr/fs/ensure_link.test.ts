@@ -5,8 +5,8 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureLink, ensureLinkSync } from "./ensure_link.ts";
 import { lstat, lstatSync } from "./lstat.ts";
-import { makeDir, makeDirSync } from "./make_dir.ts";
-import { remove, removeSync } from "./remove.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
+import { rm, rmSync } from "./rm.ts";
 import { writeFile, writeFileSync } from "./write_file.ts";
 import { writeTextFile } from "./write_text_file.ts";
 import { readTextFile } from "./read_text_file.ts";
@@ -27,7 +27,7 @@ test("fs::ensureLink() rejects if src and dest do not exist", async function () 
         },
     );
 
-    await remove(destDir, { recursive: true });
+    await rm(destDir, { recursive: true });
 });
 
 test("fs::ensureLinkSync() throws if src and dest do not exist", function () {
@@ -39,7 +39,7 @@ test("fs::ensureLinkSync() throws if src and dest do not exist", function () {
         ensureLinkSync(testFile, linkFile);
     });
 
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
 });
 
 test("fs::ensureLink() ensures dest links to the src", async function () {
@@ -47,7 +47,7 @@ test("fs::ensureLink() ensures dest links to the src", async function () {
     const testFile = path.join(testDir, "test.txt");
     const linkFile = path.join(testDir, "link.txt");
 
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await writeFile(testFile, new Uint8Array());
 
     await ensureLink(testFile, linkFile);
@@ -78,7 +78,7 @@ test("fs::ensureLink() ensures dest links to the src", async function () {
     equal(testFileContent2, "abc");
     equal(testFileContent2, linkFileContent2);
 
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
 });
 
 test("fs::ensureLinkSync() ensures dest links to the src", function () {
@@ -86,7 +86,7 @@ test("fs::ensureLinkSync() ensures dest links to the src", function () {
     const testFile = path.join(testDir, "test.txt");
     const linkFile = path.join(testDir, "link.txt");
 
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     writeFileSync(testFile, new Uint8Array());
 
     ensureLinkSync(testFile, linkFile);
@@ -126,7 +126,7 @@ test("fs::ensureLinkSync() ensures dest links to the src", function () {
     equal(testFileContent2, "abc");
     equal(testFileContent2, linkFileContent2);
 
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
 });
 
 test("fs::ensureLink() rejects if link does not exist", async function () {
@@ -134,7 +134,7 @@ test("fs::ensureLink() rejects if link does not exist", async function () {
     const linkDir = path.join(testdataDir, "ensure_link_link_3");
     const testFile = path.join(testDir, "test.txt");
 
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await writeFile(testFile, new Uint8Array());
 
     await rejects(
@@ -145,7 +145,7 @@ test("fs::ensureLink() rejects if link does not exist", async function () {
         // "Access is denied. (os error 5)" // throw in CI
     );
 
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
 });
 
 test("fs::ensureLinkSync() throws if link does not exist", function () {
@@ -153,7 +153,7 @@ test("fs::ensureLinkSync() throws if link does not exist", function () {
     const linkDir = path.join(testdataDir, "ensure_link_link_3");
     const testFile = path.join(testDir, "test.txt");
 
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     writeFileSync(testFile, new Uint8Array());
 
     throws(
@@ -164,5 +164,5 @@ test("fs::ensureLinkSync() throws if link does not exist", function () {
         // "Access is denied. (os error 5)" // throw in CI
     );
 
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
 });

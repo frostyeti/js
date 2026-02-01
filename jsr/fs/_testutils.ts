@@ -1,8 +1,8 @@
 import { spawn, spawnSync } from "node:child_process";
 import { globals, WIN } from "./globals.ts";
-import { makeTempDirSync } from "@frostyeti/fs/make-temp-dir";
-import { remove } from "@frostyeti/fs/remove";
-import { removeSync } from "@frostyeti/fs";
+import { mkdtempSync } from "./mkdtemp.ts";
+import { rm } from "./rm.ts";
+import { rmSync } from "@frostyeti/fs";
 
 export type stdio = "inherit" | "pipe" | "null";
 
@@ -164,7 +164,7 @@ export class DisposableTempDir {
     #path: string;
 
     constructor() {
-        this.#path = makeTempDirSync();
+        this.#path = mkdtempSync();
     }
 
     get path() {
@@ -173,7 +173,7 @@ export class DisposableTempDir {
 
     [Symbol.dispose]() {
         try {
-            removeSync(this.path, { recursive: true });
+            rmSync(this.path, { recursive: true });
         } catch (e) {
             console.error(`Failed to remove temp dir at ${this.path}:`, e);
         }
@@ -181,7 +181,7 @@ export class DisposableTempDir {
 
     async [Symbol.asyncDispose]() {
         try {
-            await remove(this.path, { recursive: true });
+            await rm(this.path, { recursive: true });
         } catch (e) {
             console.error(`Failed to remove temp dir at ${this.path}:`, e);
         }

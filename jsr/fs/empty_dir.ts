@@ -7,9 +7,9 @@
 import { toPathString } from "./utils.ts";
 import { join } from "@frostyeti/path";
 import { isNotFoundError } from "./errors.ts";
-import { makeDir, makeDirSync } from "./make_dir.ts";
-import { readDir, readDirSync } from "./read_dir.ts";
-import { remove, removeSync } from "./remove.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
+import { readdir, readdirSync } from "./readdir.ts";
+import { rm, rmSync } from "./rm.ts";
 
 /**
  * Asynchronously ensures that a directory is empty deletes the directory
@@ -30,12 +30,12 @@ import { remove, removeSync } from "./remove.ts";
  */
 export async function emptyDir(dir: string | URL) {
     try {
-        const items = await Array.fromAsync(readDir(dir));
+        const items = await Array.fromAsync(readdir(dir));
 
         await Promise.all(items.map((item) => {
             if (item && item.name) {
                 const filepath = join(toPathString(dir), item.name);
-                return remove(filepath, { recursive: true });
+                return rm(filepath, { recursive: true });
             }
         }));
     } catch (err) {
@@ -46,7 +46,7 @@ export async function emptyDir(dir: string | URL) {
         }
 
         // if not exist. then create it
-        await makeDir(dir, { recursive: true });
+        await mkdir(dir, { recursive: true });
     }
 }
 
@@ -69,14 +69,14 @@ export async function emptyDir(dir: string | URL) {
  */
 export function emptyDirSync(dir: string | URL) {
     try {
-        const items = [...readDirSync(dir)];
+        const items = [...readdirSync(dir)];
 
         // If the directory exists, remove all entries inside it.
         while (items.length) {
             const item = items.shift();
             if (item && item.name) {
                 const filepath = join(toPathString(dir), item.name);
-                removeSync(filepath, { recursive: true });
+                rmSync(filepath, { recursive: true });
             }
         }
     } catch (err) {
@@ -84,6 +84,6 @@ export function emptyDirSync(dir: string | URL) {
             throw err;
         }
         // if not exist. then create it
-        makeDirSync(dir, { recursive: true });
+        mkdirSync(dir, { recursive: true });
     }
 }

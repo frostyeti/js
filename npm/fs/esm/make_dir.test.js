@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import { equal, ok, rejects } from "@frostyeti/assert";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { join } from "@frostyeti/path";
 import { exec, output } from "./_testutils.js";
 import { globals } from "./globals.js";
@@ -46,17 +46,17 @@ test("fs::makeDir uses Deno.mkdir when available", async () => {
     globals.Deno = od;
   }
 });
-test("fs::makeDirSync creates a directory synchronously", () => {
+test("fs::mkdirSync creates a directory synchronously", () => {
   const dirPath = join(testData, "new-dir-sync");
   try {
-    makeDirSync(dirPath);
+    mkdirSync(dirPath);
     const result = statSync(dirPath);
     ok(result.isDirectory);
   } finally {
     removeSync(dirPath, { recursive: true });
   }
 });
-test("fs::makeDirSync uses Deno.mkdirSync when available", () => {
+test("fs::mkdirSync uses Deno.mkdirSync when available", () => {
   const { Deno: od } = globals;
   delete g["Deno"];
   try {
@@ -66,7 +66,7 @@ test("fs::makeDirSync uses Deno.mkdirSync when available", () => {
         called = true;
       },
     };
-    makeDirSync("test");
+    mkdirSync("test");
     ok(called);
   } finally {
     globals.Deno = od;

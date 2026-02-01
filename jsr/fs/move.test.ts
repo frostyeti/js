@@ -8,10 +8,10 @@ import { ensureFile, ensureFileSync } from "./ensure_file.ts";
 import { ensureDir, ensureDirSync } from "./ensure_dir.ts";
 import { exists as existsAsync, existsSync } from "./exists.ts";
 import { lstat, lstatSync } from "./lstat.ts";
-import { makeDir, makeDirSync } from "./make_dir.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
 import { readFileSync } from "./read_file.ts";
 import { readTextFile, readTextFileSync } from "./read_text_file.ts";
-import { remove, removeSync } from "./remove.ts";
+import { rm, rmSync } from "./rm.ts";
 import { writeFile, writeFileSync } from "./write_file.ts";
 
 const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
@@ -32,10 +32,10 @@ test("fs::move() creates dest dir if it does not exist", async function () {
     const srcDir = path.join(testdataDir, "move_test_src_2");
     const destDir = path.join(testdataDir, "move_test_dest_2");
     if (await existsAsync(destDir)) {
-        await remove(destDir, { recursive: true });
+        await rm(destDir, { recursive: true });
     }
 
-    await makeDir(srcDir, { recursive: true });
+    await mkdir(srcDir, { recursive: true });
 
     try {
         // if dest directory not exist
@@ -49,7 +49,7 @@ test("fs::move() creates dest dir if it does not exist", async function () {
         );
     } finally {
         if (await existsAsync(destDir)) {
-            await remove(destDir, { recursive: true });
+            await rm(destDir, { recursive: true });
         }
     }
 });
@@ -59,10 +59,10 @@ test("fs::move() creates dest dir if it does not exist and overwrite option is s
     const destDir = path.join(testdataDir, "move_test_dest_2");
 
     if (await existsAsync(destDir)) {
-        await remove(destDir, { recursive: true });
+        await rm(destDir, { recursive: true });
     }
 
-    await makeDir(srcDir, { recursive: true });
+    await mkdir(srcDir, { recursive: true });
     try {
         // if dest directory not exist
         await rejects(
@@ -75,7 +75,7 @@ test("fs::move() creates dest dir if it does not exist and overwrite option is s
         );
     } finally {
         if (await existsAsync(destDir)) {
-            await remove(destDir, { recursive: true });
+            await rm(destDir, { recursive: true });
         }
     }
 });
@@ -137,8 +137,8 @@ test("fs::move() moves file and can overwrite content", async function () {
 
     // clean up
     await Promise.all([
-        remove(srcDir, { recursive: true }),
-        remove(destDir, { recursive: true }),
+        rm(srcDir, { recursive: true }),
+        rm(destDir, { recursive: true }),
     ]);
 });
 
@@ -149,7 +149,7 @@ test("fs::move() moves dir", async function () {
     const destFile = path.join(destDir, "test.txt");
     const srcContent = new TextEncoder().encode("src");
 
-    await makeDir(srcDir, { recursive: true });
+    await mkdir(srcDir, { recursive: true });
     ok(await lstat(srcDir));
     await writeFile(srcFile, srcContent);
 
@@ -162,7 +162,7 @@ test("fs::move() moves dir", async function () {
     const destFileContent = await readTextFile(destFile);
     equal(destFileContent, "src");
 
-    await remove(destDir, { recursive: true });
+    await rm(destDir, { recursive: true });
 });
 
 test("fs::move() moves files if src and dest exist and can overwrite content", async function () {
@@ -174,8 +174,8 @@ test("fs::move() moves files if src and dest exist and can overwrite content", a
     const destContent = new TextEncoder().encode("dest");
 
     await Promise.all([
-        makeDir(srcDir, { recursive: true }),
-        makeDir(destDir, { recursive: true }),
+        mkdir(srcDir, { recursive: true }),
+        mkdir(destDir, { recursive: true }),
     ]);
     ok(await lstat(srcDir));
     ok(await lstat(destDir));
@@ -193,7 +193,7 @@ test("fs::move() moves files if src and dest exist and can overwrite content", a
     const destFileContent = await readTextFile(destFile);
     equal(destFileContent, "src");
 
-    await remove(destDir, { recursive: true });
+    await rm(destDir, { recursive: true });
 });
 
 test("fs::move() rejects when dest is its own sub dir", async function () {
@@ -209,7 +209,7 @@ test("fs::move() rejects when dest is its own sub dir", async function () {
         Error,
         `Cannot move '${srcDir}' to a subdirectory of itself, '${destDir}'.`,
     );
-    await remove(srcDir, { recursive: true });
+    await rm(srcDir, { recursive: true });
 });
 
 test("fs::moveSync() throws if src dir does not exist", function () {
@@ -226,10 +226,10 @@ test("fs::moveSync() creates dest dir if it does not exist", function () {
     const destDir = path.join(testdataDir, "move_sync_test_dest_2");
 
     if (existsSync(destDir)) {
-        removeSync(destDir, { recursive: true });
+        rmSync(destDir, { recursive: true });
     }
 
-    makeDirSync(srcDir, { recursive: true });
+    mkdirSync(srcDir, { recursive: true });
 
     // if dest directory not exist
     throws(
@@ -241,7 +241,7 @@ test("fs::moveSync() creates dest dir if it does not exist", function () {
         "should not throw error",
     );
 
-    removeSync(destDir, { recursive: true });
+    rmSync(destDir, { recursive: true });
 });
 
 test("fs::moveSync() creates dest dir if it does not exist and overwrite option is set to true", function () {
@@ -249,10 +249,10 @@ test("fs::moveSync() creates dest dir if it does not exist and overwrite option 
     const destDir = path.join(testdataDir, "move_sync_test_dest_2");
 
     if (existsSync(destDir)) {
-        removeSync(destDir, { recursive: true });
+        rmSync(destDir, { recursive: true });
     }
 
-    makeDirSync(srcDir, { recursive: true });
+    mkdirSync(srcDir, { recursive: true });
 
     // if dest directory not exist width overwrite
     throws(
@@ -264,7 +264,7 @@ test("fs::moveSync() creates dest dir if it does not exist and overwrite option 
         "should not throw error",
     );
 
-    removeSync(destDir);
+    rmSync(destDir);
 });
 
 test("fs::moveSync() throws if src file does not exist", function () {
@@ -320,8 +320,8 @@ test("fs::moveSync() moves file and can overwrite content", function () {
     equal(new TextDecoder().decode(readFileSync(destFile)), "src");
 
     // clean up
-    removeSync(srcDir, { recursive: true });
-    removeSync(destDir, { recursive: true });
+    rmSync(srcDir, { recursive: true });
+    rmSync(destDir, { recursive: true });
 });
 
 test("fs::moveSync() moves dir", function () {
@@ -331,7 +331,7 @@ test("fs::moveSync() moves dir", function () {
     const destFile = path.join(destDir, "test.txt");
     const srcContent = new TextEncoder().encode("src");
 
-    makeDirSync(srcDir, { recursive: true });
+    mkdirSync(srcDir, { recursive: true });
     equal(existsSync(srcDir), true);
     writeFileSync(srcFile, srcContent);
 
@@ -344,7 +344,7 @@ test("fs::moveSync() moves dir", function () {
     const destFileContent = new TextDecoder().decode(readFileSync(destFile));
     equal(destFileContent, "src");
 
-    removeSync(destDir, { recursive: true });
+    rmSync(destDir, { recursive: true });
 });
 
 test("fs::moveSync() moves files if src and dest exist and can overwrite content", function () {
@@ -355,8 +355,8 @@ test("fs::moveSync() moves files if src and dest exist and can overwrite content
     const srcContent = new TextEncoder().encode("src");
     const destContent = new TextEncoder().encode("dest");
 
-    makeDirSync(srcDir, { recursive: true });
-    makeDirSync(destDir, { recursive: true });
+    mkdirSync(srcDir, { recursive: true });
+    mkdirSync(destDir, { recursive: true });
     equal(existsSync(srcDir), true);
     equal(existsSync(destDir), true);
     writeFileSync(srcFile, srcContent);
@@ -371,7 +371,7 @@ test("fs::moveSync() moves files if src and dest exist and can overwrite content
     const destFileContent = new TextDecoder().decode(readFileSync(destFile));
     equal(destFileContent, "src");
 
-    removeSync(destDir, { recursive: true });
+    rmSync(destDir, { recursive: true });
 });
 
 test("fs::moveSync() throws when dest is its own sub dir", function () {
@@ -387,7 +387,7 @@ test("fs::moveSync() throws when dest is its own sub dir", function () {
         Error,
         `Cannot move '${srcDir}' to a subdirectory of itself, '${destDir}'.`,
     );
-    removeSync(srcDir, { recursive: true });
+    rmSync(srcDir, { recursive: true });
 });
 
 test("fs::move() accepts overwrite option set to true for file content", async function () {
@@ -417,7 +417,7 @@ test("fs::move() accepts overwrite option set to true for file content", async f
         equal(await readTextFile(src), "test");
     }
 
-    await remove(dir, { recursive: true });
+    await rm(dir, { recursive: true });
 });
 
 test("fs::move() accepts overwrite option set to true for directories", async function () {
@@ -445,7 +445,7 @@ test("fs::move() accepts overwrite option set to true for directories", async fu
         }, SubdirectoryMoveError);
     }
 
-    await remove(dir, { recursive: true });
+    await rm(dir, { recursive: true });
 });
 
 test("fs::moveSync() accepts overwrite option set to true for file content", function () {
@@ -475,7 +475,7 @@ test("fs::moveSync() accepts overwrite option set to true for file content", fun
         equal(readTextFileSync(src), "test");
     }
 
-    removeSync(dir, { recursive: true });
+    rmSync(dir, { recursive: true });
 });
 
 test("fs::move() accepts overwrite option set to true for directories", function () {
@@ -503,5 +503,5 @@ test("fs::move() accepts overwrite option set to true for directories", function
         }, SubdirectoryMoveError);
     }
 
-    removeSync(dir, { recursive: true });
+    rmSync(dir, { recursive: true });
 });

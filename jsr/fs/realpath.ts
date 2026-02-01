@@ -13,7 +13,7 @@ let fnAsync: typeof import("node:fs/promises").realpath | undefined = undefined;
  * @param path The path to the file or directory.
  * @returns A promise that resolves with the real path as a string.
  */
-export function realPath(path: string | URL): Promise<string> {
+export function realpath(path: string | URL): Promise<string> {
     if (globals.Deno) {
         return globals.Deno.realPath(path);
     }
@@ -33,7 +33,7 @@ export function realPath(path: string | URL): Promise<string> {
  * @param path The path to the file or directory.
  * @returns The real path as a string.
  */
-export function realPathSync(path: string | URL): string {
+export function realpathSync(path: string | URL): string {
     if (globals.Deno) {
         return globals.Deno.realPathSync(path);
     }

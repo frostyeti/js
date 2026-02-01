@@ -21,70 +21,21 @@ if (globals.Deno) {
 }
 
 /**
- * Determines if the terminal is ANSI compatible by checking the `TERM` environment variable.
- * @returns `true` if the terminal is ANSI compatible, `false` otherwise.
- */
-function isTermVariableAnsiCompatible(): boolean {
-    const set = [
-        "^xterm",
-        "^rxvt",
-        "^cygwin",
-        "ansi",
-        "linux",
-        "konsole",
-        "tmux",
-        "alacritty",
-        "^vt100",
-        "^vt220",
-        "^vt220",
-        "^vt320",
-        "^screen",
-    ];
-
-    const term = get("TERM");
-    if (term === undefined) {
-        return false;
-    }
-
-    if (term === "dumb") {
-        return false;
-    }
-
-    const t = term.toLowerCase();
-
-    for (const s of set) {
-        if (s[0] === "^") {
-            if (t === s.substring(1)) {
-                return true;
-            }
-
-            continue;
-        }
-
-        if (t === s) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**
  * Gets the CI environment variable and determines if the terminal is ANSI compatible.
  * @returns The ANSI mode if the terminal is ANSI compatible, `null` otherwise.
  */
 function detectCi(): AnsiMode | null {
     if (has("CI")) {
-        if (has("GITHUB_ACTIONS") || has("GITEA_ACTIONS")) {
-            return AnsiModes.FourBit;
+        if (has("GITHUB_ACTIONS") || has("GITEA_ACTIONS")|| has("CIRCLECI")) {
+            return AnsiModes.TwentyFourBit;
         }
 
         if (
-            ["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"].some((sign) =>
+            ["TRAVIS", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE", "TF_BUILD", "AGENT_NAME"].some((sign) =>
                 has(sign)
             ) ||
             get("CI_NAME") === "codeship"
-        ) {
+        ) { 
             return AnsiModes.FourBit;
         }
 
@@ -104,6 +55,22 @@ function detectCi(): AnsiMode | null {
 /**
  * Detects the ANSI mode of the terminal.
  * @returns The ANSI mode of the terminal.
+ * 
+ * @example
+ * ```typescript
+ * import { detectMode, AnsiModes } from '@frostyeti/ansi/detector';
+ *
+ * const mode = detectMode();
+ * if (mode === AnsiModes.TwentyFourBit) {
+ *     console.log("Terminal supports 24-bit color.");
+ * } else if (mode === AnsiModes.EightBit) {
+ *     console.log("Terminal supports 8-bit color.");
+ * } else if (mode === AnsiModes.FourBit) {
+ *     console.log("Terminal supports 4-bit color.");
+ * } else {
+ *     console.log("Terminal does not support ANSI colors.");
+ * }
+ * ```
  */
 export function detectMode(): AnsiMode {
     const noColor = args.includes("--no-color") ||
@@ -133,38 +100,8 @@ export function detectMode(): AnsiMode {
     }
 
     if (color.length > 0) {
-        switch (color) {
-            case "3":
-            case "3bit":
-                return AnsiModes.ThreeBit;
-
-            case "4":
-            case "4bit":
-                return AnsiModes.FourBit;
-
-            case "8":
-            case "8bit":
-                return AnsiModes.EightBit;
-
-            case "24":
-            case "24bit":
-            case "truecolor":
-            case "color":
-            case "true":
-            case "true-color":
-            case "full":
-                return AnsiModes.TwentyFourBit;
-            case "none":
-            case "false":
-            case "no-color":
-            case "no":
-            case "nocolor":
-            case "0":
-                return AnsiModes.None;
-        }
+        return AnsiModes.toValue(color) as AnsiMode;
     }
-
-    const term = get("TERM");
 
     if (has("TF_BUILD") && has("AGENT_NAME")) {
         return AnsiModes.FourBit;
@@ -179,8 +116,17 @@ export function detectMode(): AnsiMode {
         return AnsiModes.TwentyFourBit;
     }
 
-    if (term === "xterm-kitty") {
-        return AnsiModes.TwentyFourBit;
+    const term = get("TERM");
+
+    if (term) {
+        if (term === "dumb") {
+            return AnsiModes.None;
+        }
+        
+        const mode = AnsiModes.toValue(term) as AnsiMode;
+        if (mode > -1) {
+            return mode;
+        }
     }
 
     if (DARWIN) {
@@ -204,12 +150,12 @@ export function detectMode(): AnsiMode {
         }
     }
 
-    if (term) {
+    if (term) {       
         if (/-256(color)?$/i.test(term)) {
             return AnsiModes.EightBit;
         }
 
-        if (isTermVariableAnsiCompatible()) {
+        if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(term)) {
             return AnsiModes.FourBit;
         }
     }

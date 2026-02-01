@@ -3,9 +3,9 @@ import { equal, ok } from "@frostyeti/assert";
 import { stat, statSync } from "./stat.ts";
 import { join } from "@frostyeti/path";
 import { globals } from "./globals.ts";
-import { makeDir } from "./make_dir.ts";
+import { mkdir } from "./mkdir.ts";
 import { writeTextFile } from "./write_text_file.ts";
-import { remove } from "./remove.ts";
+import { rm } from "./rm.ts";
 
 // deno-lint-ignore no-explicit-any
 const g = globals as Record<string, any>;
@@ -13,7 +13,7 @@ const g = globals as Record<string, any>;
 const testData = join(import.meta.dirname!, "test-data", "stat");
 
 test("fs::stat gets file information for a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test.txt");
     const content = "test content";
 
@@ -28,12 +28,12 @@ test("fs::stat gets file information for a file", async () => {
         ok(!info.isDirectory);
         ok(!info.isSymlink);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::stat gets file information for a directory", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
 
     try {
         const info = await stat(testData);
@@ -43,12 +43,12 @@ test("fs::stat gets file information for a directory", async () => {
         ok(!info.isSymlink);
         equal(info.name, "stat");
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::stat works with URL paths", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "url-test.txt");
     const fileUrl = new URL(`file://${filePath}`);
 
@@ -60,7 +60,7 @@ test("fs::stat works with URL paths", async () => {
         equal(info.name, "url-test.txt");
         equal(info.path, fileUrl.toString());
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 

@@ -6,7 +6,7 @@
  * @module
  */
 import { isAlreadyExistsError, isNotFoundError } from "./errors.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { stat, statSync } from "./stat.js";
 import { getFileInfoType } from "./utils.js";
 /**
@@ -88,7 +88,7 @@ export function ensureDirSync(dir) {
   // The dir doesn't exist. Create it.
   // This can be racy. So we catch AlreadyExists and check stat again.
   try {
-    makeDirSync(dir, { recursive: true });
+    mkdirSync(dir, { recursive: true });
   } catch (err) {
     if (!isAlreadyExistsError(err)) {
       throw err;

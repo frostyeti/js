@@ -3,7 +3,7 @@ import { equal, fail, nope, notEqual, ok, throws } from "@frostyeti/assert";
 import { Command, exec, ShellCommand, type ShellCommandOptions } from "./command.ts";
 import { globals, WIN } from "./globals.ts";
 import { env } from "@frostyeti/env/export";
-import { remove, writeTextFile } from "@frostyeti/fs";
+import { rm, writeTextFile } from "@frostyeti/fs";
 import { dirname, fromFileUrl } from "@frostyeti/path";
 import { pathFinder } from "./path_finder.ts";
 
@@ -183,7 +183,7 @@ test("exec::Command - spawn", async (t) => {
         return;
     }
 
-    const cmd = new Command(["echo", "hello"]);
+    const cmd = new Command(["echo", "hello"])
     const process = cmd.spawn();
     const output = await process.output();
     equal(output.code, 0);
@@ -461,7 +461,7 @@ test("exec::ShellCommand - run file", async (t) => {
         equal(output.code, 0);
         equal(output.text(), `Hello, World!${EOL}`);
     } finally {
-        await remove("hello.ps1");
+        await rm("hello.ps1");
     }
 });
 
@@ -488,6 +488,6 @@ test("exec:ShellCommand - use spawn", async (t) => {
         equal(output.code, 0);
         equal(output.text(), `Hello, World!${EOL}`);
     } finally {
-        await remove("hello2.ps1");
+        await rm("hello2.ps1");
     }
 });

@@ -1,14 +1,60 @@
+/**
+ * The `indexOf` module provides functions to find the first index of a
+ * substring in a character buffer. Supports both case-sensitive and
+ * case-insensitive (fold) searching with full Unicode support.
+ *
+ * @example Find first occurrence of a substring
+ * ```ts
+ * import { indexOf } from "@frostyeti/slices/index-of";
+ *
+ * indexOf("hello world", "world");  // Returns 6
+ * indexOf("foo bar foo", "foo", 1);  // Returns 8 (starts at index 1)
+ * indexOf("hello", "x");  // Returns -1 (not found)
+ * ```
+ *
+ * @example Case-insensitive search
+ * ```ts
+ * import { indexOfFold } from "@frostyeti/slices/index-of";
+ *
+ * indexOfFold("Hello World", "WORLD");  // Returns 6
+ * indexOfFold("café CAFÉ", "CAFÉ");  // Returns 0
+ * ```
+ *
+ * @module
+ */
+
 import { simpleFold } from "@frostyeti/chars/simple-fold";
 import { type CharBuffer, toCharSliceLike } from "./utils.ts";
 
 /**
- * Gets the index of the first occurrence of the test array in the value array
- * using a case-insensitive comparison.
- * @param value The array of characters to search in.
- * @param test The aray of characters to search for.
- * @param index The index to start the search at.
- * @returns The index of the first occurrence of the test array in
- * the value array, or -1 if not found.
+ * Finds the first occurrence of a substring in a character buffer using
+ * case-insensitive (fold) comparison.
+ *
+ * Uses Unicode case folding for proper comparison of international characters
+ * including accented letters, Greek, Cyrillic, and other scripts.
+ *
+ * @param value - The character buffer to search in.
+ * @param test - The substring to search for.
+ * @param index - The index to start searching from (default: 0).
+ * @returns The index of the first occurrence, or -1 if not found.
+ * @throws {RangeError} If index is out of range.
+ *
+ * @example Basic case-insensitive search
+ * ```ts
+ * indexOfFold("Hello World", "world");  // Returns 6
+ * indexOfFold("ABC abc ABC", "ABC");  // Returns 0
+ * ```
+ *
+ * @example With accented characters
+ * ```ts
+ * indexOfFold("CAFÉ café", "café");  // Returns 0
+ * indexOfFold("ÜBER über", "über");  // Returns 0
+ * ```
+ *
+ * @example With start index
+ * ```ts
+ * indexOfFold("foo FOO foo", "foo", 1);  // Returns 4
+ * ```
  */
 export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): number {
     const s = toCharSliceLike(value);
@@ -48,7 +94,7 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
                     if (tr === sr) {
                         f++;
                         if (f === t.length) {
-                            return i + t.length;
+                            return j - t.length + 1;
                         }
 
                         continue;
@@ -65,8 +111,8 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
                         if (65 <= sr && sr <= 90 && tr === sr + 32) {
                             f++;
 
-                            if (f == t.length - 1) {
-                                return i + t.length;
+                            if (f === t.length) {
+                                return j - t.length + 1;
                             }
                             continue;
                         }
@@ -83,8 +129,8 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
                     if (r == tr) {
                         f++;
 
-                        if (f == t.length - 1) {
-                            return i + t.length;
+                        if (f === t.length) {
+                            return j - t.length + 1;
                         }
                         continue;
                     }
@@ -92,8 +138,8 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
                     f = 0;
                 }
 
-                if (f == t.length - 1) {
-                    return i + t.length;
+                if (f === t.length) {
+                    return j - t.length;
                 }
 
                 return -1;
@@ -103,7 +149,7 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
         if (tr === sr) {
             f++;
 
-            if (f === t.length - 1) {
+            if (f === t.length) {
                 return i + 1 - f;
             }
 
@@ -119,7 +165,7 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
         if (65 <= sr && sr <= 90 && tr === sr + 32) {
             f++;
 
-            if (f === t.length - 1) {
+            if (f === t.length) {
                 return i + 1 - f;
             }
 
@@ -137,12 +183,36 @@ export function indexOfFold(value: CharBuffer, test: CharBuffer, index = 0): num
 }
 
 /**
- * Gets the index of the first occurrence of the test array in the value array.
- * @param value The array of characters to search in.
- * @param test The aray of characters to search for.
- * @param index The index to start the search at.
- * @returns The index of the first occurrence of the test array in
- * the value array, or -1 if not found.
+ * Finds the first occurrence of a substring in a character buffer using
+ * case-sensitive comparison.
+ *
+ * @param value - The character buffer to search in.
+ * @param test - The substring to search for.
+ * @param index - The index to start searching from (default: 0).
+ * @returns The index of the first occurrence, or -1 if not found.
+ *
+ * @example Basic search
+ * ```ts
+ * indexOf("hello world", "world");  // Returns 6
+ * indexOf("abcabc", "abc");  // Returns 0 (first occurrence)
+ * ```
+ *
+ * @example Case-sensitive
+ * ```ts
+ * indexOf("Hello HELLO", "HELLO");  // Returns 6
+ * indexOf("Hello HELLO", "hello");  // Returns -1 (case mismatch)
+ * ```
+ *
+ * @example With start index
+ * ```ts
+ * indexOf("foo bar foo", "foo", 1);  // Returns 8
+ * ```
+ *
+ * @example Not found
+ * ```ts
+ * indexOf("hello world", "xyz");  // Returns -1
+ * indexOf("abc", "abcd");  // Returns -1 (test longer than remaining)
+ * ```
  */
 export function indexOf(value: CharBuffer, test: CharBuffer, index = 0): number {
     const s = toCharSliceLike(value);

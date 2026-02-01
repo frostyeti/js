@@ -40,7 +40,7 @@ function randomName(prefix?: string, suffix?: string): string {
  * @param options The options for creating the temporary file (optional).
  * @returns A promise that resolves with the path to the created temporary file.
  */
-export async function makeTempFile(options?: MakeTempOptions): Promise<string> {
+export async function mktemp(options?: MakeTempOptions): Promise<string> {
     if (globals.Deno) {
         return globals.Deno.makeTempFile(options);
     }
@@ -83,7 +83,7 @@ export async function makeTempFile(options?: MakeTempOptions): Promise<string> {
  * @param options The options for creating the temporary file (optional).
  * @returns The path to the created temporary file.
  */
-export function makeTempFileSync(options?: MakeTempOptions): string {
+export function mktempSync(options?: MakeTempOptions): string {
     if (globals.Deno) {
         return globals.Deno.makeTempFileSync(options);
     }

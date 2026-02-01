@@ -16,7 +16,7 @@ import { pathFinder } from "./path_finder.ts";
 import { getLogger } from "./set_logger.ts";
 import { splat } from "@frostyeti/args/splat";
 import { split } from "@frostyeti/args/split";
-import { remove, removeSync } from "@frostyeti/fs/remove";
+import { rm, rmSync } from "../fs/rm.ts";
 import type {
     ChildProcess,
     CommandArgs,
@@ -68,10 +68,23 @@ export class Command {
      * @param options The options for the command.
      */
     constructor(args?: CommandArgs, options?: CommandOptions) {
-        const a = convertCommandArgs(args);
-        this.file = a.shift() ?? "";
-        this.args = a;
         options ??= {};
+        if (args === undefined || args === null) {
+            this.file = "";
+            this.args = [];
+        } else if (typeof args === "string" && !args.includes(" ")) {
+            this.file = args;
+            this.args = [];
+        } else if (Array.isArray(args)) {
+            this.file = args[0];
+            this.args = args.length > 0 ? args.slice(1) : [];
+        } else {
+            const a = convertCommandArgs(args);
+            this.file = a.shift() ?? "";
+            this.args = a;
+        }
+            
+
         options.stdin ??= "inherit";
         options.stderr ??= "piped";
         options.stdout ??= "piped";
@@ -903,7 +916,7 @@ if (globals.Deno) {
             }, this.file);
         } finally {
             if (isFile && generated) {
-                await remove(file);
+                await rm(file);
             }
         }
     };
@@ -946,7 +959,7 @@ if (globals.Deno) {
             }, this.file);
         } finally {
             if (isFile && generated) {
-                removeSync(file);
+                rmSync(file);
             }
         }
     };
@@ -977,7 +990,7 @@ if (globals.Deno) {
         const proc = new DenoChildProcess(process.spawn(), options, this.file);
         proc.onDispose = () => {
             if (isFile && generated) {
-                removeSync(file);
+                rmSync(file);
             }
         };
         return proc;
@@ -1589,7 +1602,7 @@ if (globals.Deno) {
             } as NodeCommonOutput);
         } finally {
             if (isFile && generated) {
-                await remove(file);
+                await rm(file);
             }
         }
     };
@@ -1643,7 +1656,7 @@ if (globals.Deno) {
             } as NodeCommonOutput);
         } finally {
             if (isFile && generated) {
-                removeSync(file);
+                rmSync(file);
             }
         }
     };
@@ -1684,7 +1697,7 @@ if (globals.Deno) {
         const proc = new NodeChildProcess(child, this.file, o.signal);
         proc.onDispose = () => {
             if (isFile && generated) {
-                removeSync(file);
+                rmSync(file);
             }
         };
 

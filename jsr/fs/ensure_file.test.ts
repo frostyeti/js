@@ -3,8 +3,8 @@ import { test } from "node:test";
 import { rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureFile, ensureFileSync } from "./ensure_file.ts";
-import { makeDir, makeDirSync } from "./make_dir.ts";
-import { remove, removeSync } from "./remove.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
+import { rm, rmSync } from "./rm.ts";
 import { stat, statSync } from "./stat.ts";
 import { writeFile, writeFileSync } from "./write_file.ts";
 import { globals } from "./globals.ts";
@@ -22,7 +22,7 @@ test("fs::ensureFile() creates file if it does not exist", async function () {
         // test file should exists.
         await stat(testFile);
     } finally {
-        await remove(testDir, { recursive: true });
+        await rm(testDir, { recursive: true });
     }
 });
 
@@ -36,7 +36,7 @@ test("fs::ensureFileSync() creates file if it does not exist", function () {
         // test file should exists.
         statSync(testFile);
     } finally {
-        removeSync(testDir, { recursive: true });
+        rmSync(testDir, { recursive: true });
     }
 });
 
@@ -45,7 +45,7 @@ test("fs::ensureFile() ensures existing file exists", async function () {
     const testFile = path.join(testDir, "test.txt");
 
     try {
-        await makeDir(testDir, { recursive: true });
+        await mkdir(testDir, { recursive: true });
         await writeFile(testFile, new Uint8Array());
 
         await ensureFile(testFile);
@@ -53,7 +53,7 @@ test("fs::ensureFile() ensures existing file exists", async function () {
         // test file should exists.
         await stat(testFile);
     } finally {
-        await remove(testDir, { recursive: true });
+        await rm(testDir, { recursive: true });
     }
 });
 
@@ -62,7 +62,7 @@ test("fs::ensureFileSync() ensures existing file exists", function () {
     const testFile = path.join(testDir, "test.txt");
 
     try {
-        makeDirSync(testDir, { recursive: true });
+        mkdirSync(testDir, { recursive: true });
         writeFileSync(testFile, new Uint8Array());
 
         ensureFileSync(testFile);
@@ -70,7 +70,7 @@ test("fs::ensureFileSync() ensures existing file exists", function () {
         // test file should exists.
         statSync(testFile);
     } finally {
-        removeSync(testDir, { recursive: true });
+        rmSync(testDir, { recursive: true });
     }
 });
 
@@ -78,7 +78,7 @@ test("fs::ensureFile() rejects if input is dir", async function () {
     const testDir = path.join(testdataDir, "ensure_file_5");
 
     try {
-        await makeDir(testDir, { recursive: true });
+        await mkdir(testDir, { recursive: true });
 
         await rejects(
             async () => {
@@ -88,7 +88,7 @@ test("fs::ensureFile() rejects if input is dir", async function () {
             `Ensure path exists, expected 'file', got 'dir'`,
         );
     } finally {
-        await remove(testDir, { recursive: true });
+        await rm(testDir, { recursive: true });
     }
 });
 
@@ -96,7 +96,7 @@ test("fs::ensureFileSync() throws if input is dir", function () {
     const testDir = path.join(testdataDir, "ensure_file_6");
 
     try {
-        makeDirSync(testDir, { recursive: true });
+        mkdirSync(testDir, { recursive: true });
 
         throws(
             () => {
@@ -106,7 +106,7 @@ test("fs::ensureFileSync() throws if input is dir", function () {
             `Ensure path exists, expected 'file', got 'dir'`,
         );
     } finally {
-        removeSync(testDir, { recursive: true });
+        rmSync(testDir, { recursive: true });
     }
 });
 
@@ -158,7 +158,7 @@ if (globals.Deno && globals.Deno.permissions) {
             const testFile = path.join(testDir, "test.txt");
 
             try {
-                await makeDir(testDir, { recursive: true });
+                await mkdir(testDir, { recursive: true });
                 await globals.Deno.permissions.revoke({ name: "write", path: testDir });
 
                 // should still work as the parent directory already exists

@@ -9,8 +9,8 @@ import { join, normalize } from "@frostyeti/path";
 import { createWalkEntry, createWalkEntrySync, toPathString } from "./utils.ts";
 import type { WalkEntry } from "./types.ts";
 import { lstat, lstatSync } from "./lstat.ts";
-import { readDir, readDirSync } from "./read_dir.ts";
-import { realPath, realPathSync } from "./realpath.ts";
+import { readdir, readdirSync } from "./readdir.ts";
+import { realpath, realpathSync } from "./realpath.ts";
 
 /** Error thrown in {@linkcode walk} or {@linkcode walkSync} during iteration. */
 export class WalkError extends Error {
@@ -182,7 +182,7 @@ export async function* walk(
         return;
     }
     try {
-        for await (const entry of readDir(root)) {
+        for await (const entry of readdir(root)) {
             let path = join(root, entry.name);
 
             let { isSymlink, isDirectory } = entry;
@@ -194,7 +194,7 @@ export async function* walk(
                     }
                     continue;
                 }
-                const rp = await realPath(path);
+                const rp = await realpath(path);
                 if (canonicalize) {
                     path = rp;
                 }
@@ -251,7 +251,7 @@ export function* walkSync(
     }
     let entries;
     try {
-        entries = readDirSync(root);
+        entries = readdirSync(root);
     } catch (err) {
         throw wrapErrorWithPath(err, normalize(root));
     }
@@ -268,7 +268,7 @@ export function* walkSync(
                 continue;
             }
 
-            const realPath = realPathSync(path);
+            const realPath = realpathSync(path);
             if (canonicalize) {
                 path = realPath;
             }

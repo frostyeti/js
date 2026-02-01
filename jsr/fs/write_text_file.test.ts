@@ -2,14 +2,14 @@ import { test } from "node:test";
 import { equal, rejects, throws } from "@frostyeti/assert";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.ts";
 import { join } from "@frostyeti/path";
-import { makeDir } from "./make_dir.ts";
-import { remove } from "./remove.ts";
+import { mkdir } from "./mkdir.ts";
+import { rm } from "./rm.ts";
 import { readTextFile } from "./read_text_file.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "write_text_file");
 
 test("fs::writeTextFile writes text content to a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test1.txt");
     const content = "Hello World!";
 
@@ -18,12 +18,12 @@ test("fs::writeTextFile writes text content to a file", async () => {
         const o = await readTextFile(filePath);
         equal(o, content);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::writeTextFile appends text when append option is true", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test2.txt");
     const content1 = "First line\n";
     const content2 = "Second line";
@@ -34,7 +34,7 @@ test("fs::writeTextFile appends text when append option is true", async () => {
         const o = await readTextFile(filePath);
         equal(o, `${content1}${content2}`);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
@@ -49,7 +49,7 @@ test("fs::writeTextFile handles aborted signal", async () => {
 });
 
 test("fs::writeTextFileSync writes text content to a file", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const filePath = join(testData, "test3.txt");
     const content = "Sync content";
     try {
@@ -58,7 +58,7 @@ test("fs::writeTextFileSync writes text content to a file", async () => {
         const o = await readTextFile(filePath);
         equal(o, content);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 

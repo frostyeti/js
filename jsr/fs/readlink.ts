@@ -14,7 +14,7 @@ let fnAsync: typeof import("node:fs/promises").readlink | undefined = undefined;
  * @param path The path to the symbolic link.
  * @returns A promise that resolves with the target path as a string.
  */
-export function readLink(path: string | URL): Promise<string> {
+export function readlink(path: string | URL): Promise<string> {
     if (globals.Deno) {
         return globals.Deno.readLink(path);
     }
@@ -34,7 +34,7 @@ export function readLink(path: string | URL): Promise<string> {
  * @param path The path to the symbolic link.
  * @returns The target path as a string.
  */
-export function readLinkSync(path: string | URL): string {
+export function readlinkSync(path: string | URL): string {
     if (globals.Deno) {
         return globals.Deno.readLinkSync(path);
     }

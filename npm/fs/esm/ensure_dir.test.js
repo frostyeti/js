@@ -5,7 +5,7 @@ import * as path from "@frostyeti/path";
 import { ensureDir, ensureDirSync } from "./ensure_dir.js";
 import { ensureFile, ensureFileSync } from "./ensure_file.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, makeDirSync } from "./make_dir.js";
+import { makeDir, mkdirSync } from "./make_dir.js";
 import { remove, removeSync } from "./remove.js";
 import { stat, statSync } from "./stat.js";
 import { globals } from "./globals.js";
@@ -51,7 +51,7 @@ test("fs::ensureDirSync() ensures existing dir exists", function () {
   const testDir = path.join(baseDir, "test");
   try {
     // create test directory
-    makeDirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
     ensureDirSync(testDir);
     // test dir should still exists.
     statSync(testDir);

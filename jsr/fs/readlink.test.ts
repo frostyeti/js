@@ -1,11 +1,11 @@
 import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
-import { readLink, readLinkSync } from "./read_link.ts";
+import { readlink, readlinkSync } from "./readlink.ts";
 import { join } from "@frostyeti/path";
-import { makeDir } from "./make_dir.ts";
+import { mkdir } from "./mkdir.ts";
 import { WIN } from "./globals.ts";
 import { writeTextFile } from "./write_text_file.ts";
-import { remove } from "./remove.ts";
+import { rm } from "./rm.ts";
 import { symlink } from "./symlink.ts";
 
 const testData = join(import.meta.dirname!, "test-data", "read_link");
@@ -25,7 +25,7 @@ test("fs::readLink reads target of symbolic link", async (t) => {
         return;
     }
 
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const sourcePath = join(testData, "source2.txt");
     const linkPath = join(testData, "link2.txt");
     const content = "test content";
@@ -34,15 +34,15 @@ test("fs::readLink reads target of symbolic link", async (t) => {
         await writeTextFile(sourcePath, content);
         await symlink(sourcePath, linkPath);
 
-        const target = await readLink(linkPath);
+        const target = await readlink(linkPath);
         equal(target, sourcePath);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });
 
 test("fs::readLinkSync reads target of symbolic link", async () => {
-    await makeDir(testData, { recursive: true });
+    await mkdir(testData, { recursive: true });
     const sourcePath = join(testData, "source3.txt");
     const linkPath = join(testData, "link3.txt");
     const content = "test content";
@@ -51,9 +51,9 @@ test("fs::readLinkSync reads target of symbolic link", async () => {
         await writeTextFile(sourcePath, content);
         await symlink(sourcePath, linkPath);
 
-        const target = readLinkSync(linkPath);
+        const target = readlinkSync(linkPath);
         equal(target, sourcePath);
     } finally {
-        await remove(testData, { recursive: true });
+        await rm(testData, { recursive: true });
     }
 });

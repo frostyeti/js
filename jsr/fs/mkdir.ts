@@ -16,7 +16,7 @@ let fnAsync: typeof import("node:fs/promises").mkdir | undefined;
  * @param options The options for creating the directory (optional).
  * @returns A promise that resolves when the operation is complete.
  */
-export async function makeDir(
+export async function mkdir(
     path: string | URL,
     options?: CreateDirectoryOptions | undefined,
 ): Promise<void> {
@@ -44,7 +44,7 @@ export async function makeDir(
  * @param path The path to the directory.
  * @param options The options for creating the directory (optional).
  */
-export function makeDirSync(
+export function mkdirSync(
     path: string | URL,
     options?: CreateDirectoryOptions | undefined,
 ): void {

@@ -19,7 +19,7 @@ let lstatAsync: typeof import("node:fs/promises").lstat | undefined = undefined;
  * @param path The path to the directory.
  * @returns An async iterable that yields directory information.
  */
-export function readDir(
+export function readdir(
     path: string | URL,
     options = {
         /**
@@ -85,7 +85,7 @@ export function readDir(
  * @param path The path to the directory.
  * @returns An iterable that yields directory information.
  */
-export function readDirSync(
+export function readdirSync(
     path: string | URL,
     options = {
         /**

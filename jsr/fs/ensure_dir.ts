@@ -6,7 +6,7 @@
  * @module
  */
 import { isAlreadyExistsError, isNotFoundError } from "./errors.ts";
-import { makeDir, makeDirSync } from "./make_dir.ts";
+import { mkdir, mkdirSync } from "./mkdir.ts";
 import { stat, statSync } from "./stat.ts";
 import { getFileInfoType } from "./utils.ts";
 
@@ -43,7 +43,7 @@ export async function ensureDir(dir: string | URL) {
     // The dir doesn't exist. Create it.
     // This can be racy. So we catch AlreadyExists and check stat again.
     try {
-        await makeDir(dir, { recursive: true });
+        await mkdir(dir, { recursive: true });
     } catch (err) {
         if (!isAlreadyExistsError(err)) {
             throw err;
@@ -91,7 +91,7 @@ export function ensureDirSync(dir: string | URL) {
     // The dir doesn't exist. Create it.
     // This can be racy. So we catch AlreadyExists and check stat again.
     try {
-        makeDirSync(dir, { recursive: true });
+        mkdirSync(dir, { recursive: true });
     } catch (err) {
         if (!isAlreadyExistsError(err)) {
             throw err;

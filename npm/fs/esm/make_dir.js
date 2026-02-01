@@ -33,7 +33,7 @@ export async function makeDir(path, options) {
  * @param path The path to the directory.
  * @param options The options for creating the directory (optional).
  */
-export function makeDirSync(path, options) {
+export function mkdirSync(path, options) {
   if (globals.Deno) {
     return globals.Deno.mkdirSync(path, options);
   }

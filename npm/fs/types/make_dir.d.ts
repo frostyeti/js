@@ -19,7 +19,7 @@ export declare function makeDir(
  * @param path The path to the directory.
  * @param options The options for creating the directory (optional).
  */
-export declare function makeDirSync(
+export declare function mkdirSync(
   path: string | URL,
   options?: CreateDirectoryOptions | undefined,
 ): void;

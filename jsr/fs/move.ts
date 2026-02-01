@@ -5,7 +5,7 @@
  * @module
  */
 import { lstat, lstatSync } from "./lstat.ts";
-import { remove, removeSync } from "./remove.ts";
+import { rm, rmSync } from "./rm.ts";
 import { rename, renameSync } from "./rename.ts";
 import { stat, statSync } from "./stat.ts";
 import { isSamePath, isSubdir } from "./utils.ts";
@@ -68,7 +68,7 @@ export async function move(
     if (overwrite) {
         if (isSamePath(src, dest)) return;
         try {
-            await remove(dest, { recursive: true });
+            await rm(dest, { recursive: true });
         } catch (error) {
             if (!isNotFoundError(error)) {
                 throw error;
@@ -131,7 +131,7 @@ export function moveSync(
     if (overwrite) {
         if (isSamePath(src, dest)) return;
         try {
-            removeSync(dest, { recursive: true });
+            rmSync(dest, { recursive: true });
         } catch (error) {
             if (!isNotFoundError(error)) {
                 throw error;
