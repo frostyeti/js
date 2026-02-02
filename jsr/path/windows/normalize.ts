@@ -5,6 +5,7 @@ import { assertArg } from "../_common/normalize.ts";
 import { CHAR_COLON } from "@frostyeti/chars/constants";
 import { normalizeString } from "../_common/normalize_string.ts";
 import { isPathSeparator, isWindowsDeviceRoot } from "./_util.ts";
+import { fromFileUrl } from "./from_file_url.ts";
 
 /**
  * Normalize the `path`, resolving `'..'` and `'.'` segments.
@@ -26,7 +27,10 @@ import { isPathSeparator, isWindowsDeviceRoot } from "./_util.ts";
  * @param path The path to normalize
  * @returns The normalized path
  */
-export function normalize(path: string): string {
+export function normalize(path: string | URL): string {
+    if (path instanceof URL) {
+        path = fromFileUrl(path);
+    }
     assertArg(path);
 
     const len = path.length;

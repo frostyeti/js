@@ -14,6 +14,19 @@ import { camelize as og, type CamelizeOptions } from "@frostyeti/slices/camelize
  * @param value The string to camelize.
  * @param options The options for the function.
  * @returns A string in camel case.
+ *
+ * @example
+ * ```typescript
+ * import { camelize } from "@frostyeti/strings";
+ *
+ * camelize("hello world");     // "helloWorld"
+ * camelize("HelloWorld");      // "helloWorld"
+ * camelize("hello_world");     // "helloWorld"
+ * camelize("hello-world");     // "helloWorld"
+ *
+ * // Preserve original case after first character
+ * camelize("hello WOrLD", { preserveCase: true }); // "helloWOrLD"
+ * ```
  */
 export function camelize(value: string, options?: CamelizeOptions): string {
     const r = og(value, options);

@@ -4,6 +4,7 @@
 import { assertArg } from "../_common/normalize.ts";
 import { normalizeString } from "../_common/normalize_string.ts";
 import { isPosixPathSeparator } from "./_util.ts";
+import { fromFileUrl } from "./from_file_url.ts";
 
 /**
  * Normalize the `path`, resolving `'..'` and `'.'` segments.
@@ -43,7 +44,10 @@ import { isPosixPathSeparator } from "./_util.ts";
  * @param path The path to normalize.
  * @returns The normalized path.
  */
-export function normalize(path: string): string {
+export function normalize(path: string | URL): string {
+    if (path instanceof URL) {
+        path = fromFileUrl(path);
+    }
     assertArg(path);
 
     const isAbsolute = isPosixPathSeparator(path.charCodeAt(0));

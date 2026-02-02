@@ -21,7 +21,7 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/secrets/doc)
 
 ```bash
 # Deno
-deno add @frostyeti/secrets
+deno add jsr:@frostyeti/secrets
 
 # npm
 npm install @frostyeti/secrets

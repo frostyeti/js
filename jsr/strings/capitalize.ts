@@ -11,6 +11,15 @@ import { capitalize as og, type CapitalizeOptions } from "@frostyeti/slices/capi
  * @param value The string to capitalize.
  * @param options The options for capitalizing the string.
  * @returns The capitalized string.
+ *
+ * @example
+ * ```typescript
+ * import { capitalize } from "@frostyeti/strings";
+ *
+ * capitalize("hello");         // "Hello"
+ * capitalize("hello world");   // "Hello world"
+ * capitalize("HELLO");         // "HELLO" (only first char affected)
+ * ```
  */
 export function capitalize(value: string, options?: CapitalizeOptions): string {
     const r = og(value, options);

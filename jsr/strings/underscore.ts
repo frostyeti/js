@@ -12,6 +12,18 @@ import { underscore as og, type UnderScoreOptions } from "@frostyeti/slices/unde
  * @param value The value to convert.
  * @param options The underscore conversion options.
  * @returns The string in underscore case.
+ *
+ * @example
+ * ```typescript
+ * import { underscore } from "@frostyeti/strings";
+ *
+ * underscore("helloWorld");     // "hello_world"
+ * underscore("HelloWorld");     // "hello_world"
+ * underscore("hello-world");    // "hello_world"
+ *
+ * // Screaming case (uppercase)
+ * underscore("helloWorld", { screaming: true }); // "HELLO_WORLD"
+ * ```
  */
 export function underscore(value: string, options?: UnderScoreOptions): string {
     const r = og(value, options);

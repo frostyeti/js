@@ -14,6 +14,16 @@ import { dasherize as og, type DasherizeOptions } from "@frostyeti/slices/dasher
  * @param value The string to dasherize.
  * @param options The options for dasherizing the string
  * @returns The dasherized string.
+ *
+ * @example
+ * ```typescript
+ * import { dasherize } from "@frostyeti/strings";
+ *
+ * dasherize("helloWorld");     // "hello-world"
+ * dasherize("HelloWorld");     // "hello-world"
+ * dasherize("hello_world");    // "hello-world"
+ * dasherize("hello world");    // "hello-world"
+ * ```
  */
 export function dasherize(value: string, options?: DasherizeOptions): string {
     const r = og(value, options);

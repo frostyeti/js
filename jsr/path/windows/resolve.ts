@@ -29,7 +29,6 @@ export function resolve(...pathSegments: string[]): string {
 
     for (let i = pathSegments.length - 1; i >= -1; i--) {
         let path: string;
-
         if (i >= 0) {
             path = pathSegments[i]!;
         } else if (!resolvedDevice) {
@@ -149,7 +148,7 @@ export function resolve(...pathSegments: string[]): string {
     }
 
     // At this point the path should be resolved to a full absolute path,
-    // but handle relative paths to be safe (might happen when cwd()
+    // but handle relative paths to be safe (might happen when Deno.cwd()
     // fails)
 
     // Normalize the tail path

@@ -2,21 +2,10 @@
 
 ## Overview
 
-A collection of string utilities for comparisons and transforms, including case
-insensitive comparisons.
-
-The comparions are functions like `equal`, `startsWith`, `indexOf`, etc. Each of those
-have both a normal version like `equal` and a case insensitive version like `equalFold`.
-which does a comparison without creating new string allocations using something like toLowerCase().
-
-The case insensity should handle most of utf8 and more than just ascii or latin1 characters.
-e.g. `equalFold("hello WÖrLD", "Hello wörld")` returns true.
-
-The string tranformations includes functions like `singularize`, `dasherize`, `camelize`, `titleize`, etc.
-
-The basic checks functions include `isNull`, `isEmpty`, `isSpace`, `isNullOrEmpty`, and `isNullOrSpace`.
-
-The trim methods can trim characters other than whitespace characters.
+A comprehensive string utilities library providing case-insensitive comparisons,
+string transformations (camelize, dasherize, titleize), inflections (pluralize,
+singularize), and validation functions. All comparison functions have a `Fold`
+variant for case-insensitive matching with full UTF-8 support.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 
@@ -30,64 +19,202 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/strings/doc)
 
 A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
 
-## Usage
+## Installation
 
-```typescript
-import * from str from '@frostyeti/strings'
+```bash
+# Deno
+deno add jsr:@frostyeti/strings
 
-console.log(str.equalFold("left", "LeFT")); // true
-console.log(str.equalFold("hello WÖrLD", "Hello wörld")); // true
-console.log(str.equalFold("hello WÖrLD", "rld")); // false
-console.log(str.trimEnd("my random text...", ".")); // my random text
-console.log(str.underscore(" first-place")); // first_place
-console.log(str.underscore(" first-place", { screaming: true })); // FIRST_PLACE
-
-// useful for FFI
-var sb = new str.StringBuilder()
-sb.append("test \n")
-   .append(new TextEncoder().encode(": another test \n"));
-   .appendChar(33);
-
-console.log(sb.toString())
+# npm
+npm install @frostyeti/strings
 ```
 
-## Classes
+## Quick Start
 
-- `StringBuilder` - A builder for strings which does not use string concatination
-  and instead uses numbers as runes and only builds the string when toString() is called.
+```typescript
+import * as str from "@frostyeti/strings";
 
-## Functions
+// Case-insensitive comparison (supports UTF-8)
+str.equalFold("Hello WÖrLD", "hello wörld"); // true
 
-- `camelize` - converts a word to camel case.
-- `capitalize` - capitalizes a word.
-- `dasherize` - converts a word to hyphen/dash case.
-- `endsWith` - determines if a string or char array ends with characters.
-- `endsWithFold` - determines if a string or char array ends with characters using case insensitivity.
-- `equalFold` - determines if a string or char array with characeters.
-- `equal` -  determines if a string or char array with characters.
-- `indexOfFold` - determines the index of a character or char array using case insensitivity.
-- `indexOf` - determines the index of of a character or char array.
-- `lastIndexOfFolder` - determines the last index of a character or char array using case insensitivity.
-- `lastIndex` - determines the last index of a character or char array.
-- `ordinalize` - converts word/number to the ordinal case.
-- `pluralize` - converts singular words to their plural counterpart.
-- `pascalize` - converts a word to pascal case.
-- `singularize` - converts pluralized words to their singular counterpart.
-- `startsWith` - determines if a string or char array starts with another char array.
-- `startsWithFold` - determines if a string or char array starts with another char array using case insensitivity.
-- `titleize` - converts characters into title case.
-- `trim` - trims the specified characters from the start and end of a char array.  defaults to whitespace.
-- `trimStart` - trims the specified characters from the start of a char array. defaults to whitespace.
-- `trimEnd` - trims the specified characters from the end of a char array. defaults to whitespace.
-- `toCharArray` - converts a string to in array of characters/runes represented by a number.
-- `toString` - converts an array of characters into a string.
-- `undercore` - converts a word to use underscores. if the screaming option is set to true, then
-   all letters are capitializeds.
+// String transformations
+str.camelize("hello_world");    // "helloWorld"
+str.dasherize("HelloWorld");    // "hello-world"
+str.titleize("hello world");    // "Hello World"
+str.underscore("helloWorld");   // "hello_world"
+
+// Inflections
+str.pluralize("person");        // "people"
+str.singularize("octopuses");   // "octopus"
+
+// Validation
+str.isEmpty("");                // true
+str.isNullOrSpace("   ");       // true
+
+// Trim any character (not just whitespace)
+str.trimEnd("file.txt...", "."); // "file.txt"
+```
+
+## API Reference
+
+### String Comparison
+
+| Function | Description |
+|----------|-------------|
+| `equal(value, other)` | Case-sensitive string equality |
+| `equalFold(value, other)` | Case-insensitive string equality |
+| `startsWith(value, prefix)` | Check if string starts with prefix |
+| `startsWithFold(value, prefix)` | Case-insensitive prefix check |
+| `endsWith(value, suffix)` | Check if string ends with suffix |
+| `endsWithFold(value, suffix)` | Case-insensitive suffix check |
+| `indexOf(value, chars, index?)` | Find first occurrence of substring |
+| `indexOfFold(value, chars, index?)` | Case-insensitive indexOf |
+| `lastIndexOf(value, chars, index?)` | Find last occurrence of substring |
+| `lastIndexOfFold(value, chars, index?)` | Case-insensitive lastIndexOf |
+
+```typescript
+import { equalFold, startsWithFold, indexOf } from "@frostyeti/strings";
+
+// Case-insensitive comparison with UTF-8 support
+equalFold("hello WÖrLD", "Hello wörld"); // true
+
+// Case-insensitive prefix check
+startsWithFold("Hello World", "HELLO");  // true
+
+// Find substring position
+indexOf("Hello World", "World");         // 6
+indexOf("Hello World", "o", 5);          // 7 (start from index 5)
+```
+
+### String Transformations
+
+| Function | Description |
+|----------|-------------|
+| `camelize(value, options?)` | Convert to camelCase |
+| `pascalize(value)` | Convert to PascalCase |
+| `dasherize(value, options?)` | Convert to kebab-case |
+| `underscore(value, options?)` | Convert to snake_case |
+| `titleize(value)` | Convert to Title Case |
+| `capitalize(value, options?)` | Capitalize first letter |
+
+```typescript
+import { camelize, dasherize, underscore, titleize } from "@frostyeti/strings";
+
+// Case conversions
+camelize("hello_world");           // "helloWorld"
+camelize("hello WORLD", { preserveCase: true }); // "helloWORLD"
+
+dasherize("helloWorld");           // "hello-world"
+dasherize("HelloWorld");           // "hello-world"
+
+underscore("helloWorld");          // "hello_world"
+underscore("helloWorld", { screaming: true }); // "HELLO_WORLD"
+
+titleize("hello world");           // "Hello World"
+```
+
+### Inflections
+
+| Function | Description |
+|----------|-------------|
+| `pluralize(word)` | Convert singular to plural |
+| `singularize(word)` | Convert plural to singular |
+
+```typescript
+import { pluralize, singularize } from "@frostyeti/strings";
+
+// Pluralization handles irregular forms
+pluralize("person");    // "people"
+pluralize("octopus");   // "octopuses"
+pluralize("life");      // "lives"
+pluralize("index");     // "indices"
+
+// Singularization
+singularize("people");  // "person"
+singularize("teeth");   // "tooth"
+singularize("data");    // "datum"
+```
+
+### Validation Functions
+
+| Function | Description |
+|----------|-------------|
+| `isEmpty(s)` | Check if string is empty |
+| `isNull(s)` | Check if string is null |
+| `isSpace(s)` | Check if string is only whitespace |
+| `isNullOrEmpty(s)` | Check if null, undefined, or empty |
+| `isNullOrSpace(s)` | Check if null, undefined, empty, or whitespace |
+
+```typescript
+import { isEmpty, isNullOrEmpty, isNullOrSpace } from "@frostyeti/strings";
+
+isEmpty("");           // true
+isEmpty(" ");          // false (whitespace is not empty)
+
+isNullOrEmpty(null);   // true
+isNullOrEmpty("");     // true
+
+isNullOrSpace("   ");  // true
+isNullOrSpace("\t\n"); // true
+```
+
+### Trim Functions
+
+These functions can trim any character, not just whitespace.
+
+| Function | Description |
+|----------|-------------|
+| `trim(value, chars?)` | Trim from both ends |
+| `trimStart(value, prefix?)` | Trim from start |
+| `trimEnd(value, suffix?)` | Trim from end |
+| `trimChar(value, char)` | Trim single character from both ends |
+| `trimStartChar(value, char)` | Trim single character from start |
+| `trimEndChar(value, char)` | Trim single character from end |
+
+```typescript
+import { trim, trimEnd, trimStart } from "@frostyeti/strings";
+
+// Trim specific characters
+trimEnd("file.txt...", ".");      // "file.txt"
+trimStart("///path/to", "/");     // "path/to"
+trim("##title##", "#");           // "title"
+
+// Default behavior trims whitespace
+trim("  hello  ");                // "hello"
+```
+
+### Classes
+
+| Class | Description |
+|-------|-------------|
+| `StringBuilder` | Efficient string building without concatenation |
+
+```typescript
+import { StringBuilder } from "@frostyeti/strings";
+
+const sb = new StringBuilder();
+sb.append("Hello")
+  .append(" ")
+  .append("World");
+
+console.log(sb.toString()); // "Hello World"
+console.log(sb.length);     // 11
+
+sb.clear();
+console.log(sb.length);     // 0
+```
+
+## Why Use This?
+
+- **Case-insensitive UTF-8**: `equalFold("WÖrLD", "wörld")` works correctly
+- **No allocations**: Fold functions compare without creating lowercase copies
+- **Trim any character**: Unlike native `trim()`, trim any characters you want
+- **Comprehensive inflections**: Handles irregular plurals like person→people
 
 ## LICENSE
 
 [MIT License](./LICENSE.md)
 
 Pluralize and singularize comes from
-<github.com/dreamerslab/node.inflection> which is under the
+[dreamerslab/node.inflection](https://github.com/dreamerslab/node.inflection) which is under the
 [MIT LICENSE](https://github.com/dreamerslab/node.inflection/blob/master/LICENSE)
