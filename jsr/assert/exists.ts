@@ -8,7 +8,7 @@ import { AssertionError } from "./assertion-error.ts";
  *
  * @example Usage
  * ```ts ignore
- * import { exists } from "@frostyetiassert";
+ * import { exists } from "@frostyeti/assert";
  *
  * exists("something"); // Doesn't throw
  * exists(undefined); // Throws

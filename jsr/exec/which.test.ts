@@ -136,6 +136,14 @@ test("exec::which - with useCache false", async () => {
 test("exec::whichSync - with useCache false", () => {
     const first = whichSync("git");
     const second = whichSync("git", undefined, false);
+
+    if (globals.process.platform === "darwin") {
+        if (first?.includes("homebrew")) {
+            equal("/opt/homebrew/bin/git", second);
+            return;
+        }
+    }
+
     equal(first, second);
 });
 

@@ -16,7 +16,7 @@ export type ArrayLikeArg<T> = ArrayLike<T> & object;
  *
  * @example Usage
  * ```ts ignore
- * import { arrayIncludes } from "@frostyetiassert";
+ * import { arrayIncludes } from "@frostyeti/assert";
  *
  * arrayIncludes([1, 2], [2]); // Doesn't throw
  * arrayIncludes([1, 2], [3]); // Throws

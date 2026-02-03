@@ -10,7 +10,7 @@ export type Falsy = false | 0 | 0n | "" | null | undefined;
  *
  * @example Usage
  * ```ts ignore
- * import { falsy } from "@frostyetiassert";
+ * import { falsy } from "@frostyeti/assert";
  *
  * falsy(false); // Doesn't throw
  * falsy(true); // Throws
