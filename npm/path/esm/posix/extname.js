@@ -3,6 +3,7 @@
 import { CHAR_DOT } from "@frostyeti/chars/constants";
 import { assertPath } from "../_common/assert_path.js";
 import { isPosixPathSeparator } from "./_util.js";
+import { fromFileUrl } from "./from_file_url.js";
 /**
  * Return the extension of the `path` with leading period.
  *
@@ -39,6 +40,9 @@ import { isPosixPathSeparator } from "./_util.js";
  * @returns The extension (ex. for `file.ts` returns `.ts`).
  */
 export function extname(path) {
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
   assertPath(path);
   let startDot = -1;
   let startPart = 0;

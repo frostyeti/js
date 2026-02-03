@@ -6,7 +6,7 @@
  * @module
  */
 import { isAlreadyExistsError, isNotFoundError } from "./errors.js";
-import { makeDir, mkdirSync } from "./make_dir.js";
+import { mkdir, mkdirSync } from "./mkdir.js";
 import { stat, statSync } from "./stat.js";
 import { getFileInfoType } from "./utils.js";
 /**
@@ -30,7 +30,9 @@ export async function ensureDir(dir) {
     const fileInfo = await stat(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
       );
     }
     return;
@@ -42,7 +44,7 @@ export async function ensureDir(dir) {
   // The dir doesn't exist. Create it.
   // This can be racy. So we catch AlreadyExists and check stat again.
   try {
-    await makeDir(dir, { recursive: true });
+    await mkdir(dir, { recursive: true });
   } catch (err) {
     if (!isAlreadyExistsError(err)) {
       throw err;
@@ -50,7 +52,9 @@ export async function ensureDir(dir) {
     const fileInfo = await stat(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
       );
     }
   }
@@ -76,7 +80,9 @@ export function ensureDirSync(dir) {
     const fileInfo = statSync(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
       );
     }
     return;
@@ -96,7 +102,9 @@ export function ensureDirSync(dir) {
     const fileInfo = statSync(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
       );
     }
   }

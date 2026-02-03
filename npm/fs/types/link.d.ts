@@ -1,52 +1,34 @@
 /**
- * The `link` module provides functions to create hard links to files.
+ * Creates `newpath` as a hard link to `oldpath`.
  *
- * @module
- */
-/**
- * Creates a hard link.
- * @param oldPath The path to the existing file.
- * @param newPath The path to the new link.
- * @returns A promise that resolves when the operation is complete.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
+ * Requires `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
  * import { link } from "@frostyeti/fs/link";
- * async function createLink() : Promise<void> {
- *     try {
- *         await link("source.txt", "link.txt");
- *         console.log("Link created successfully.");
- *     } catch (error) {
- *         console.error("Error creating link:", error);
- *     }
- * }
- * await createLink();
+ * await link("old/name", "new/name");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the hard link.
+ * @param newpath The path of the hard link.
  */
-export declare function link(
-  oldPath: string | URL,
-  newPath: string | URL,
-): Promise<void>;
+export declare function link(oldpath: string, newpath: string): Promise<void>;
 /**
- * Synchronously creates a hard link.
- * @param oldPath The path to the existing file.
- * @param newPath The path to the new link.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
+ * Synchronously creates `newpath` as a hard link to `oldpath`.
+ *
+ * Requires `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
  * import { linkSync } from "@frostyeti/fs/link";
- * function createLink() {
- *   try {
- *      linkSync("source.txt", "link.txt");
- *      console.log("Link created successfully.");
- *   } catch (error) {
- *      console.error("Error creating link:", error);
- *   }
- * }
- * createLink();
+ * linkSync("old/name", "new/name");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the hard link.
+ * @param newpath The path of the hard link.
  */
-export declare function linkSync(
-  oldPath: string | URL,
-  newPath: string | URL,
-): void;
+export declare function linkSync(oldpath: string, newpath: string): void;

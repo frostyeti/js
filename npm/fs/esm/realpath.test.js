@@ -1,82 +1,69 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal, rejects, throws } from "@frostyeti/assert";
-import { realPath, realPathSync } from "./realpath.js";
-import { globals } from "./globals.js";
-import { join } from "@frostyeti/path";
-import { exec } from "./_testutils.js";
-// deno-lint-ignore no-explicit-any
-const g = globals;
-const testData = join(import.meta.dirname, "test-data", "realpath");
-test("fs::realPath resolves path when Deno exists", async () => {
-  const { Deno: od } = globals;
-  delete g["Deno"];
-  try {
-    g.Deno = {
-      realPath: (_) => Promise.resolve("/real/path"),
-    };
-    const result = await realPath("/test/path");
-    equal(result, "/real/path");
-  } finally {
-    globals.Deno = od;
+import { match, ok, rejects, throws } from "@frostyeti/assert";
+import { realpath, realpathSync } from "./realpath.js";
+import { NotFound } from "./unstable_errors.js";
+import { platform } from "node:os";
+import { dirname, fromFileUrl, join } from "@frostyeti/path";
+import { cwd } from "node:process";
+import { relative } from "node:path";
+const __dirname = import.meta.dirname ?? dirname(fromFileUrl(import.meta.url));
+const pwd = cwd();
+const testdataDir = join(__dirname, "testdata");
+const relTestDataDir = relative(pwd, testdataDir);
+test("realpath() returns the absolute path from a relative file path", async () => {
+  const testFileRelative = `${relTestDataDir}/0.ts`;
+  const testFileReal = await realpath(testFileRelative);
+  if (platform() === "win32") {
+    match(testFileReal, /^[A-Z]:\\/);
+    ok(testFileReal.endsWith(testFileRelative.replace(/\//g, "\\")));
+  } else {
+    ok(testFileReal.startsWith("/"));
+    ok(testFileReal.endsWith(testFileRelative));
   }
 });
-test("fs::realPath resolves path using node fs", async () => {
-  const testFile = join(testData, "realpath-test.txt");
-  await exec("mkdir", ["-p", testData]);
-  await exec("touch", [testFile]);
-  try {
-    const result = await realPath(testFile);
-    equal(result.endsWith("realpath-test.txt"), true);
-  } finally {
-    await exec("rm", ["-f", testFile]);
+test("realpath() returns the absolute path of the linked file via symlink", async () => {
+  // `fs/testdata/0-link` is symlinked to file `fs/testdata/0.ts`.
+  const testFileSymlink = `${relTestDataDir}/0-link`;
+  const testFileReal = await realpath(testFileSymlink);
+  if (platform() === "win32") {
+    match(testFileReal, /^[A-Z]:\\/);
+    ok(testFileReal.endsWith("testdata/0.ts".replace(/\//g, "\\")));
+  } else {
+    ok(testFileReal.startsWith("/"));
+    ok(testFileReal.endsWith("testdata/0.ts"));
   }
 });
-test("fs::realPath throws when no fs module available", async () => {
-  const { Deno: od, process: op, require: or } = globals;
-  delete g["Deno"];
-  delete g["process"];
-  delete g["require"];
-  try {
-    await rejects(() => realPath("/test/path"), Error);
-  } finally {
-    globals.Deno = od;
-    globals.process = op;
-    globals.require = or;
+test("realpath() rejects with NotFound for a non-existent file", async () => {
+  await rejects(async () => {
+    await realpath("non-existent-file.txt");
+  }, NotFound);
+});
+test("realpathSync() returns the absolute path of a relative file", () => {
+  const testFileRelative = `${relTestDataDir}/0.ts`;
+  const testFileReal = realpathSync(testFileRelative);
+  if (platform() === "win32") {
+    match(testFileReal, /^[A-Z]:\\/);
+    ok(testFileReal.endsWith(testFileRelative.replace(/\//g, "\\")));
+  } else {
+    ok(testFileReal.startsWith("/"));
+    ok(testFileReal.endsWith(testFileRelative));
   }
 });
-test("fs::realPathSync resolves path when Deno exists", () => {
-  const { Deno: od } = globals;
-  delete g["Deno"];
-  try {
-    g.Deno = {
-      realPathSync: (_) => "/real/path",
-    };
-    const result = realPathSync("/test/path");
-    equal(result, "/real/path");
-  } finally {
-    globals.Deno = od;
+test("realpathSync() returns the absolute path of the linked file via symlink", () => {
+  // `fs/testdata/0-link` is symlinked to file `fs/testdata/0.ts`.
+  const testFileSymlink = `${relTestDataDir}/0-link`;
+  const testFileReal = realpathSync(testFileSymlink);
+  if (platform() === "win32") {
+    match(testFileReal, /^[A-Z]:\\/);
+    ok(testFileReal.endsWith("/testdata/0.ts".replace(/\//g, "\\")));
+  } else {
+    ok(testFileReal.startsWith("/"));
+    ok(testFileReal.endsWith("/testdata/0.ts"));
   }
 });
-test("fs::realPathSync resolves path using node fs", async () => {
-  const testFile = join(testData, "realpath-sync-test.txt");
-  await exec("touch", [testFile]);
-  try {
-    const result = realPathSync(testFile);
-    equal(result.endsWith("realpath-sync-test.txt"), true);
-  } finally {
-    await exec("rm", ["-f", testFile]);
-  }
-});
-test("fs::realPathSync throws when no fs module available", () => {
-  const { Deno: od, process: op, require: or } = globals;
-  delete g["Deno"];
-  delete g["process"];
-  delete g["require"];
-  try {
-    throws(() => realPathSync("/test/path"), Error);
-  } finally {
-    globals.Deno = od;
-    globals.process = op;
-    globals.require = or;
-  }
+test("realpathSync() throws with NotFound for a non-existent file", () => {
+  throws(() => {
+    realpathSync("non-existent-file.txt");
+  }, NotFound);
 });

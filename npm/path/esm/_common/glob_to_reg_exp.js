@@ -206,7 +206,9 @@ export function _globToRegExp(
         }
         continue;
       }
-      segment += REG_EXP_ESCAPE_CHARS.includes(glob[i]) ? `\\${glob[i]}` : glob[i];
+      segment += REG_EXP_ESCAPE_CHARS.includes(glob[i])
+        ? `\\${glob[i]}`
+        : glob[i];
     }
     // Check for unclosed groups or a dangling backslash.
     if (groupStack.length > 0 || inRange || inEscape) {

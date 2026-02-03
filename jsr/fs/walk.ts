@@ -5,12 +5,14 @@
  * @module
  */
 
-import { join, normalize } from "@frostyeti/path";
+import { join } from "@frostyeti/path";
 import { createWalkEntry, createWalkEntrySync, toPathString } from "./utils.ts";
 import type { WalkEntry } from "./types.ts";
 import { lstat, lstatSync } from "./lstat.ts";
 import { readdir, readdirSync } from "./readdir.ts";
 import { realpath, realpathSync } from "./realpath.ts";
+
+
 
 /** Error thrown in {@linkcode walk} or {@linkcode walkSync} during iteration. */
 export class WalkError extends Error {
@@ -47,10 +49,6 @@ function include(
     return true;
 }
 
-function wrapErrorWithPath(err: unknown, root: string) {
-    if (err instanceof WalkError) return err;
-    return new WalkError(err, root);
-}
 
 /** Options for {@linkcode walk} and {@linkcode walkSync}. */
 export interface WalkOptions {
@@ -123,9 +121,19 @@ export type { WalkEntry };
  * Recursively walks through a directory and yields information about each file
  * and directory encountered.
  *
+ * The root path determines whether the file paths are relative or absolute.
+ * The root directory is included in the yielded entries.
+ *
+ * Requires `--allow-read` permission.
+ *
+ * @see {@link https://docs.deno.com/runtime/manual/basics/permissions#file-system-access}
+ * for more information on Deno's permissions system.
+ *
  * @param root The root directory to start the walk from, as a string or URL.
  * @param options The options for the walk.
- * @returns An async iterable iterator that yields `WalkEntry` objects.
+ * @throws {Deno.errors.NotFound} If the root directory does not exist.
+ *
+ * @returns An async iterable iterator that yields the walk entry objects.
  *
  * @example Basic usage
  *
@@ -136,98 +144,768 @@ export type { WalkEntry };
  * └── foo.ts
  * ```
  *
- * ```ts
- * import { walk } from "@frostyeti/fs";
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
  *
- * const entries = [];
- * for await (const entry of walk(".")) {
- *   entries.push(entry);
- * }
+ * await Array.fromAsync(walk("."));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo.ts",
+ * //     name: "foo.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
  *
- * entries[0]!.path; // "folder"
- * entries[0]!.name; // "folder"
- * entries[0]!.isFile; // false
- * entries[0]!.isDirectory; // true
- * entries[0]!.isSymlink; // false
+ * @example Maximum file depth
  *
- * entries[1]!.path; // "folder/script.ts"
- * entries[1]!.name; // "script.ts"
- * entries[1]!.isFile; // true
- * entries[1]!.isDirectory; // false
- * entries[1]!.isSymlink; // false
+ * Setting the `maxDepth` option to `1` will only include the root directory and
+ * its immediate children.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ *     └── bar.ts
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { maxDepth: 1 }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo",
+ * //     name: "foo",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude files
+ *
+ * Setting the `includeFiles` option to `false` will exclude files.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { includeFiles: false }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo",
+ * //     name: "foo",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false,
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude directories
+ *
+ * Setting the `includeDirs` option to `false` will exclude directories.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { includeDirs: false }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude symbolic links
+ *
+ * Setting the `includeSymlinks` option to `false` will exclude symbolic links.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * ├── foo
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { includeSymlinks: false }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Follow symbolic links
+ *
+ * Setting the `followSymlinks` option to `true` will follow symbolic links,
+ * affecting the `path` property of the walk entry.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { followSymlinks: true }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "link",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: true
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Canonicalize symbolic links
+ *
+ * Setting the `canonicalize` option to `false` will canonicalize the path of
+ * the followed symbolic link. Meaning, the `path` property of the walk entry
+ * will be the path of the symbolic link itself.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { followSymlinks: true, canonicalize: true }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "link",
+ * //     name: "link",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: true
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Filter by file extensions
+ *
+ * Setting the `exts` option to `[".ts"]` or `["ts"]` will only include entries
+ * with the `.ts` file extension.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo.js
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { exts: [".ts"] }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Filter by regular expressions
+ *
+ * Setting the `match` option to `[/s/]` will only include entries with the
+ * letter `s` in their name.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── README.md
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { match: [/s/] }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude by regular expressions
+ *
+ * Setting the `skip` option to `[/s/]` will exclude entries with the letter
+ * `s` in their name.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── README.md
+ * ```
+ *
+ * ```ts ignore
+ * import { walk } from "@frostyeti/fs/walk";
+ *
+ * await Array.fromAsync(walk(".", { skip: [/s/] }));
+ * // [
+ * //   {
+ * //     path: "README.md",
+ * //     name: "README.md",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
  * ```
  */
 export async function* walk(
-    root: string | URL,
-    {
-        maxDepth = Infinity,
-        includeFiles = true,
-        includeDirs = true,
-        includeSymlinks = true,
-        followSymlinks = false,
-        canonicalize = true,
-        exts = undefined,
-        match = undefined,
-        skip = undefined,
-    }: WalkOptions = {},
+  root: string | URL,
+  options?: WalkOptions,
 ): AsyncIterableIterator<WalkEntry> {
-    if (maxDepth < 0) {
-        return;
-    }
-    root = toPathString(root);
-    if (includeDirs && include(root, exts, match, skip)) {
-        yield await createWalkEntry(root);
-    }
-    if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
-        return;
-    }
-    try {
-        for await (const entry of readdir(root)) {
-            let path = join(root, entry.name);
+  let {
+    maxDepth = Infinity,
+    includeFiles = true,
+    includeDirs = true,
+    includeSymlinks = true,
+    followSymlinks = false,
+    canonicalize = true,
+    exts = undefined,
+    match = undefined,
+    skip = undefined,
+  } = options ?? {};
 
-            let { isSymlink, isDirectory } = entry;
+  if (maxDepth < 0) {
+    return;
+  }
+  root = toPathString(root);
+  if (exts) {
+    exts = exts.map((ext) => ext.startsWith(".") ? ext : `.${ext}`);
+  }
+  if (includeDirs && include(root, exts, match, skip)) {
+    yield await createWalkEntry(root);
+  }
+  if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
+    return;
+  }
+  for await (const entry of readdir(root)) {
+    let path = join(root, entry.name);
 
-            if (isSymlink) {
-                if (!followSymlinks) {
-                    if (includeSymlinks && include(path, exts, match, skip)) {
-                        yield { path, ...entry };
-                    }
-                    continue;
-                }
-                const rp = await realpath(path);
-                if (canonicalize) {
-                    path = rp;
-                }
-                // Caveat emptor: don't assume |path| is not a symlink. realpath()
-                // resolves symlinks but another process can replace the file system
-                // entity with a different type of entity before we call lstat().
-                ({ isSymlink, isDirectory } = await lstat(rp));
-            }
+    let { isSymlink, isDirectory } = entry;
 
-            if (isSymlink || isDirectory) {
-                yield* walk(path, {
-                    maxDepth: maxDepth - 1,
-                    includeFiles,
-                    includeDirs,
-                    includeSymlinks,
-                    followSymlinks,
-                    exts,
-                    match,
-                    skip,
-                });
-            } else if (includeFiles && include(path, exts, match, skip)) {
-                yield { path, ...entry };
-            }
+    if (isSymlink) {
+      if (!followSymlinks) {
+        if (includeSymlinks && include(path, exts, match, skip)) {
+          yield { path, ...entry };
         }
-    } catch (err) {
-        throw wrapErrorWithPath(err, normalize(root));
+        continue;
+      }
+      const realPath = await realpath(path);
+      if (canonicalize) {
+        path = realPath;
+      }
+      // Caveat emptor: don't assume |path| is not a symlink. realpath()
+      // resolves symlinks but another process can replace the file system
+      // entity with a different type of entity before we call lstat().
+      ({ isSymlink, isDirectory } = await lstat(realPath));
     }
+
+    if (isSymlink || isDirectory) {
+      const opts: WalkOptions = {
+        maxDepth: maxDepth - 1,
+        includeFiles,
+        includeDirs,
+        includeSymlinks,
+        followSymlinks,
+      };
+      if (exts !== undefined) {
+        opts.exts = exts;
+      }
+      if (match !== undefined) {
+        opts.match = match;
+      }
+      if (skip !== undefined) {
+        opts.skip = skip;
+      }
+      yield* walk(path, opts);
+    } else if (includeFiles && include(path, exts, match, skip)) {
+      yield { path, ...entry };
+    }
+  }
 }
 
-/** Same as {@linkcode walk} but uses synchronous ops */
+/**
+ * Recursively walks through a directory and yields information about each file
+ * and directory encountered.
+ *
+ * The root path determines whether the file paths is relative or absolute.
+ * The root directory is included in the yielded entries.
+ *
+ * Requires `--allow-read` permission.
+ *
+ * @see {@link https://docs.deno.com/runtime/manual/basics/permissions#file-system-access}
+ * for more information on Deno's permissions system.
+ *
+ * @param root The root directory to start the walk from, as a string or URL.
+ * @param options The options for the walk.
+ *
+ * @returns A synchronous iterable iterator that yields the walk entry objects.
+ *
+ * @example Basic usage
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo.ts
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync("."));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo.ts",
+ * //     name: "foo.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Maximum file depth
+ *
+ * Setting the `maxDepth` option to `1` will only include the root directory and
+ * its immediate children.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ *     └── bar.ts
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { maxDepth: 1 }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo",
+ * //     name: "foo",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude files
+ *
+ * Setting the `includeFiles` option to `false` will exclude files.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { includeFiles: false }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "foo",
+ * //     name: "foo",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false,
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude directories
+ *
+ * Setting the `includeDirs` option to `false` will exclude directories.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { includeDirs: false }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude symbolic links
+ *
+ * Setting the `includeSymlinks` option to `false` will exclude symbolic links.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * ├── foo
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { includeSymlinks: false }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Follow symbolic links
+ *
+ * Setting the `followSymlinks` option to `true` will follow symbolic links,
+ * affecting the `path` property of the walk entry.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { followSymlinks: true }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "link",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: true
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Canonicalize symbolic links
+ *
+ * Setting the `canonicalize` option to `false` will canonicalize the path of
+ * the followed symbolic link. Meaning, the `path` property of the walk entry
+ * will be the path of the symbolic link itself.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── link -> script.ts (symbolic link)
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { followSymlinks: true, canonicalize: true }));
+ * // [
+ * //   {
+ * //     path: ".",
+ * //     name: ".",
+ * //     isFile: false,
+ * //     isDirectory: true,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * //   {
+ * //     path: "link",
+ * //     name: "link",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: true
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Filter by file extensions
+ *
+ * Setting the `exts` option to `[".ts"]` or `["ts"]` will only include entries
+ * with the `.ts` file extension.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── foo.js
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { exts: [".ts"] }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Filter by regular expressions
+ *
+ * Setting the `match` option to `[/s/]` will only include entries with the
+ * letter `s` in their name.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── README.md
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { match: [/s/] }));
+ * // [
+ * //   {
+ * //     path: "script.ts",
+ * //     name: "script.ts",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ *
+ * @example Exclude by regular expressions
+ *
+ * Setting the `skip` option to `[/s/]` will exclude entries with the letter
+ * `s` in their name.
+ *
+ * File structure:
+ * ```
+ * folder
+ * ├── script.ts
+ * └── README.md
+ * ```
+ *
+ * ```ts ignore
+ * import { walkSync } from "@frostyeti/fs/walk";
+ *
+ * Array.from(walkSync(".", { skip: [/s/] }));
+ * // [
+ * //   {
+ * //     path: "README.md",
+ * //     name: "README.md",
+ * //     isFile: true,
+ * //     isDirectory: false,
+ * //     isSymlink: false
+ * //   },
+ * // ]
+ * ```
+ */
 export function* walkSync(
     root: string | URL,
-    {
+    options?: WalkOptions,
+): IterableIterator<WalkEntry> {
+    let {
         maxDepth = Infinity,
         includeFiles = true,
         includeDirs = true,
@@ -237,9 +915,12 @@ export function* walkSync(
         exts = undefined,
         match = undefined,
         skip = undefined,
-    }: WalkOptions = {},
-): IterableIterator<WalkEntry> {
+    } = options ?? {};
+
     root = toPathString(root);
+    if (exts) {
+        exts = exts.map((ext) => ext.startsWith(".") ? ext : `.${ext}`);
+    }
     if (maxDepth < 0) {
         return;
     }
@@ -249,12 +930,7 @@ export function* walkSync(
     if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
         return;
     }
-    let entries;
-    try {
-        entries = readdirSync(root);
-    } catch (err) {
-        throw wrapErrorWithPath(err, normalize(root));
-    }
+    const entries = readdirSync(root);
     for (const entry of entries) {
         let path = join(root, entry.name);
 
@@ -267,7 +943,6 @@ export function* walkSync(
                 }
                 continue;
             }
-
             const realPath = realpathSync(path);
             if (canonicalize) {
                 path = realPath;
@@ -279,16 +954,23 @@ export function* walkSync(
         }
 
         if (isSymlink || isDirectory) {
-            yield* walkSync(path, {
+            const opts: WalkOptions = {
                 maxDepth: maxDepth - 1,
                 includeFiles,
                 includeDirs,
                 includeSymlinks,
                 followSymlinks,
-                exts,
-                match,
-                skip,
-            });
+            };
+            if (exts !== undefined) {
+                opts.exts = exts;
+            }
+            if (match !== undefined) {
+                opts.match = match;
+            }
+            if (skip !== undefined) {
+                opts.skip = skip;
+            }
+            yield* walkSync(path, opts);
         } else if (includeFiles && include(path, exts, match, skip)) {
             yield { path, ...entry };
         }

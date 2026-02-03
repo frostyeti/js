@@ -1,73 +1,86 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
+import { getNodeFs, isDeno } from "./_utils.js";
+import { globals } from "./globals.js";
+import { mapError } from "./_map_error.js";
 /**
- * This module provides functions to change the permissions of files and directories.
+ * Changes the permission of a specific file/directory of specified path.
+ * Ignores the process's umask.
  *
- * @module
- */
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn;
-let fnAsync;
-/**
- * Changes the permissions of a file or directory asynchronously.
- * @param path The path to the file or directory.
- * @param mode The new permissions mode.
- * @returns A promise that resolves when the operation is complete.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { chmod } from "@frostyeti/fs/chmod";
+ * Requires `allow-write` permission.
  *
- * async function changePermissions() {
- *     try {
- *         await chmod("example.txt", 0o755);
- *         console.log("Permissions changed successfully.");
- *     } catch (error) {
- *         console.error("Error changing permissions:", error);
- *     }
- * }
- * await changePermissions();
+ * The mode is a sequence of 3 octal numbers. The first/left-most number
+ * specifies the permissions for the owner. The second number specifies the
+ * permissions for the group. The last/right-most number specifies the
+ * permissions for others. For example, with a mode of 0o764, the owner (7)
+ * can read/write/execute, the group (6) can read/write and everyone else (4)
+ * can read only.
+ *
+ * | Number | Description |
+ * | ------ | ----------- |
+ * | 7      | read, write, and execute |
+ * | 6      | read and write |
+ * | 5      | read and execute |
+ * | 4      | read only |
+ * | 3      | write and execute |
+ * | 2      | write only |
+ * | 1      | execute only |
+ * | 0      | no permission |
+ *
+ * NOTE: This API currently throws on Windows.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { chmod } from "@std/fs/unstable-chmod";
+ *
+ * await chmod("README.md", 0o444);
  * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path to the file or directory.
+ * @param mode A sequence of 3 octal numbers representing file permissions.
  */
-export function chmod(path, mode) {
-  if (globals.Deno) {
-    return globals.Deno.chmod(path, mode);
-  }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.chmod;
-    if (!fnAsync) {
-      throw new Error("No suitable file system module found.");
+export async function chmod(path, mode) {
+  if (isDeno) {
+    await globals.Deno.chmod(path, mode);
+  } else {
+    try {
+      await getNodeFs().promises.chmod(path, mode);
+    } catch (error) {
+      throw mapError(error);
     }
   }
-  return fnAsync(path, mode);
 }
 /**
- * Changes the permissions of a file or directory synchronously.
- * @param path The path to the file or directory.
- * @param mode The new permissions mode.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { chmodSync } from "@frostyeti/fs/chmod";
+ * Synchronously changes the permission of a specific file/directory of
+ * specified path. Ignores the process's umask.
  *
- * function changePermissions() {
- *     try {
- *        chmodSync("example.txt", 0o755);
- *        console.log("Permissions changed successfully.");
- *     } catch (error) {
- *        console.error("Error changing permissions:", error);
- *     }
- * }
- * changePermissions();
+ * Requires `allow-write` permission.
+ *
+ * For a full description, see {@linkcode chmod}.
+ *
+ * NOTE: This API currently throws on Windows.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { chmodSync } from "@std/fs/unstable-chmod";
+ *
+ * chmodSync("README.md", 0o666);
  * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path to the file or directory.
+ * @param mode A sequence of 3 octal numbers representing permissions. See {@linkcode chmod}.
  */
 export function chmodSync(path, mode) {
-  if (globals.Deno) {
-    return globals.Deno.chmodSync(path, mode);
-  }
-  if (!fn) {
-    fn = loadFs()?.chmodSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
+  if (isDeno) {
+    globals.Deno.chmodSync(path, mode);
+  } else {
+    try {
+      getNodeFs().chmodSync(path, mode);
+    } catch (error) {
+      throw mapError(error);
     }
   }
-  return fn(path, mode);
 }

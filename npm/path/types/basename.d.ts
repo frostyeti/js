@@ -24,4 +24,4 @@
  *
  * @returns The basename of the path.
  */
-export declare function basename(path: string, suffix?: string): string;
+export declare function basename(path: string | URL, suffix?: string): string;

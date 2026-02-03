@@ -5,11 +5,15 @@
  * @module
  */
 import { lstat, lstatSync } from "./lstat.js";
-import { remove, removeSync } from "./remove.js";
+import { rm, rmSync } from "./rm.js";
 import { rename, renameSync } from "./rename.js";
 import { stat, statSync } from "./stat.js";
 import { isSamePath, isSubdir } from "./utils.js";
-import { AlreadyExistsError, isNotFoundError, SubdirectoryMoveError } from "./errors.js";
+import {
+  AlreadyExistsError,
+  isNotFoundError,
+  SubdirectoryMoveError,
+} from "./errors.js";
 const EXISTS_ERROR = new AlreadyExistsError("dest already exists.");
 /**
  * Asynchronously moves a file or directory.
@@ -52,7 +56,7 @@ export async function move(src, dest, { overwrite = false } = {}) {
       return;
     }
     try {
-      await remove(dest, { recursive: true });
+      await rm(dest, { recursive: true });
     } catch (error) {
       if (!isNotFoundError(error)) {
         throw error;
@@ -109,7 +113,7 @@ export function moveSync(src, dest, { overwrite = false } = {}) {
       return;
     }
     try {
-      removeSync(dest, { recursive: true });
+      rmSync(dest, { recursive: true });
     } catch (error) {
       if (!isNotFoundError(error)) {
         throw error;

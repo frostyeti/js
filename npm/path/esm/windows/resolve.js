@@ -141,7 +141,7 @@ export function resolve(...pathSegments) {
     }
   }
   // At this point the path should be resolved to a full absolute path,
-  // but handle relative paths to be safe (might happen when cwd()
+  // but handle relative paths to be safe (might happen when Deno.cwd()
   // fails)
   // Normalize the tail path
   resolvedTail = normalizeString(

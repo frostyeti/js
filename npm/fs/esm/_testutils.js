@@ -1,8 +1,8 @@
 import { spawn, spawnSync } from "node:child_process";
 import { globals, WIN } from "./globals.js";
-import { makeTempDirSync } from "@frostyeti/fs/make-temp-dir";
-import { remove } from "@frostyeti/fs/remove";
-import { removeSync } from "@frostyeti/fs";
+import { mkdtempSync } from "./mkdtemp.js";
+import { rm } from "./rm.js";
+import { rmSync } from "@frostyeti/fs";
 if (WIN) {
   const path = globals.process.env["Path"] ?? "";
   if (!path.toLowerCase().includes("c:\\program files\\git\\usr\\bin")) {
@@ -120,21 +120,21 @@ export function execSync(command, args, options) {
 export class DisposableTempDir {
   #path;
   constructor() {
-    this.#path = makeTempDirSync();
+    this.#path = mkdtempSync();
   }
   get path() {
     return this.#path;
   }
   [Symbol.dispose]() {
     try {
-      removeSync(this.path, { recursive: true });
+      rmSync(this.path, { recursive: true });
     } catch (e) {
       console.error(`Failed to remove temp dir at ${this.path}:`, e);
     }
   }
   async [Symbol.asyncDispose]() {
     try {
-      await remove(this.path, { recursive: true });
+      await rm(this.path, { recursive: true });
     } catch (e) {
       console.error(`Failed to remove temp dir at ${this.path}:`, e);
     }

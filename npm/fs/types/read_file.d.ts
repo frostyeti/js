@@ -3,20 +3,49 @@
  *
  * @module
  */
-import type { ReadOptions } from "./types.js";
+import type { ReadFileOptions } from "./types.js";
 /**
- * Reads the contents of a file.
+ * Reads and resolves to the entire contents of a file as an array of bytes.
+ * `TextDecoder` can be used to transform the bytes to string if required.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts no-assert
+ * import { readFile } from "@frostyeti/fs/read-file";
+ * const decoder = new TextDecoder("utf-8");
+ * const data = await readFile("README.md");
+ * console.log(decoder.decode(data));
+ * ```
+ *
+ * @tags allow-read
+ *
  * @param path The path to the file.
- * @param options The options for reading the file (optional).
- * @returns A promise that resolves with the file contents as a Uint8Array.
+ * @param options Options when reading a file. See {@linkcode ReadFileOptions}.
+ * @returns A promise that resolves to a `Uint8Array` of the file contents.
  */
 export declare function readFile(
   path: string | URL,
-  options?: ReadOptions,
+  options?: ReadFileOptions,
 ): Promise<Uint8Array>;
 /**
- * Synchronously reads the contents of a file.
+ * Synchronously reads and returns the entire contents of a file as an array
+ * of bytes. `TextDecoder` can be used to transform the bytes to string if
+ * required.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts no-assert
+ * import { readFileSync } from "@frostyeti/fs/unstable-read-file";
+ * const decoder = new TextDecoder("utf-8");
+ * const data = readFileSync("README.md");
+ * console.log(decoder.decode(data));
+ * ```
+ *
+ * @tags allow-read
+ *
  * @param path The path to the file.
- * @returns The file contents as a Uint8Array.
+ * @returns A `Uint8Array` of bytes representing the file contents.
  */
 export declare function readFileSync(path: string | URL): Uint8Array;

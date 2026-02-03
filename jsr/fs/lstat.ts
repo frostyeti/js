@@ -3,153 +3,73 @@
  *
  * @module
  */
-
-import { basename } from "@frostyeti/path";
 import type { FileInfo } from "./types.ts";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-
-let ls: typeof import("node:fs").lstatSync | undefined;
-let lsAsync: typeof import("node:fs/promises").lstat | undefined;
+import { getNodeFs, globals } from "./globals.ts";
+import { toFileInfo } from "./_to_file_info.ts";
+import { mapError } from "./_map_error.ts";
 
 /**
- * Gets information about a file or directory.
+ * Resolves to a {@linkcode FileInfo} for the specified `path`. If `path` is a symlink, information for the symlink will be returned instead of what it points to.
+ *
+ * Requires `allow-read` permission in Deno.
+ *
+ * @example Usage
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { lstat } from "@frostyeti/fs/lstat";
+ * const fileInfo = await lstat("README.md");
+ * ok(fileInfo.isFile);
+ * ```
+ *
+ * @tags allow-read
+ *
  * @param path The path to the file or directory.
- * @returns A promise that resolves with the file information.
+ * @returns A promise that resolves to a {@linkcode FileInfo} for the specified `path`.
  */
-export function lstat(path: string | URL): Promise<FileInfo> {
+export async function lstat(path: string | URL): Promise<FileInfo> {
     if (globals.Deno) {
         // deno-lint-ignore no-explicit-any
-        return globals.Deno.lstat(path).then((stat: any) => {
-            const p = path instanceof URL ? path.toString() : path;
-            return {
-                isFile: stat.isFile,
-                isDirectory: stat.isDirectory,
-                isSymlink: stat.isSymlink,
-                name: basename(p),
-                path: p,
-                size: stat.size,
-                birthtime: stat.birthtime,
-                mtime: stat.mtime,
-                atime: stat.atime,
-                mode: stat.mode,
-                uid: stat.uid,
-                gid: stat.gid,
-                dev: stat.dev,
-                blksize: stat.blksize,
-                ino: stat.ino,
-                nlink: stat.nlink,
-                rdev: stat.rdev,
-                blocks: stat.blocks,
-                isBlockDevice: stat.isBlockDevice,
-                isCharDevice: stat.isCharDevice,
-                isSocket: stat.isSocket,
-                isFifo: stat.isFifo,
-            };
-        });
+        return  await globals.Deno.lstat(path) as any as FileInfo;
     }
 
-    if (!lsAsync) {
-        lsAsync = loadFsAsync()?.lstat;
-        if (!lsAsync) {
-            throw new Error("No suitable file system module found.");
-        }
+    try {
+        return toFileInfo(await getNodeFs().promises.lstat(path));
+    } catch (error) {
+        throw mapError(error);
     }
-
-    return lsAsync(path).then((stat) => {
-        const p = path instanceof URL ? path.toString() : path;
-        return {
-            isFile: stat.isFile(),
-            isDirectory: stat.isDirectory(),
-            isSymlink: stat.isSymbolicLink(),
-            name: basename(p),
-            path: p,
-            size: stat.size,
-            birthtime: stat.birthtime,
-            mtime: stat.mtime,
-            atime: stat.atime,
-            mode: stat.mode,
-            uid: stat.uid,
-            gid: stat.gid,
-            dev: stat.dev,
-            blksize: stat.blksize,
-            ino: stat.ino,
-            nlink: stat.nlink,
-            rdev: stat.rdev,
-            blocks: stat.blocks,
-            isBlockDevice: stat.isBlockDevice(),
-            isCharDevice: stat.isCharacterDevice(),
-            isSocket: stat.isSocket(),
-            isFifo: stat.isFIFO(),
-        } as FileInfo;
-    });
 }
 
 /**
- * Gets information about a file or directory synchronously.
+ * Synchronously returns a {@linkcode FileInfo} for the specified
+ * `path`. If `path` is a symlink, information for the symlink will be
+ * returned instead of what it points to.
+ *
+ * Requires `allow-read` permission in Deno.
+ *
+ * @example Usage
+ *
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { lstatSync } from "@frostyeti/fs/lstat";
+ *
+ * const fileInfo = lstatSync("README.md");
+ * ok(fileInfo.isFile);
+ * ```
+ *
+ * @tags allow-read
+ *
  * @param path The path to the file or directory.
- * @returns The file information.
+ * @returns A {@linkcode FileInfo} for the specified `path`.
  */
 export function lstatSync(path: string | URL): FileInfo {
     if (globals.Deno) {
-        const stat = globals.Deno.lstatSync(path);
-        const p = path instanceof URL ? path.toString() : path;
-        return {
-            isFile: stat.isFile,
-            isDirectory: stat.isDirectory,
-            isSymlink: stat.isSymlink,
-            name: basename(p),
-            path: p,
-            size: stat.size,
-            birthtime: stat.birthtime,
-            mtime: stat.mtime,
-            atime: stat.atime,
-            mode: stat.mode,
-            uid: stat.uid,
-            gid: stat.gid,
-            dev: stat.dev,
-            blksize: stat.blksize,
-            ino: stat.ino,
-            nlink: stat.nlink,
-            rdev: stat.rdev,
-            blocks: stat.blocks,
-            isBlockDevice: stat.isBlockDevice,
-            isCharDevice: stat.isCharDevice,
-            isSocket: stat.isSocket,
-            isFifo: stat.isFifo,
-        };
+        // deno-lint-ignore no-explicit-any
+        return globals.Deno.lstatSync(path) as any as FileInfo;
     }
 
-    if (!ls) {
-        ls = loadFs()?.lstatSync;
-        if (!ls) {
-            throw new Error("No suitable file system module found.");
-        }
+    try {
+        return toFileInfo(getNodeFs().lstatSync(path));
+    } catch (error) {
+        throw mapError(error);
     }
-
-    const stat = ls(path);
-    const p = path instanceof URL ? path.toString() : path;
-    return {
-        isFile: stat.isFile(),
-        isDirectory: stat.isDirectory(),
-        isSymlink: stat.isSymbolicLink(),
-        name: basename(p),
-        path: p,
-        size: stat.size,
-        birthtime: stat.birthtime,
-        mtime: stat.mtime,
-        atime: stat.atime,
-        mode: stat.mode,
-        uid: stat.uid,
-        gid: stat.gid,
-        dev: stat.dev,
-        blksize: stat.blksize,
-        ino: stat.ino,
-        nlink: stat.nlink,
-        rdev: stat.rdev,
-        blocks: stat.blocks,
-        isBlockDevice: stat.isBlockDevice(),
-        isCharDevice: stat.isCharacterDevice(),
-        isSocket: stat.isSocket(),
-        isFifo: stat.isFIFO(),
-    };
 }

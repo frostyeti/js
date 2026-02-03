@@ -3,27 +3,62 @@
  *
  * @module
  */
-import type { WriteOptions } from "./types.js";
+import type { WriteFileOptions } from "./types.js";
 /**
- * Writes binary data to a file.
- * @param path The path to the file.
- * @param data The binary data to write.
- * @param options The options for writing the file (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Write `data` to the given `path`, by default creating a new file if needed,
+ * else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeFile } from "@frostyeti/fs/write-file";
+ * const encoder = new TextEncoder();
+ * const data = encoder.encode("Hello world\n");
+ * await writeFile("hello1.txt", data);  // overwrite "hello1.txt" or create it
+ * await writeFile("hello2.txt", data, { create: false });  // only works if "hello2.txt" exists
+ * await writeFile("hello3.txt", data, { mode: 0o777 });  // set permissions on new file
+ * await writeFile("hello4.txt", data, { append: true });  // add data to the end of the file
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data The content in bytes or a stream of bytes to be written.
+ * @param options Options to write files. See {@linkcode WriteFileOptions}.
  */
 export declare function writeFile(
   path: string | URL,
   data: Uint8Array | ReadableStream<Uint8Array>,
-  options?: WriteOptions | undefined,
+  options?: WriteFileOptions | undefined,
 ): Promise<void>;
 /**
- * Synchronously writes binary data to a file.
- * @param path The path to the file.
- * @param data The binary data to write.
- * @param options The options for writing the file (optional).
+ * Synchronously write `data` to the given `path`, by default creating a new
+ * file if needed, else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeFileSync } from "@frostyeti/fs/write-file";
+ * const encoder = new TextEncoder();
+ * const data = encoder.encode("Hello world\n");
+ * writeFileSync("hello1.txt", data);  // overwrite "hello1.txt" or create it
+ * writeFileSync("hello2.txt", data, { create: false });  // only works if "hello2.txt" exists
+ * writeFileSync("hello3.txt", data, { mode: 0o777 });  // set permissions on new file
+ * writeFileSync("hello4.txt", data, { append: true });  // add data to the end of the file
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data The content in bytes to be written.
+ * @param options Options to write files. See {@linkcode WriteFileOptions}.
  */
 export declare function writeFileSync(
   path: string | URL,
   data: Uint8Array,
-  options?: WriteOptions | undefined,
+  options?: WriteFileOptions | undefined,
 ): void;

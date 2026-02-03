@@ -1,91 +1,86 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal, ok } from "@frostyeti/assert";
+import { ok, rejects, throws } from "@frostyeti/assert";
 import { mktemp, mktempSync } from "./mktemp.ts";
-import { join } from "@frostyeti/path";
-import { globals } from "./globals.ts";
-import { mkdir } from "./mkdir.ts";
-import { rm } from "./rm.ts";
-import { exists, existsSync } from "./exists.ts";
+import { NotFound } from "./unstable_errors.ts";
+import { mkdtemp, mkdtempSync } from "./mkdtemp.ts";
+import { rmSync } from "node:fs";
+import { rm } from "node:fs/promises";
 
-// deno-lint-ignore no-explicit-any
-const g = globals as Record<string, any>;
-const testData = join(import.meta.dirname!, "test-data", "make_temp_file");
+test("mktemp() creates temporary files in the default temp directory path", async () => {
+  const tempFile1 = await mktemp({
+    prefix: "standard",
+    suffix: "library",
+  });
+  const tempFile2 = await mktemp({
+    prefix: "standard",
+    suffix: "library",
+  });
 
-test("fs::makeTempFile creates a temporary file with default options", async () => {
-    const file = await mktemp();
-    console.log(file);
-    ok(await exists(file), "File should exist");
-    await rm(file);
-});
+  try {
+    ok(tempFile1 !== tempFile2);
 
-test("fs::makeTempFile creates a file with custom prefix and suffix", async () => {
-    const file = await mktemp({ prefix: "test-", suffix: ".txt" });
-    ok(await exists(file));
-    const tmp = globals.process.env.TEMP ?? globals.process.env.TMPDIR ?? "/tmp";
-    ok(file.startsWith(join(tmp, "test-")));
-    ok(file.endsWith(".txt"));
-    await rm(file);
-});
-
-test("fs::makeTempFile creates a file in custom directory", async () => {
-    const customDir = join(testData, "custom-temp");
-    await mkdir(customDir, { recursive: true });
-    const file = await mktemp({ dir: customDir });
-    ok(await exists(file), `File ${file} should exist in ${customDir}`);
-    ok(file.includes(customDir));
-    await rm(customDir, { recursive: true });
-});
-
-test("fs::makeTempFileSync creates a temporary file with default options", async () => {
-    const file = mktempSync();
-    ok(existsSync(file));
-    await rm(file, { recursive: true });
-});
-
-test("fs::makeTempFileSync creates a file with custom prefix and suffix", async () => {
-    const file = mktempSync({ prefix: "test-", suffix: ".txt" });
-    ok(existsSync(file));
-    const tmp = globals.process.env.TEMP ?? globals.process.env.TMPDIR ?? "/tmp";
-    ok(file.startsWith(join(tmp, "test-")));
-    ok(file.endsWith(".txt"));
-    await rm(file, { recursive: true });
-});
-
-test("fs::makeTempFileSync creates a file in custom directory", async () => {
-    const customDir = join(testData, "custom-temp-sync");
-    await mkdir(customDir, { recursive: true });
-    const file = mktempSync({ dir: customDir });
-    ok(existsSync(file));
-    ok(file.includes(customDir));
-    await rm(customDir, { recursive: true });
-});
-
-test("fs::makeTempFile uses Deno.makeTempFile when available", async () => {
-    const originalDeno = g.Deno;
-    delete g["Deno"];
-    const testFile = "/tmp/test-deno-file";
-    try {
-        g.Deno = {
-            makeTempFile: () => Promise.resolve(testFile),
-        };
-        const file = await mktemp();
-        equal(file, testFile);
-    } finally {
-        g.Deno = originalDeno;
+    for (const file of [tempFile1, tempFile2]) {
+      const tempFileName = file.replace(/^.*[\\\/]/, "");
+      ok(tempFileName.startsWith("standard"));
+      ok(tempFileName.endsWith("library"));
     }
+  } finally {
+    await rm(tempFile1);
+    await rm(tempFile2);
+  }
 });
 
-test("fs::makeTempFileSync uses Deno.makeTempFileSync when available", () => {
-    const originalDeno = g.Deno;
-    delete g["Deno"];
-    const testFile = "/tmp/test-deno-file-sync";
-    try {
-        g.Deno = {
-            makeTempFileSync: () => testFile,
-        };
-        const file = mktempSync();
-        equal(file, testFile);
-    } finally {
-        g.Deno = originalDeno;
+test("mktemp() creates temporary files in the 'dir' option", async () => {
+  const tempDirPath = await mkdtemp({ prefix: "mktemp_" });
+  const tempFile = await mktemp({ dir: tempDirPath });
+
+  try {
+    ok(tempFile.startsWith(tempDirPath));
+    ok(/^[\\\/]/.test(tempFile.slice(tempDirPath.length)));
+  } finally {
+    await rm(tempDirPath, { recursive: true, force: true });
+  }
+});
+
+test("mktemp() rejects with NotFound when passing a 'dir' path that does not exist", async () => {
+  await rejects(async () => {
+    await mktemp({ dir: "/non-existent-dir" });
+  }, NotFound);
+});
+
+test("mktempSync() creates temporary files in the default temp directory path", () => {
+  const tempFile1 = mktempSync({ prefix: "standard", suffix: "library" });
+  const tempFile2 = mktempSync({ prefix: "standard", suffix: "library" });
+
+  try {
+    ok(tempFile1 !== tempFile2);
+
+    for (const file of [tempFile1, tempFile2]) {
+      const tempFileName = file.replace(/^.*[\\\/]/, "");
+      ok(tempFileName.startsWith("standard"));
+      ok(tempFileName.endsWith("library"));
     }
+  } finally {
+    rmSync(tempFile1);
+    rmSync(tempFile2);
+  }
+});
+
+test("mktempSync() creates temporary files in the 'dir' option", () => {
+  const tempDirPath = mkdtempSync({ prefix: "mktempSync_" });
+  const tempFile = mktempSync({ dir: tempDirPath });
+
+  try {
+    ok(tempFile.startsWith(tempDirPath));
+    ok(/^[\\\/]/.test(tempFile.slice(tempDirPath.length)));
+  } finally {
+    rmSync(tempDirPath, { recursive: true, force: true });
+  }
+});
+
+test("mktempSync() throws with NotFound when passing a 'dir' path that does not exist", () => {
+  throws(() => {
+    mktempSync({ dir: "/non-existent-dir" });
+  }, NotFound);
 });

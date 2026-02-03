@@ -3,27 +3,52 @@
  *
  * @module
  */
-import type { WriteOptions } from "./types.js";
+import type { WriteFileOptions } from "./types.js";
 /**
- * Writes text data to a file.
- * @param path The path to the file.
- * @param data The text data to write.
- * @param options The options for writing the file (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Write string `data` to the given `path`, by default creating a new file if
+ * needed, else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeTextFile } from "@frostyeti/fs/unstable-write-text-file";
+ * await writeTextFile("hello1.txt", "Hello world\n");  // overwrite "hello1.txt" or create it
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data A UTF-8 string or a stream of UTF-8 strings.
+ * @param options Options for writing files. See {@linkcode WriteFileOptions}.
  */
 export declare function writeTextFile(
   path: string | URL,
-  data: string,
-  options?: WriteOptions,
+  data: string | ReadableStream<string>,
+  options?: WriteFileOptions,
 ): Promise<void>;
 /**
- * Synchronously writes text data to a file.
- * @param path The path to the file.
- * @param data The text data to write.
- * @param options The options for writing the file (optional).
+ * Synchronously write string `data` to the given `path`, by default creating
+ * a new file if needed, else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeTextFileSync } from "@frostyeti/fs/unstable-write-text-file";
+ * writeTextFileSync("hello1.txt", "Hello world\n");  // overwrite "hello1.txt" or create it
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data A UTF-8 string.
+ * @param options Options for writing files. See {@linkcode WriteFileOptions}.
  */
 export declare function writeTextFileSync(
   path: string | URL,
   data: string,
-  options?: WriteOptions,
+  options?: WriteFileOptions,
 ): void;

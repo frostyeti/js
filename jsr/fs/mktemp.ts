@@ -1,122 +1,157 @@
-/**
- * The `make-temp-file` module provides functions to create temporary files.
- *
- * @module
- */
+// Copyright 2018-2026 the Deno authors. MIT license.
 
+import { getNodeOs, getNodePath, isDeno, randomId } from "./_utils.ts";
+import { mapError } from "./_map_error.ts";
 import type { MakeTempOptions } from "./types.ts";
-import { globals, loadFs, loadFsAsync, WIN } from "./globals.ts";
-import { isAbsolute, join } from "@frostyeti/path";
-import { exists, existsSync } from "./exists.ts";
-import { NotFoundError } from "./errors.ts";
-
-let fn: typeof import("node:fs").writeFileSync | undefined = undefined;
-let fnAsync: typeof import("node:fs/promises").writeFile | undefined = undefined;
-
-function randomName(prefix?: string, suffix?: string): string {
-    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    const rng = crypto.getRandomValues(new Uint8Array(12));
-    const name = Array.from(rng)
-        .map((x) => chars[x % chars.length])
-        .join("");
-
-    if (prefix && suffix) {
-        return `${prefix}${name}${suffix}`;
-    }
-
-    if (prefix) {
-        return `${prefix}${name}`;
-    }
-
-    if (suffix) {
-        return `${name}${suffix}`;
-    }
-
-    return name;
-}
+import {
+  writeTextFile,
+  writeTextFileSync,
+} from "./write_text_file.ts";
+import { globals } from "./globals.ts";
 
 /**
- * Creates a temporary file.
- * @param options The options for creating the temporary file (optional).
- * @returns A promise that resolves with the path to the created temporary file.
+ * Creates a new temporary file in the default directory for temporary files,
+ * unless `dir` is specified.
+ *
+ * Other options include prefixing and suffixing the directory name with
+ * `prefix` and `suffix` respectively.
+ *
+ * This call resolves to the full path to the newly created file.
+ *
+ * Multiple programs calling this function simultaneously will create different
+ * files. It is the caller's responsibility to remove the file when no longer
+ * needed.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { mktemp } from "@frostyeti/fs/mktemp";
+ * const tmpFileName0 = await mktemp();  // e.g. /tmp/419e0bf2
+ * const tmpFileName1 = await mktemp({ prefix: 'my_temp' });  // e.g. /tmp/my_temp754d3098
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param options The options specified when creating a temporary file.
+ * @returns A Promise that resolves to a file path to the temporary file.
  */
 export async function mktemp(options?: MakeTempOptions): Promise<string> {
-    if (globals.Deno) {
-        return globals.Deno.makeTempFile(options);
-    }
+  if (isDeno) {
+    return globals.Deno.makeTempFile({ ...options });
+  } else {
+    const {
+      dir,
+      prefix,
+      suffix,
+    } = options ?? {};
+    try {
+      const { tmpdir } = getNodeOs();
+      const { join } = getNodePath();
 
-    if (!fnAsync) {
-        fnAsync = loadFsAsync()?.writeFile;
-        if (!fnAsync) {
-            throw new Error("fs.promises.writeFile is not available");
+      let tempFilePath;
+      if (!options) {
+        tempFilePath = join(tmpdir(), randomId());
+        await writeTextFile(tempFilePath, "", { mode: 0o600 });
+        return tempFilePath;
+      }
+
+      tempFilePath = tmpdir();
+      if (dir != null) {
+        tempFilePath = typeof dir === "string" ? dir : ".";
+        if (tempFilePath === "") {
+          tempFilePath = ".";
         }
-    }
+      }
 
-    options ??= {};
-    options.prefix ??= "tmp";
-    let dir: string;
-    if (!options.dir) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-    } else if (options.dir && !isAbsolute(options.dir)) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-        dir = join(dir, options.dir);
-    } else {
-        dir = options.dir;
-    }
+      if (prefix != null && typeof prefix === "string") {
+        tempFilePath = join(tempFilePath, prefix + randomId());
+      } else {
+        tempFilePath = join(tempFilePath, randomId());
+      }
 
-    const r = randomName(options.prefix, options.suffix);
-    const file = join(dir, r);
-    if (!await exists(dir)) {
-        throw new NotFoundError(`Directory not found: ${dir}`);
-    }
+      if (suffix != null && typeof suffix === "string") {
+        tempFilePath += suffix;
+      }
 
-    await fnAsync(file, new Uint8Array(0), { mode: 0o644 });
-    return file;
+      await writeTextFile(tempFilePath, "", { mode: 0o600 });
+      return tempFilePath;
+    } catch (error) {
+      throw mapError(error);
+    }
+  }
 }
 
 /**
- * Creates a temporary file synchronously.
- * @param options The options for creating the temporary file (optional).
- * @returns The path to the created temporary file.
+ * Synchronously creates a new temporary file in the default directory for
+ * temporary files, unless `dir` is specified.
+ *
+ * Other options include prefixing and suffixing the directory name with
+ * `prefix` and `suffix` respectively.
+ *
+ * The full path to the newly created file is returned.
+ *
+ * Multiple programs calling this function simultaneously will create different
+ * files. It is the caller's responsibility to remove the file when no longer
+ * needed.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { mktempSync } from "@frostyeti/fs/mktemp";
+ * const tempFileName0 = mktempSync(); // e.g. /tmp/419e0bf2
+ * const tempFileName1 = mktempSync({ prefix: 'my_temp' });  // e.g. /tmp/my_temp754d3098
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param options The options specified when creating a temporary file.
+ * @returns The file path to the temporary file.
  */
 export function mktempSync(options?: MakeTempOptions): string {
-    if (globals.Deno) {
-        return globals.Deno.makeTempFileSync(options);
-    }
+  if (isDeno) {
+    return globals.Deno.makeTempFileSync({ ...options });
+  } else {
+    const {
+      dir,
+      prefix,
+      suffix,
+    } = options ?? {};
 
-    if (!fn) {
-        fn = loadFs()?.writeFileSync;
-        if (!fn) {
-            throw new Error("fs.writeFileSync is not available");
+    try {
+      const { tmpdir } = getNodeOs();
+      const { join } = getNodePath();
+
+      let tempFilePath;
+      if (!options) {
+        tempFilePath = join(tmpdir(), randomId());
+        writeTextFileSync(tempFilePath, "", { mode: 0o600 });
+        return tempFilePath;
+      }
+
+      tempFilePath = tmpdir();
+      if (dir != null) {
+        tempFilePath = typeof dir === "string" ? dir : ".";
+        if (tempFilePath === "") {
+          tempFilePath = ".";
         }
-    }
+      }
 
-    options ??= {};
-    options.prefix ??= "tmp";
-    let dir: string;
-    if (!options.dir) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-    } else if (options.dir && !isAbsolute(options.dir)) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-        dir = join(dir, options.dir);
-    } else {
-        dir = options.dir;
-    }
+      if (prefix != null && typeof prefix === "string") {
+        tempFilePath = join(tempFilePath, prefix + randomId());
+      } else {
+        tempFilePath = join(tempFilePath, randomId());
+      }
 
-    const r = randomName(options.prefix, options.suffix);
-    const file = join(dir, r);
-    if (!existsSync(dir)) {
-        throw new NotFoundError(`Directory not found: ${dir}`);
-    }
+      if (suffix != null && typeof suffix === "string") {
+        tempFilePath += suffix;
+      }
 
-    fn(file, new Uint8Array(0), { mode: 0o644 });
-    return file;
+      writeTextFileSync(tempFilePath, "", { mode: 0o600 });
+      return tempFilePath;
+    } catch (error) {
+      throw mapError(error);
+    }
+  }
 }

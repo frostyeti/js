@@ -16,4 +16,4 @@
  * @param paths The paths to join.
  * @returns The joined path.
  */
-export declare function join(...paths: string[]): string;
+export declare function join(path?: URL | string, ...paths: string[]): string;

@@ -24,5 +24,7 @@ import { resolve as windowsResolve } from "./windows/resolve.js";
  * @returns The resolved path.
  */
 export function resolve(...pathSegments) {
-  return isWindows ? windowsResolve(...pathSegments) : posixResolve(...pathSegments);
+  return isWindows
+    ? windowsResolve(...pathSegments)
+    : posixResolve(...pathSegments);
 }

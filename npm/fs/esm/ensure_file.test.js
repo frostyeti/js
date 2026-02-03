@@ -3,8 +3,8 @@ import { test } from "node:test";
 import { rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureFile, ensureFileSync } from "./ensure_file.js";
-import { makeDir, mkdirSync } from "./make_dir.js";
-import { remove, removeSync } from "./remove.js";
+import { mkdir, mkdirSync } from "./mkdir.js";
+import { rm, rmSync } from "./rm.js";
 import { stat, statSync } from "./stat.js";
 import { writeFile, writeFileSync } from "./write_file.js";
 import { globals } from "./globals.js";
@@ -18,7 +18,7 @@ test("fs::ensureFile() creates file if it does not exist", async function () {
     // test file should exists.
     await stat(testFile);
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
   }
 });
 test("fs::ensureFileSync() creates file if it does not exist", function () {
@@ -29,20 +29,20 @@ test("fs::ensureFileSync() creates file if it does not exist", function () {
     // test file should exists.
     statSync(testFile);
   } finally {
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
   }
 });
 test("fs::ensureFile() ensures existing file exists", async function () {
   const testDir = path.join(testdataDir, "ensure_file_3");
   const testFile = path.join(testDir, "test.txt");
   try {
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await writeFile(testFile, new Uint8Array());
     await ensureFile(testFile);
     // test file should exists.
     await stat(testFile);
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
   }
 });
 test("fs::ensureFileSync() ensures existing file exists", function () {
@@ -55,13 +55,13 @@ test("fs::ensureFileSync() ensures existing file exists", function () {
     // test file should exists.
     statSync(testFile);
   } finally {
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
   }
 });
 test("fs::ensureFile() rejects if input is dir", async function () {
   const testDir = path.join(testdataDir, "ensure_file_5");
   try {
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await rejects(
       async () => {
         await ensureFile(testDir);
@@ -70,7 +70,7 @@ test("fs::ensureFile() rejects if input is dir", async function () {
       `Ensure path exists, expected 'file', got 'dir'`,
     );
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
   }
 });
 test("fs::ensureFileSync() throws if input is dir", function () {
@@ -85,7 +85,7 @@ test("fs::ensureFileSync() throws if input is dir", function () {
       `Ensure path exists, expected 'file', got 'dir'`,
     );
   } finally {
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
   }
 });
 if (globals.Deno && globals.Deno.permissions) {
@@ -115,7 +115,8 @@ if (globals.Deno && globals.Deno.permissions) {
     },
   });
   globals.Deno.test({
-    name: "fs::ensureFile() can write file without write permissions on parent directory",
+    name:
+      "fs::ensureFile() can write file without write permissions on parent directory",
     permissions: {
       read: true,
       write: [
@@ -128,7 +129,7 @@ if (globals.Deno && globals.Deno.permissions) {
       const testDir = path.join(testdataDir, "ensure_file_9");
       const testFile = path.join(testDir, "test.txt");
       try {
-        await makeDir(testDir, { recursive: true });
+        await mkdir(testDir, { recursive: true });
         await globals.Deno.permissions.revoke({ name: "write", path: testDir });
         // should still work as the parent directory already exists
         await ensureFile(testFile);
@@ -147,7 +148,8 @@ if (globals.Deno && globals.Deno.permissions) {
     },
   });
   globals.Deno.test({
-    name: "fs::ensureFileSync() can write file without write permissions on parent directory",
+    name:
+      "fs::ensureFileSync() can write file without write permissions on parent directory",
     permissions: {
       read: true,
       write: [

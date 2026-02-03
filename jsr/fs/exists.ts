@@ -9,6 +9,7 @@ import { stat, statSync } from "./stat.ts";
 import { uid } from "./uid.ts";
 import { gid } from "./gid.ts";
 import { globals, WIN } from "./globals.ts";
+import { NotFound } from "./unstable_errors.ts";
 
 /**
  * Asynchronously test whether or not the given path exists by checking with
@@ -127,6 +128,10 @@ export async function exists(
         }
         return true;
     } catch (error) {
+        if (error instanceof NotFound) {
+            return false;
+        }
+
         if (globals.process && error instanceof Error) {
             const { code } = error as unknown as { code: string };
 
@@ -275,6 +280,10 @@ export function existsSync(
         }
         return true;
     } catch (error) {
+        if (error instanceof NotFound) {
+            return false;
+        }
+
         if (globals.process && error instanceof Error) {
             const { code } = error as unknown as { code: string };
 

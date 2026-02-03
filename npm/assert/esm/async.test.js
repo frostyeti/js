@@ -53,7 +53,8 @@ describe("assert::rejects", () => {
     equal(error instanceof Error, true);
   });
   test("works with async functions", async () => {
-    await rejects(() => {
+    await rejects(async () => {
+      await Promise.resolve();
       throw new Error("async error");
     });
   });

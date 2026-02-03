@@ -69,8 +69,8 @@ export function isSamePath(
 export function createWalkEntrySync(path: string | URL): WalkEntry {
     path = toPathString(path);
     path = normalize(path);
-    const name = basename(path);
     const info = statSync(path);
+    const name = basename(path);
     return {
         path,
         name,

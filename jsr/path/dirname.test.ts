@@ -6,8 +6,8 @@ import { equal, throws } from "@frostyeti/assert";
 import { dirname } from "./dirname.ts";
 import * as posix from "./posix/mod.ts";
 import * as windows from "./windows/mod.ts";
-import { dirname as windowsUnstableDirname } from "./windows/unstable_dirname.ts";
-import { dirname as posixUnstableDirname } from "./posix/unstable_dirname.ts";
+import { dirname as windowsUnstableDirname } from "./windows/dirname.ts";
+import { dirname as posixUnstableDirname } from "./posix/dirname.ts";
 
 // Test suite from "GNU core utilities"
 // https://github.com/coreutils/coreutils/blob/master/tests/misc/dirname.pl

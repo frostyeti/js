@@ -18,4 +18,4 @@
  * @param path The path to normalize
  * @returns The normalized path
  */
-export declare function normalize(path: string): string;
+export declare function normalize(path: string | URL): string;

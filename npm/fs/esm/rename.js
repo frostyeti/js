@@ -3,26 +3,23 @@
  *
  * @module
  */
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn = undefined;
-let fnAsync = undefined;
+import { mapError } from "./_map_error.js";
+import { getNodeFs, globals } from "./globals.js";
 /**
  * Renames a file or directory.
  * @param oldPath The path to the existing file or directory.
  * @param newPath The path to the new file or directory.
  * @returns A promise that resolves when the operation is complete.
  */
-export function rename(oldPath, newPath) {
+export async function rename(oldPath, newPath) {
   if (globals.Deno) {
-    return globals.Deno.rename(oldPath, newPath);
+    return await globals.Deno.rename(oldPath, newPath);
   }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.rename;
-    if (!fnAsync) {
-      return Promise.reject(new Error("No suitable file system module found."));
-    }
+  try {
+    await getNodeFs().promises.rename(oldPath, newPath);
+  } catch (error) {
+    throw mapError(error);
   }
-  return fnAsync(oldPath, newPath);
 }
 /**
  * Synchronously renames a file or directory.
@@ -33,11 +30,9 @@ export function renameSync(oldPath, newPath) {
   if (globals.Deno) {
     return globals.Deno.renameSync(oldPath, newPath);
   }
-  if (!fn) {
-    fn = loadFs()?.renameSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
-    }
+  try {
+    getNodeFs().renameSync(oldPath, newPath);
+  } catch (error) {
+    throw mapError(error);
   }
-  fn(oldPath, newPath);
 }

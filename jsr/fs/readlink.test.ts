@@ -1,59 +1,85 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal } from "@frostyeti/assert";
+import { equal, rejects, throws } from "@frostyeti/assert";
 import { readlink, readlinkSync } from "./readlink.ts";
-import { join } from "@frostyeti/path";
-import { mkdir } from "./mkdir.ts";
-import { WIN } from "./globals.ts";
-import { writeTextFile } from "./write_text_file.ts";
-import { rm } from "./rm.ts";
-import { symlink } from "./symlink.ts";
+import { NotFound } from "./unstable_errors.ts";
+import {
+  linkSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { link, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 
-const testData = join(import.meta.dirname!, "test-data", "read_link");
-const g: Record<string, unknown> = globalThis as Record<string, unknown>;
+test("readlink() can read through symlink", async () => {
+  const tempDirPath = await mkdtemp(resolve(tmpdir(), "readlink_"));
+  const testFile = join(tempDirPath, "testFile.txt");
+  const symlinkFile = join(tempDirPath, "testFile.txt.link");
 
-test("fs::readLink reads target of symbolic link", async (t) => {
-    if (WIN) {
-        if (g.Bun) {
-            equal(
-                true,
-                true,
-                "Skipping test: Bun on Windows does not support nested tests using node:test, including the skip",
-            );
-            return;
-        }
-        t.skip("Skipping test: readLink is not supported on Windows");
-        return;
-    }
+  await writeFile(testFile, "Hello, Standard Library");
+  await symlink(testFile, symlinkFile);
 
-    await mkdir(testData, { recursive: true });
-    const sourcePath = join(testData, "source2.txt");
-    const linkPath = join(testData, "link2.txt");
-    const content = "test content";
+  const realFile = await readlink(symlinkFile);
+  equal(testFile, realFile);
 
-    try {
-        await writeTextFile(sourcePath, content);
-        await symlink(sourcePath, linkPath);
-
-        const target = await readlink(linkPath);
-        equal(target, sourcePath);
-    } finally {
-        await rm(testData, { recursive: true });
-    }
+  await rm(tempDirPath, { recursive: true, force: true });
 });
 
-test("fs::readLinkSync reads target of symbolic link", async () => {
-    await mkdir(testData, { recursive: true });
-    const sourcePath = join(testData, "source3.txt");
-    const linkPath = join(testData, "link3.txt");
-    const content = "test content";
+test("readlink() rejects with Error when reading from a hard link", async () => {
+  const tempDirPath = await mkdtemp(resolve(tmpdir(), "readlink_"));
+  const testFile = join(tempDirPath, "testFile.txt");
+  const linkFile = join(tempDirPath, "testFile.txt.hlink");
 
-    try {
-        await writeTextFile(sourcePath, content);
-        await symlink(sourcePath, linkPath);
+  await writeFile(testFile, "Hello, Standard Library");
+  await link(testFile, linkFile);
 
-        const target = readlinkSync(linkPath);
-        equal(target, sourcePath);
-    } finally {
-        await rm(testData, { recursive: true });
-    }
+  await rejects(async () => {
+    await readlink(linkFile);
+  }, Error);
+
+  await rm(tempDirPath, { recursive: true, force: true });
+});
+
+test("readlink() rejects with NotFound when reading through a non-existent file", async () => {
+  await rejects(async () => {
+    await readlink("non-existent-file.txt.link");
+  }, NotFound);
+});
+
+test("readlinkSync() can read through symlink", () => {
+  const tempDirPath = mkdtempSync(resolve(tmpdir(), "readlink_"));
+  const testFile = join(tempDirPath, "testFile.txt");
+  const symlinkFile = join(tempDirPath, "testFile.txt.link");
+
+  writeFileSync(testFile, "Hello, Standard Library");
+  symlinkSync(testFile, symlinkFile);
+
+  const realFile = readlinkSync(symlinkFile);
+  equal(testFile, realFile);
+
+  rmSync(tempDirPath, { recursive: true, force: true });
+});
+
+test("readlinkSync() throws Error when reading from a hard link", () => {
+  const tempDirPath = mkdtempSync(resolve(tmpdir(), "readlinkSync_"));
+  const testFile = join(tempDirPath, "testFile.txt");
+  const linkFile = join(tempDirPath, "testFile.txt.hlink");
+
+  writeFileSync(testFile, "Hello, Standard Library!");
+  linkSync(testFile, linkFile);
+
+  throws(() => {
+    readlinkSync(linkFile);
+  }, Error);
+
+  rmSync(tempDirPath, { recursive: true, force: true });
+});
+
+test("readlinkSync() throws NotFound when reading through a non-existent file", () => {
+  throws(() => {
+    readlinkSync("non-existent-file.txt.hlink");
+  }, NotFound);
 });

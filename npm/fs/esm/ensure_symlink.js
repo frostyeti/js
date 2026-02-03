@@ -11,7 +11,7 @@ import { ensureDir, ensureDirSync } from "./ensure_dir.js";
 import { getFileInfoType, toPathString } from "./utils.js";
 import { AlreadyExistsError, isAlreadyExistsError } from "./errors.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { readLink, readLinkSync } from "./read_link.js";
+import { readlink, readlinkSync } from "./readlink.js";
 import { symlink, symlinkSync } from "./symlink.js";
 import { WIN } from "./globals.js";
 function resolveSymlinkTarget(target, linkName) {
@@ -66,7 +66,7 @@ export async function ensureSymlink(target, linkName) {
         `A '${type}' already exists at the path: ${linkName}`,
       );
     }
-    const linkPath = await readLink(linkName);
+    const linkPath = await readlink(linkName);
     const linkRealPath = resolve(linkPath);
     if (linkRealPath !== targetRealPath) {
       throw new AlreadyExistsError(
@@ -117,7 +117,7 @@ export function ensureSymlinkSync(target, linkName) {
         `A '${type}' already exists at the path: ${linkName}`,
       );
     }
-    const linkPath = readLinkSync(linkName);
+    const linkPath = readlinkSync(linkName);
     const linkRealPath = resolve(linkPath);
     if (linkRealPath !== targetRealPath) {
       throw new AlreadyExistsError(

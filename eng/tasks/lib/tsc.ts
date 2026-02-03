@@ -351,6 +351,9 @@ bun.lockb`;
                 for (const [src, dest] of Object.entries(otherFilesToCopy)) {
                     const absSrc = resolve(projectRootDir, project.dir, src);
                     const absDest = resolve(npmProjectDir, dest);
+                    const parentDir = dirname(absDest);
+                    await Deno.mkdir(parentDir, { recursive: true });
+
                     await copy(absSrc, absDest, { overwrite: true });
                 }
             }

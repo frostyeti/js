@@ -4,101 +4,103 @@
  * @module
  */
 import type { RemoveOptions } from "./types.ts";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-
-let fn: typeof import("node:fs").rmSync | undefined = undefined;
-let fnAsync: typeof import("node:fs/promises").rm | undefined = undefined;
-let rmDir: typeof import("node:fs").rmdirSync | undefined = undefined;
-let rmDirAsync: typeof import("node:fs/promises").rmdir | undefined = undefined;
+import { getNodeFs, globals } from "./globals.ts";
+import { mapError } from "./_map_error.ts";
 
 /**
- * Removes a file or directory.
- * @param path The path to the file or directory.
- * @param options The options for removing the file or directory (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Removes the named file or directory.
+ *
+ * Throws error if permission denied, path not found, or path is a non-empty directory and
+ * the recursive option isn't set to true.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { notOk } from "@frostyeti/assert";
+ * import { exists } from "@frostyeti/fs/exists";
+ * import { remove } from "@frostyeti/fs/rm";
+ * import { mkdtemp } from "@frostyeti/fs/mkdtemp";
+ *
+ * const tempDir = await mkdtemp();
+ * await remove(tempDir);
+ * notOk(await exists(tempDir));
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path of file or directory.
+ * @param options Options when reading a file. See {@linkcode RemoveOptions}.
  */
-export function rm(
+export async function rm(
     path: string | URL,
     options?: RemoveOptions,
-): Promise<void> {
+) {
     if (globals.Deno) {
-        return globals.Deno.remove(path, options);
-    }
-
-    if (!fnAsync) {
-        fnAsync = loadFsAsync()?.rm;
-        if (!fnAsync) {
-            return Promise.reject(new Error("No suitable file system module found."));
+        await globals.Deno.remove(path, options);
+    } else {
+        const { recursive = false } = options ?? {};
+        try {
+            await getNodeFs().promises.rm(path, { recursive: recursive });
+        } catch (error) {
+            if ((error as Error & { code: string }).code === "ERR_FS_EISDIR" || (globals.Bun && (error as Error & { code: string }).code === "EFAULT")) {
+                try {
+                    await getNodeFs().promises.rmdir(path);
+                } catch (error) {
+                    throw mapError(error);
+                }
+                return;
+            }
+            throw mapError(error);
         }
     }
-
-    return fnAsync(path, { ...options }).catch((err) => {
-        const code = (err as Error & { code: string }).code;
-        if (code === "ERR_FS_EISDIR") {
-            if (!rmDirAsync) {
-                rmDirAsync = loadFsAsync()?.rmdir;
-                if (!rmDirAsync) {
-                    return Promise.reject(new Error("No suitable file system module found."));
-                }
-            }
-
-            return rmDirAsync(path);
-        } else if (globals.Bun && (code === "EFAULT" || code === "EACCES")) {
-            // Bun specific error handling
-            if (!rmDirAsync) {
-                rmDirAsync = loadFsAsync()?.rmdir;
-                if (!rmDirAsync) {
-                    return Promise.reject(new Error("No suitable file system module found."));
-                }
-            }
-
-            return rmDirAsync(path);
-        } else {
-            return Promise.reject(err);
-        }
-    });
 }
 
 /**
- * Synchronously removes a file or directory.
- * @param path The path to the file or directory.
- * @param options The options for removing the file or directory (optional).
+ * Synchronously removes the named file or directory.
+ *
+ * Throws error if permission denied, path not found, or path is a non-empty directory and
+ * the recursive option isn't set to true.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { notOk } from "@frostyeti/assert";
+ * import { existsSync } from "@frostyeti/fs/exists";
+ * import { rmSync } from "@frostyeti/fs/rm";
+ * import { mkdtempSync } from "@frostyeti/fs/mkdtemp";
+ *
+ * const tempDir = mkdtempSync();
+ * rmSync(tempDir);
+ * notOk(existsSync(tempDir));
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path of file or directory.
+ * @param options Options when reading a file. See {@linkcode RemoveOptions}.
  */
-export function rmSync(path: string | URL, options?: RemoveOptions): void {
+export function rmSync(
+    path: string | URL,
+    options?: RemoveOptions,
+) {
     if (globals.Deno) {
-        return globals.Deno.removeSync(path, options);
-    }
-
-    if (!fn) {
-        fn = loadFs()?.rmSync;
-        if (!fn) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    try {
-        fn(path, { ...options });
-    } catch (err) {
-        const code = (err as Error & { code: string }).code;
-        if (code === "ERR_FS_EISDIR") {
-            if (!rmDir) {
-                rmDir = loadFs()?.rmdirSync;
-                if (!rmDir) {
-                    throw new Error("No suitable file system module found.");
+        globals.Deno.removeSync(path, options);
+    } else {
+        const { recursive = false } = options ?? {};
+        try {
+            getNodeFs().rmSync(path, { recursive: recursive });
+        } catch (error) {
+            if ((error as Error & { code: string }).code === "ERR_FS_EISDIR" || (globals.Bun && (error as Error & { code: string }).code === "EFAULT")) {
+                try {
+                    getNodeFs().rmdirSync(path);
+                } catch (error) {
+                    throw mapError(error);
                 }
+                return;
             }
-        } else if (globals.Bun && (code === "EFAULT" || code === "EACCES")) {
-            // Bun specific error handling
-            if (!rmDir) {
-                rmDir = loadFs()?.rmdirSync;
-                if (!rmDir) {
-                    throw new Error("No suitable file system module found.");
-                }
-            }
-
-            rmDir(path, { ...options });
-        } else {
-            throw err;
+            throw mapError(error);
         }
     }
 }

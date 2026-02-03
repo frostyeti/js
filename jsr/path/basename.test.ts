@@ -6,8 +6,8 @@ import { equal, throws } from "@frostyeti/assert";
 import { basename } from "./basename.ts";
 import * as posix from "./posix/mod.ts";
 import * as windows from "./windows/mod.ts";
-import { basename as posixUnstableBasename } from "./posix/unstable_basename.ts";
-import { basename as windowsUnstableBasename } from "./windows/unstable_basename.ts";
+import { basename as posixUnstableBasename } from "./posix/basename.ts";
+import { basename as windowsUnstableBasename } from "./windows/basename.ts";
 
 // Test suite from "GNU core utilities"
 // https://github.com/coreutils/coreutils/blob/master/tests/misc/basename.pl

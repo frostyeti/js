@@ -1,111 +1,152 @@
-/**
- * The `make-temp-dir` module provides functions to create temporary directories.
- *
- * @module
- */
+// Copyright 2018-2026 the Deno authors. MIT license.
 
+import { getNodeFs, getNodeOs, getNodePath, isDeno } from "./_utils.ts";
 import type { MakeTempOptions } from "./types.ts";
-import { globals, loadFs, loadFsAsync, WIN } from "./globals.ts";
-import { join } from "@frostyeti/path";
-import { isAbsolute } from "node:path";
-
-let fn: typeof import("node:fs").mkdirSync | undefined = undefined;
-let fnAsync: typeof import("node:fs/promises").mkdir | undefined = undefined;
-
-function randomName(prefix?: string, suffix?: string): string {
-    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    const rng = crypto.getRandomValues(new Uint8Array(12));
-    const name = Array.from(rng)
-        .map((x) => chars[x % chars.length])
-        .join("");
-
-    if (prefix && suffix) {
-        return `${prefix}${name}${suffix}`;
-    }
-
-    if (prefix) {
-        return `${prefix}${name}`;
-    }
-
-    if (suffix) {
-        return `${name}${suffix}`;
-    }
-
-    return name;
-}
+import { mapError } from "./_map_error.ts";
+import { globals } from "./globals.ts";
 
 /**
- * Creates a temporary directory.
- * @param options The options for creating the temporary directory (optional).
- * @returns A promise that resolves with the path to the created temporary directory.
+ * Creates a new temporary directory in the default directory for temporary
+ * files, unless `dir` is specified. Other optional options include
+ * prefixing and suffixing the directory name with `prefix` and `suffix`
+ * respectively.
+ *
+ * This call resolves to the full path to the newly created directory.
+ *
+ * Multiple programs calling this function simultaneously will create different
+ * directories. It is the caller's responsibility to remove the directory when
+ * no longer needed.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { mkdtemp } from "@frostyeti/fs/mkdtemp";
+ * const tempDirName0 = await mkdtemp();  // e.g. /tmp/2894ea76
+ * const tempDirName1 = await mkdtemp({ prefix: 'my_temp' }); // e.g. /tmp/my_temp339c944d
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param options The options specified when creating a temporary directory.
+ * @returns A promise that resolves to a path to the temporary directory.
  */
 export async function mkdtemp(options?: MakeTempOptions): Promise<string> {
-    if (globals.Deno) {
-        return globals.Deno.makeTempDir(options);
-    }
+  if (isDeno) {
+    return globals.Deno.makeTempDir({ ...options });
+  } else {
+    const {
+      dir = undefined,
+      prefix = undefined,
+      suffix = undefined,
+    } = options ?? {};
 
-    if (!fnAsync) {
-        fnAsync = loadFsAsync()?.mkdir;
-        if (!fnAsync) {
-            throw new Error("fs.promises.mkdtemp is not available");
+    try {
+      const { mkdtemp, rename } = getNodeFs().promises;
+      const { tmpdir } = getNodeOs();
+      const { join, sep } = getNodePath();
+
+      if (!options) {
+        return await mkdtemp(join(tmpdir(), sep));
+      }
+
+      let prependPath = tmpdir();
+      if (dir != null) {
+        prependPath = typeof dir === "string" ? dir : ".";
+        if (prependPath === "") {
+          prependPath = ".";
         }
-    }
-    options ??= {};
-    let dir: string = "";
-    if (!options.dir) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-    } else if (options.dir && !isAbsolute(options.dir)) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-        dir = join(dir, options.dir);
-    } else {
-        dir = options.dir;
-    }
+      }
 
-    const dirname = randomName(options.prefix, options.suffix);
-    const path = join(dir, dirname);
+      if (prefix != null && typeof prefix === "string") {
+        prependPath = join(prependPath, prefix || sep);
+      } else {
+        prependPath = join(prependPath, sep);
+      }
 
-    await fnAsync(path, { recursive: true, mode: 0o755 });
-    return path;
+      if (suffix != null && typeof suffix === "string") {
+        const tempPath = await mkdtemp(prependPath);
+        const combinedTempPath = "".concat(tempPath, suffix);
+        await rename(tempPath, combinedTempPath);
+        return combinedTempPath;
+      }
+
+      return await mkdtemp(prependPath);
+    } catch (error) {
+      throw mapError(error);
+    }
+  }
 }
 
 /**
- * Synchronously creates a temporary directory.
- * @param options The options for creating the temporary directory (optional).
- * @returns The path to the created temporary directory.
+ * Synchronously creates a new temporary directory in the default directory
+ * for temporary files, unless `dir` is specified. Other optional options
+ * include prefixing and suffixing the directory name with `prefix` and
+ * `suffix` respectively.
+ *
+ * The full path to the newly created directory is returned.
+ *
+ * Multiple programs calling this function simultaneously will create different
+ * directories. It is the caller's responsibility to remove the directory when
+ * no longer needed.
+ *
+ * Requires `allow-write` permission.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { mkdtempSync } from "@frostyeti/fs/mkdtemp";
+ * const tempDirName0 = mkdtempSync();  // e.g. /tmp/2894ea76
+ * const tempDirName1 = mkdtempSync({ prefix: 'my_temp' });  // e.g. /tmp/my_temp339c944d
+ * ```
+ *
+ * @tags allow-write
+ *
+ * @param options The options specified when creating a temporary directory.
+ * @returns The path of the temporary directory.
  */
 export function mkdtempSync(options?: MakeTempOptions): string {
-    if (globals.Deno) {
-        return globals.Deno.makeTempDirSync(options);
-    }
+  if (isDeno) {
+    return globals.Deno.makeTempDirSync({ ...options });
+  } else {
+    const {
+      dir = undefined,
+      prefix = undefined,
+      suffix = undefined,
+    } = options ?? {};
 
-    if (!fn) {
-        fn = loadFs()?.mkdirSync;
-        if (!fn) {
-            throw new Error("fs.mkdtempSync is not available");
+    try {
+      const { mkdtempSync, renameSync } = getNodeFs();
+      const { tmpdir } = getNodeOs();
+      const { join, sep } = getNodePath();
+
+      if (!options) {
+        return mkdtempSync(join(tmpdir(), sep));
+      }
+
+      let prependPath = tmpdir();
+      if (dir != null) {
+        prependPath = typeof dir === "string" ? dir : ".";
+        if (prependPath === "") {
+          prependPath = ".";
         }
-    }
+      }
 
-    options ??= {};
-    let dir: string = "";
-    if (!options.dir) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-    } else if (options.dir && !isAbsolute(options.dir)) {
-        dir = WIN
-            ? (globals.process.env.TEMP ?? "c:\\Temp")
-            : (globals.process.env.TMPDIR ?? "/tmp");
-        dir = join(dir, options.dir);
-    } else {
-        dir = options.dir;
-    }
+      if (prefix != null && typeof prefix === "string") {
+        prependPath = join(prependPath, prefix || sep);
+      } else {
+        prependPath = join(prependPath, sep);
+      }
 
-    const dirname = randomName(options.prefix, options.suffix);
-    const path = join(dir, dirname);
-    fn(path, { recursive: true, mode: 0o755 });
-    return path;
+      if (suffix != null && typeof prefix === "string") {
+        const tempPath = mkdtempSync(prependPath);
+        const combinedTempPath = "".concat(tempPath, suffix);
+        renameSync(tempPath, combinedTempPath);
+        return combinedTempPath;
+      }
+
+      return mkdtempSync(prependPath);
+    } catch (error) {
+      throw mapError(error);
+    }
+  }
 }

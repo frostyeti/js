@@ -1,117 +1,91 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 /**
  * The `write-file` module provides functions to write binary data to a file.
  *
  * @module
  */
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn = undefined;
-let createWriteStream = undefined;
-let fnAsync = undefined;
+import { getNodeFs, globals } from "./globals.js";
+import { getWriteFsFlag } from "./_get_fs_flag.js";
+import { mapError } from "./_map_error.js";
 /**
- * Writes binary data to a file.
- * @param path The path to the file.
- * @param data The binary data to write.
- * @param options The options for writing the file (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Write `data` to the given `path`, by default creating a new file if needed,
+ * else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeFile } from "@frostyeti/fs/write-file";
+ * const encoder = new TextEncoder();
+ * const data = encoder.encode("Hello world\n");
+ * await writeFile("hello1.txt", data);  // overwrite "hello1.txt" or create it
+ * await writeFile("hello2.txt", data, { create: false });  // only works if "hello2.txt" exists
+ * await writeFile("hello3.txt", data, { mode: 0o777 });  // set permissions on new file
+ * await writeFile("hello4.txt", data, { append: true });  // add data to the end of the file
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data The content in bytes or a stream of bytes to be written.
+ * @param options Options to write files. See {@linkcode WriteFileOptions}.
  */
-export function writeFile(path, data, options) {
+export async function writeFile(path, data, options) {
   if (globals.Deno) {
-    return globals.Deno.writeFile(path, data, options);
-  }
-  if (options?.signal && options?.signal.aborted) {
-    const e = new Error("The operation was aborted.");
-    e.name = "AbortError";
-    return Promise.reject(e);
-  }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.writeFile;
-    if (!fnAsync) {
-      return Promise.reject(new Error("No suitable file system module found."));
-    }
-  }
-  if (data instanceof ReadableStream) {
-    if (!createWriteStream) {
-      createWriteStream = loadFs()?.createWriteStream;
-      if (!createWriteStream) {
-        return Promise.reject(
-          new Error("No suitable file system module found."),
-        );
+    return await globals.Deno.writeFile(path, data, options);
+  } else {
+    const { append = false, create = true, createNew = false, mode, signal } =
+      options ?? {};
+    const flag = getWriteFsFlag({ append, create, createNew });
+    try {
+      await getNodeFs().promises.writeFile(path, data, { flag, signal });
+      if (mode != null) {
+        await getNodeFs().promises.chmod(path, mode);
       }
+    } catch (error) {
+      throw mapError(error);
     }
-    const sr = createWriteStream(path, {
-      encoding: "utf8",
-      flush: true,
-      ...options,
-    });
-    const writer = new WritableStream({
-      write(chunk) {
-        if (options?.signal) {
-          options.signal.throwIfAborted();
-        }
-        if (chunk instanceof Uint8Array) {
-          sr.write(chunk);
-        } else if (chunk === null || chunk === undefined) {
-          sr.end();
-        }
-      },
-      close() {
-        sr.close();
-        sr.end();
-      },
-    });
-    const wait = new Promise((resolve, reject) => {
-      sr.on("error", (err) => {
-        reject(err);
-      });
-      sr.on("finish", () => {
-        resolve();
-      });
-    });
-    return data.pipeTo(writer).then(() => wait);
   }
-  const o = {};
-  o.mode = options?.mode;
-  o.flag = options?.append ? "a" : "w";
-  if (options?.create) {
-    o.flag += "+";
-  }
-  o.encoding = "utf8";
-  if (options?.signal) {
-    if (options?.signal && options?.signal.aborted) {
-      const e = new Error("The operation was aborted.");
-      e.name = "AbortError";
-      return Promise.reject(e);
-    }
-    o.signal = options.signal;
-  }
-  return fnAsync(path, data, o);
 }
 /**
- * Synchronously writes binary data to a file.
- * @param path The path to the file.
- * @param data The binary data to write.
- * @param options The options for writing the file (optional).
+ * Synchronously write `data` to the given `path`, by default creating a new
+ * file if needed, else overwriting.
+ *
+ * Requires `allow-write` permission, and `allow-read` if `options.create` is
+ * `false`.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { writeFileSync } from "@frostyeti/fs/write-file";
+ * const encoder = new TextEncoder();
+ * const data = encoder.encode("Hello world\n");
+ * writeFileSync("hello1.txt", data);  // overwrite "hello1.txt" or create it
+ * writeFileSync("hello2.txt", data, { create: false });  // only works if "hello2.txt" exists
+ * writeFileSync("hello3.txt", data, { mode: 0o777 });  // set permissions on new file
+ * writeFileSync("hello4.txt", data, { append: true });  // add data to the end of the file
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param path The path of the file that `data` is written to.
+ * @param data The content in bytes to be written.
+ * @param options Options to write files. See {@linkcode WriteFileOptions}.
  */
 export function writeFileSync(path, data, options) {
   if (globals.Deno) {
     return globals.Deno.writeFileSync(path, data, options);
-  }
-  if (!fn) {
-    fn = loadFs()?.writeFileSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
+  } else {
+    const { append = false, create = true, createNew = false, mode, signal } =
+      options ?? {};
+    const flag = getWriteFsFlag({ append, create, createNew });
+    try {
+      getNodeFs().writeFileSync(path, data, { flag, signal });
+      if (mode != null) {
+        getNodeFs().chmodSync(path, mode);
+      }
+    } catch (error) {
+      throw mapError(error);
     }
   }
-  const o = {};
-  o.mode = options?.mode;
-  o.flag = options?.append ? "a" : "w";
-  if (options?.create) {
-    o.flag += "+";
-  }
-  o.encoding = "utf8";
-  if (options?.signal) {
-    options.signal.throwIfAborted();
-    o.signal = options.signal;
-  }
-  return fn(path, data, o);
 }

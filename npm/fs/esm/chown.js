@@ -1,74 +1,68 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
+import { getNodeFs, isDeno } from "./_utils.js";
+import { mapError } from "./_map_error.js";
+import { globals } from "./globals.js";
 /**
- * This module provides functions to change the owner and group of a file or directory.
+ * Change owner of a regular file or directory.
  *
- * @module
- */
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn;
-let fnAsync;
-/**
- * Changes the owner and group of a file or directory asynchronously.
- * @param path The path to the file or directory.
- * @param uid The new owner user ID.
- * @param gid The new owner group ID.
- * @returns A promise that resolves when the operation is complete.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { chown } from "@frostyeti/fs/chown";
- * async function changeOwner() {
- *     try {
- *         await chown("example.txt", 1000, 1000);
- *         console.log("Owner changed successfully.");
- *     } catch (error) {
- *         console.error("Error changing owner:", error);
- *     }
- * }
- * await changeOwner();
+ * This functionality is not available on Windows.
+ *
+ * Requires `allow-write` permission.
+ *
+ * Throws Error (not implemented) if executed on Windows.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { chown } from "@std/fs/chown";
+ * await chown("README.md", 1000, 1002);
  * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path to the file/directory.
+ * @param uid The user id (UID) of the new owner, or `null` for no change.
+ * @param gid The group id (GID) of the new owner, or `null` for no change.
  */
-export function chown(path, uid, gid) {
-  if (globals.Deno) {
-    return globals.Deno.chown(path, uid, gid);
-  }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.chown;
-    if (!fnAsync) {
-      throw new Error("No suitable file system module found.");
+export async function chown(path, uid, gid) {
+  if (isDeno) {
+    await globals.Deno.chown(path, uid, gid);
+  } else {
+    try {
+      await getNodeFs().promises.chown(path, uid ?? -1, gid ?? -1);
+    } catch (error) {
+      throw mapError(error);
     }
   }
-  return fnAsync(path, uid, gid);
 }
 /**
- * Changes the owner and group of a file or directory synchronously.
- * @param path The path to the file or directory.
- * @param uid The new owner user ID.
- * @param gid The new owner group ID.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { chownSync } from "@frostyeti/fs/chown";
- * function changeOwner() {
- *      try {
- *          chownSync("example.txt", 1000, 1000);
- *          console.log("Owner changed successfully.");
- *      } catch (error) {
- *          console.error("Error changing owner:", error);
- *      }
- * }
- * changeOwner();
+ * Synchronously change owner of a regular file or directory.
+ *
+ * This functionality is not available on Windows.
+ *
+ * Requires `allow-write` permission.
+ *
+ * Throws Error (not implemented) if executed on Windows.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { chownSync } from "@std/fs/chown";
+ * chownSync("README.md", 1000, 1002);
  * ```
+ *
+ * @tags allow-write
+ *
+ * @param path The path to the file/directory.
+ * @param uid The user id (UID) of the new owner, or `null` for no change.
+ * @param gid The group id (GID) of the new owner, or `null` for no change.
  */
 export function chownSync(path, uid, gid) {
-  if (globals.Deno) {
+  if (isDeno) {
     globals.Deno.chownSync(path, uid, gid);
-    return;
-  }
-  if (!fn) {
-    fn = loadFs()?.chownSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
+  } else {
+    try {
+      getNodeFs().chownSync(path, uid ?? -1, gid ?? -1);
+    } catch (error) {
+      throw mapError(error);
     }
   }
-  return fn(path, uid, gid);
 }

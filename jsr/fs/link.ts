@@ -1,80 +1,61 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
+
+import { getNodeFs, isDeno } from "./_utils.ts";
+import { mapError } from "./_map_error.ts";
+import { globals } from "./globals.ts";
+
 /**
- * The `link` module provides functions to create hard links to files.
+ * Creates `newpath` as a hard link to `oldpath`.
  *
- * @module
- */
-
-import { toPathString } from "./utils.ts";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-
-let lk: typeof import("node:fs").linkSync | undefined;
-let lkAsync: typeof import("node:fs/promises").link | undefined;
-
-/**
- * Creates a hard link.
- * @param oldPath The path to the existing file.
- * @param newPath The path to the new link.
- * @returns A promise that resolves when the operation is complete.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
+ * Requires `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
  * import { link } from "@frostyeti/fs/link";
- * async function createLink() : Promise<void> {
- *     try {
- *         await link("source.txt", "link.txt");
- *         console.log("Link created successfully.");
- *     } catch (error) {
- *         console.error("Error creating link:", error);
- *     }
- * }
- * await createLink();
+ * await link("old/name", "new/name");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the hard link.
+ * @param newpath The path of the hard link.
  */
-export function link(oldPath: string | URL, newPath: string | URL): Promise<void> {
-    if (globals.Deno) {
-        return globals.Deno.link(toPathString(oldPath), toPathString(newPath));
+export async function link(oldpath: string, newpath: string): Promise<void> {
+  if (isDeno) {
+    await globals.Deno.link(oldpath, newpath);
+  } else {
+    try {
+      await getNodeFs().promises.link(oldpath, newpath);
+    } catch (error) {
+      throw mapError(error);
     }
-
-    if (!lkAsync) {
-        lkAsync = loadFsAsync()?.link;
-        if (!lkAsync) {
-            return Promise.reject(new Error("No suitable file system module found."));
-        }
-    }
-
-    return lkAsync(oldPath, newPath);
+  }
 }
 
 /**
- * Synchronously creates a hard link.
- * @param oldPath The path to the existing file.
- * @param newPath The path to the new link.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
+ * Synchronously creates `newpath` as a hard link to `oldpath`.
+ *
+ * Requires `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
  * import { linkSync } from "@frostyeti/fs/link";
- * function createLink() {
- *   try {
- *      linkSync("source.txt", "link.txt");
- *      console.log("Link created successfully.");
- *   } catch (error) {
- *      console.error("Error creating link:", error);
- *   }
- * }
- * createLink();
+ * linkSync("old/name", "new/name");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the hard link.
+ * @param newpath The path of the hard link.
  */
-export function linkSync(oldPath: string | URL, newPath: string | URL): void {
-    if (globals.Deno) {
-        return globals.Deno.linkSync(toPathString(oldPath), toPathString(newPath));
+export function linkSync(oldpath: string, newpath: string): void {
+  if (isDeno) {
+    globals.Deno.linkSync(oldpath, newpath);
+  } else {
+    try {
+      getNodeFs().linkSync(oldpath, newpath);
+    } catch (error) {
+      throw mapError(error);
     }
-
-    if (!lk) {
-        lk = loadFs()?.linkSync;
-        if (!lk) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    lk(oldPath, newPath);
+  }
 }

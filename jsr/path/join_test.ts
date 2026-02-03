@@ -4,8 +4,8 @@ import { equal } from "@frostyeti/assert";
 import * as posix from "./posix/mod.ts";
 import * as windows from "./windows/mod.ts";
 import { join } from "./join.ts";
-import { join as posixUnstableJoin } from "./posix/unstable_join.ts";
-import { join as windowsUnstableJoin } from "./windows/unstable_join.ts";
+import { join as posixUnstableJoin } from "./posix/join.ts";
+import { join as windowsUnstableJoin } from "./windows/join.ts";
 import { cwd } from "./globals.ts";
 
 const backslashRE = /\\/g;

@@ -19,4 +19,4 @@
  * @param paths Paths to be joined and normalized.
  * @returns The joined and normalized path.
  */
-export declare function join(...paths: string[]): string;
+export declare function join(path: string | URL, ...paths: string[]): string;

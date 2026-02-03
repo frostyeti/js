@@ -28,5 +28,7 @@ import { joinGlobs as windowsJoinGlobs } from "./windows/join_globs.js";
  * @returns The joined and normalized glob string.
  */
 export function joinGlobs(globs, options = {}) {
-  return isWindows ? windowsJoinGlobs(globs, options) : posixJoinGlobs(globs, options);
+  return isWindows
+    ? windowsJoinGlobs(globs, options)
+    : posixJoinGlobs(globs, options);
 }

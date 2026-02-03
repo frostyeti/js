@@ -14,7 +14,7 @@ import { readTextFile, readTextFileSync } from "./read_text_file.ts";
 import { rm, rmSync } from "./rm.ts";
 import { writeFile, writeFileSync } from "./write_file.ts";
 
-const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
+const moduleDir = import.meta.dirname ?? path.dirname(path.fromFileUrl(import.meta.url));
 const testdataDir = path.resolve(moduleDir, "testdata");
 
 test("fs::move() rejects if src dir does not exist", async function () {
@@ -241,7 +241,13 @@ test("fs::moveSync() creates dest dir if it does not exist", function () {
         "should not throw error",
     );
 
-    rmSync(destDir, { recursive: true });
+    if (existsSync(destDir)) {
+        rmSync(destDir, { recursive: true });
+    }
+
+    if (existsSync(srcDir)) {
+        rmSync(srcDir, { recursive: true });
+    }
 });
 
 test("fs::moveSync() creates dest dir if it does not exist and overwrite option is set to true", function () {
@@ -264,7 +270,13 @@ test("fs::moveSync() creates dest dir if it does not exist and overwrite option 
         "should not throw error",
     );
 
-    rmSync(destDir);
+    if (existsSync(destDir)) {
+        rmSync(destDir, { recursive: true });
+    }
+
+    if (existsSync(srcDir)) {
+        rmSync(srcDir, { recursive: true });
+    }
 });
 
 test("fs::moveSync() throws if src file does not exist", function () {

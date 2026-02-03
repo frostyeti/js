@@ -49,5 +49,5 @@ export async function ensureLink(src, dest) {
 export function ensureLinkSync(src, dest) {
   dest = toPathString(dest);
   ensureDirSync(dirname(dest));
-  linkSync(src, dest);
+  linkSync(toPathString(src), dest);
 }

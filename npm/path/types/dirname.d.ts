@@ -19,4 +19,4 @@
  * @param path Path to extract the directory from.
  * @returns The directory path.
  */
-export declare function dirname(path: string): string;
+export declare function dirname(path: string | URL): string;

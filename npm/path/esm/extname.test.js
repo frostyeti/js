@@ -5,8 +5,8 @@ import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
 import * as posix from "./posix/mod.js";
 import * as windows from "./windows/mod.js";
-import { extname as posixUnstableExtname } from "./posix/unstable_extname.js";
-import { extname as windowsUnstableExtname } from "./windows/unstable_extname.js";
+import { extname as posixUnstableExtname } from "./posix/extname.js";
+import { extname as windowsUnstableExtname } from "./windows/extname.js";
 const slashRE = /\//g;
 const pairs = [
   ["", ""],

@@ -36,4 +36,4 @@
  * @param suffix The suffix to remove from extracted name.
  * @returns The extracted name.
  */
-export declare function basename(path: string, suffix?: string): string;
+export declare function basename(path: string | URL, suffix?: string): string;

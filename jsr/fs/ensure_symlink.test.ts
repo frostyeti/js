@@ -13,6 +13,7 @@ import { symlink, symlinkSync } from "./symlink.ts";
 import { rm, rmSync } from "./rm.ts";
 import { writeFile, writeFileSync } from "./write_file.ts";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.ts";
+import { existsSync, exists } from "./exists.ts";
 
 const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
 const testdataDir = path.resolve(moduleDir, "testdata");
@@ -55,6 +56,15 @@ test("ensureSymlink() ensures linkName links to target", async function () {
     const testFile = path.join(testDir, "test.txt");
     const linkFile = path.join(testDir, "link.txt");
 
+      try {
+         if (await  exists(testDir)) {
+            await rm(testDir, { recursive: true });
+         }
+      } catch {
+         // ignore
+      }
+    
+
     try {
         await mkdir(testDir, { recursive: true });
         await writeFile(testFile, new Uint8Array());
@@ -76,6 +86,14 @@ test("ensureSymlinkSync() ensures linkName links to target", function () {
     const testDir = path.join(testdataDir, "link_file_4");
     const testFile = path.join(testDir, "test.txt");
     const linkFile = path.join(testDir, "link.txt");
+
+    try {
+        if (existsSync(testDir)) {
+            rmSync(testDir, { recursive: true });
+        }
+    } catch {
+        // ignore
+    }
 
     try {
         mkdirSync(testDir, { recursive: true });

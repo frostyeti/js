@@ -53,5 +53,5 @@ export function ensureLinkSync(src: string | URL, dest: string | URL) {
     dest = toPathString(dest);
     ensureDirSync(dirname(dest));
 
-    linkSync(src, dest);
+    linkSync(toPathString(src), dest);
 }

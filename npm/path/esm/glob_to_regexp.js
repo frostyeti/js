@@ -77,5 +77,7 @@ import { globToRegExp as windowsGlobToRegExp } from "./windows/glob_to_regexp.js
  * @returns The regular expression equivalent to the glob.
  */
 export function globToRegExp(glob, options = {}) {
-  return isWindows ? windowsGlobToRegExp(glob, options) : posixGlobToRegExp(glob, options);
+  return isWindows
+    ? windowsGlobToRegExp(glob, options)
+    : posixGlobToRegExp(glob, options);
 }

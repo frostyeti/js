@@ -1,40 +1,62 @@
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn = undefined;
-let fnAsync = undefined;
+import { getNodeFs, globals } from "./globals.js";
+import { mapError } from "./_map_error.js";
 /**
- * Creates a symbolic link.
- * @param target The path to the target file or directory.
- * @param path The path to the symbolic link.
- * @param options The type of the symbolic link (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Creates `newpath` as a symbolic link to `oldpath`.
+ *
+ * The `options.type` parameter can be set to `"file"`, `"dir"` or `"junction"`.
+ * This argument is only available on Windows and ignored on other platforms.
+ *
+ * Requires full `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { symlink } from "@frostyeti/fs/symlink";
+ * await symlink("README.md", "README.md.link");
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the symbolic link.
+ * @param newpath The path of the symbolic link.
+ * @param options Options when creating a symbolic link.
  */
-export function symlink(target, path, options) {
+export async function symlink(target, path, options) {
   if (globals.Deno) {
-    return globals.Deno.symlink(target, path, options);
+    return await globals.Deno.symlink(target, path, options);
   }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.symlink;
-    if (!fnAsync) {
-      return Promise.reject(new Error("No suitable file system module found."));
-    }
+  try {
+    return await getNodeFs().promises.symlink(target, path, options?.type);
+  } catch (error) {
+    throw mapError(error);
   }
-  return fnAsync(target, path, options?.type);
 }
 /**
- * Synchronously creates a symbolic link.
- * @param target The path to the target file or directory.
- * @param path The path to the symbolic link.
- * @param options The type of the symbolic link (optional).
+ * Creates `newpath` as a symbolic link to `oldpath`.
+ *
+ * The `options.type` parameter can be set to `"file"`, `"dir"` or `"junction"`.
+ * This argument is only available on Windows and ignored on other platforms.
+ *
+ * Requires full `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { symlinkSync } from "@frostyeti/fs/symlink";
+ * symlinkSync("README.md", "README.md.link");
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the symbolic link.
+ * @param newpath The path of the symbolic link.
+ * @param options Options when creating a symbolic link.
  */
 export function symlinkSync(target, path, options) {
   if (globals.Deno) {
     return globals.Deno.symlinkSync(target, path, options);
   }
-  if (!fn) {
-    fn = loadFs()?.symlinkSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
-    }
+  try {
+    getNodeFs().symlinkSync(target, path, options?.type);
+  } catch (error) {
+    throw mapError(error);
   }
-  fn(target, path, options?.type);
 }

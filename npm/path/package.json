@@ -242,36 +242,6 @@
         "types": "./types/posix/to_namespaced_path.d.ts"
       }
     },
-    "./posix/unstable-basename": {
-      "import": {
-        "default": "./esm/posix/unstable_basename.js",
-        "types": "./types/posix/unstable_basename.d.ts"
-      }
-    },
-    "./posix/unstable-dirname": {
-      "import": {
-        "default": "./esm/posix/unstable_dirname.js",
-        "types": "./types/posix/unstable_dirname.d.ts"
-      }
-    },
-    "./posix/unstable-extname": {
-      "import": {
-        "default": "./esm/posix/unstable_extname.js",
-        "types": "./types/posix/unstable_extname.d.ts"
-      }
-    },
-    "./posix/unstable-join": {
-      "import": {
-        "default": "./esm/posix/unstable_join.js",
-        "types": "./types/posix/unstable_join.d.ts"
-      }
-    },
-    "./posix/unstable-normalize": {
-      "import": {
-        "default": "./esm/posix/unstable_normalize.js",
-        "types": "./types/posix/unstable_normalize.d.ts"
-      }
-    },
     "./relative": {
       "import": {
         "default": "./esm/relative.js",
@@ -300,36 +270,6 @@
       "import": {
         "default": "./esm/types.js",
         "types": "./types/types.d.ts"
-      }
-    },
-    "./unstable-basename": {
-      "import": {
-        "default": "./esm/unstable_basename.js",
-        "types": "./types/unstable_basename.d.ts"
-      }
-    },
-    "./unstable-dirname": {
-      "import": {
-        "default": "./esm/unstable_dirname.js",
-        "types": "./types/unstable_dirname.d.ts"
-      }
-    },
-    "./unstable-extname": {
-      "import": {
-        "default": "./esm/unstable_extname.js",
-        "types": "./types/unstable_extname.d.ts"
-      }
-    },
-    "./unstable-join": {
-      "import": {
-        "default": "./esm/unstable_join.js",
-        "types": "./types/unstable_join.d.ts"
-      }
-    },
-    "./unstable-normalize": {
-      "import": {
-        "default": "./esm/unstable_normalize.js",
-        "types": "./types/unstable_normalize.d.ts"
       }
     },
     "./windows": {
@@ -451,48 +391,18 @@
         "default": "./esm/windows/to_namespaced_path.js",
         "types": "./types/windows/to_namespaced_path.d.ts"
       }
-    },
-    "./windows/unstable-basename": {
-      "import": {
-        "default": "./esm/windows/unstable_basename.js",
-        "types": "./types/windows/unstable_basename.d.ts"
-      }
-    },
-    "./windows/unstable-dirname": {
-      "import": {
-        "default": "./esm/windows/unstable_dirname.js",
-        "types": "./types/windows/unstable_dirname.d.ts"
-      }
-    },
-    "./windows/unstable-extname": {
-      "import": {
-        "default": "./esm/windows/unstable_extname.js",
-        "types": "./types/windows/unstable_extname.d.ts"
-      }
-    },
-    "./windows/unstable-join": {
-      "import": {
-        "default": "./esm/windows/unstable_join.js",
-        "types": "./types/windows/unstable_join.d.ts"
-      }
-    },
-    "./windows/unstable-normalize": {
-      "import": {
-        "default": "./esm/windows/unstable_normalize.js",
-        "types": "./types/windows/unstable_normalize.d.ts"
-      }
     }
   },
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
-    "@frostyeti/globals": "0.0.0-alpha.0",
-    "@frostyeti/chars": "0.0.0-alpha.0"
+    "@frostyeti/globals": "^0.0.0-alpha.0",
+    "@frostyeti/chars": "^0.0.0-alpha.0"
   },
   "devDependencies": {
     "@types/node": "^22.17.0",
-    "@frostyeti/assert": "0.0.0-alpha.0",
+    "@frostyeti/assert": "^0.0.0-alpha.0",
     "typescript": "^5.9.3"
   }
 }

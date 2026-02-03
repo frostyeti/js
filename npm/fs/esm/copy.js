@@ -7,12 +7,12 @@
 import { basename, join, resolve } from "@frostyeti/path";
 import { ensureDir, ensureDirSync } from "./ensure_dir.js";
 import { copyFile, copyFileSync } from "./copy_file.js";
-import { readLink, readLinkSync } from "./read_link.js";
+import { readlink, readlinkSync } from "./readlink.js";
 import { lstat, lstatSync } from "./lstat.js";
 import { utime, utimeSync } from "./utime.js";
 import { symlink, symlinkSync } from "./symlink.js";
 import { stat, statSync } from "./stat.js";
-import { readDir, readDirSync } from "./read_dir.js";
+import { readdir, readdirSync } from "./readdir.js";
 import { getFileInfoType, isSubdir, toPathString } from "./utils.js";
 import { AlreadyExistsError, isNotFoundError } from "./errors.js";
 import { WIN } from "./globals.js";
@@ -89,7 +89,7 @@ function cpfSync(src, dest, options) {
 /* copy symlink to dest */
 async function copySymLink(src, dest, options) {
   await ensureValidCopy(src, dest, options);
-  const originSrcFilePath = await readLink(src);
+  const originSrcFilePath = await readlink(src);
   const type = getFileInfoType(await lstat(src));
   if (WIN) {
     await symlink(originSrcFilePath, dest, {
@@ -112,7 +112,7 @@ async function copySymLink(src, dest, options) {
 /* copy symlink to dest synchronously */
 function copySymlinkSync(src, dest, options) {
   ensureValidCopySync(src, dest, options);
-  const originSrcFilePath = readLinkSync(src);
+  const originSrcFilePath = readlinkSync(src);
   const type = getFileInfoType(lstatSync(src));
   if (WIN) {
     symlinkSync(originSrcFilePath, dest, {
@@ -154,7 +154,7 @@ async function copyDir(src, dest, options) {
   src = toPathString(src);
   dest = toPathString(dest);
   const promises = [];
-  for await (const entry of readDir(src)) {
+  for await (const entry of readdir(src)) {
     const srcPath = join(src, entry.name);
     const destPath = join(dest, basename(srcPath));
     if (entry.isSymlink) {
@@ -188,7 +188,7 @@ function copyDirSync(src, dest, options) {
   }
   src = toPathString(src);
   dest = toPathString(dest);
-  for (const entry of readDirSync(src)) {
+  for (const entry of readdirSync(src)) {
     const srcPath = join(src, entry.name);
     const destPath = join(dest, basename(srcPath));
     if (entry.isSymlink) {

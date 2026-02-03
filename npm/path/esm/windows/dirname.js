@@ -3,26 +3,31 @@
 import { assertArg } from "../_common/dirname.js";
 import { CHAR_COLON } from "@frostyeti/chars/constants";
 import { stripTrailingSeparators } from "../_common/strip_trailing_separators.js";
-import { isPathSeparator, isPosixPathSeparator, isWindowsDeviceRoot } from "./_util.js";
+import {
+  isPathSeparator,
+  isPosixPathSeparator,
+  isWindowsDeviceRoot,
+} from "./_util.js";
+import { fromFileUrl } from "./from_file_url.js";
 /**
  * Return the directory path of a `path`.
  *
  * @example Usage
  * ```ts
  * import { dirname } from "@frostyeti/path/windows/dirname";
- * import { equal } from "@frostyeti/assert";
+ * import { equals } from "@frostyeti/assert";
  *
- * const dir = dirname("C:\\foo\\bar\\baz.ext");
- * equal(dir, "C:\\foo\\bar");
+ * equals(dirname("C:\\foo\\bar\\baz.ext"), "C:\\foo\\bar");
+ * equals(dirname(new URL("file:///C:/foo/bar/baz.ext")), "C:\\foo\\bar");
  * ```
- *
- * Note: If you are working with file URLs,
- * use the new version of `dirname` from `@frostyeti/path/windows/unstable-dirname`.
  *
  * @param path The path to get the directory from.
  * @returns The directory path.
  */
 export function dirname(path) {
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
   assertArg(path);
   const len = path.length;
   let rootEnd = -1;

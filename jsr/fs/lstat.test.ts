@@ -1,85 +1,53 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal, ok } from "@frostyeti/assert";
-import { join } from "@frostyeti/path";
+import { ok, rejects, throws } from "@frostyeti/assert";
 import { lstat, lstatSync } from "./lstat.ts";
-import { mkdir } from "./mkdir.ts";
-import { rm } from "./rm.ts";
-import { writeTextFile } from "./write_text_file.ts";
+import { NotFound } from "./unstable_errors.ts";
+import { dirname, join, fromFileUrl } from "@frostyeti/path";
+import { globals } from "./globals.ts";
 
-const testData = join(import.meta.dirname!, "test-data", "lstat");
+const __dirname = import.meta.dirname ?? dirname(fromFileUrl(import.meta.url));
 
-test("fs::lstat returns file info for a file", async () => {
-    await mkdir(testData, { recursive: true });
-    const filePath = join(testData, "test.txt");
-    const content = "test content";
-
-    try {
-        await writeTextFile(filePath, content);
-        const info = await lstat(filePath);
-
-        ok(info.isFile);
-        equal(info.name, "test.txt");
-        equal(info.path, filePath);
-        ok(info.size > 0);
-    } finally {
-        await rm(filePath);
-    }
+test("lstat() and lstatSync() return FileInfo for a file", async () => {
+    const file = join(__dirname, globals.Deno ? "README.md" : "../README.md");
+  {
+    const fileInfo = await lstat(file);
+    ok(fileInfo.isFile);
+  }
+  {
+    const fileInfo = lstatSync(file);
+    ok(fileInfo.isFile);
+  }
 });
 
-test("fs::lstat returns file info for a directory", async () => {
-    await mkdir(testData, { recursive: true });
-
-    try {
-        const info = await lstat(testData);
-        ok(info.isDirectory);
-        ok(!info.isFile);
-    } finally {
-        await rm(testData, { recursive: true });
-    }
+test("lstat() and lstatSync() do not follow symlinks", async () => {
+  const linkFile = join(__dirname, "testdata/0-link");
+  {
+    const fileInfo = await lstat(linkFile);
+    ok(fileInfo.isSymlink);
+  }
+  {
+    const fileInfo = lstatSync(linkFile);
+    ok(fileInfo.isSymlink);
+  }
 });
 
-test("fs::lstatSync returns file info for a file", async () => {
-    await mkdir(testData, { recursive: true });
-    const filePath = join(testData, "test-sync.txt");
-    const content = "test content";
-
-    try {
-        await writeTextFile(filePath, content);
-        const info = lstatSync(filePath);
-
-        ok(info.isFile);
-        equal(info.name, "test-sync.txt");
-        equal(info.path, filePath);
-        ok(info.size > 0);
-    } finally {
-        await rm(filePath);
-    }
+test("lstat() and lstatSync() return FileInfo for a directory", async () => {
+  {
+    const fileInfo = await lstat(__dirname);
+    ok(fileInfo.isDirectory);
+  }
+  {
+    const fileInfo = lstatSync(__dirname);
+    ok(fileInfo.isDirectory);
+  }
 });
 
-test("fs::lstat handles URL paths", async () => {
-    await mkdir(testData, { recursive: true });
-    const filePath = join(testData, "url-test.txt");
-    const fileUrl = new URL(`file://${filePath}`);
-    const content = "url test content";
-
-    try {
-        await writeTextFile(filePath, content);
-        const info = await lstat(fileUrl);
-
-        ok(info.isFile);
-        equal(info.name, "url-test.txt");
-        equal(info.path, fileUrl.toString());
-    } finally {
-        await rm(filePath);
-    }
-});
-
-test("fs::lstat throws error for non-existent path", async () => {
-    const nonExistentPath = join(testData, "non-existent.txt");
-    try {
-        await lstat(nonExistentPath);
-        ok(false, "Should have thrown error");
-    } catch (error) {
-        ok(error instanceof Error);
-    }
+test("lstat() and lstatSync() throw with NotFound for a non-existent file", async () => {
+  await rejects(async () => {
+    await lstat(join(__dirname, "non_existent_file"));
+  }, NotFound);
+  throws(() => {
+    lstatSync(join(__dirname, "non_existent_file"));
+  }, NotFound);
 });

@@ -4,21 +4,21 @@ import { equal, instanceOf, stringIncludes } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { exists, existsSync } from "./exists.js";
 import { chmod, chmodSync } from "./chmod.js";
-import { makeTempDir, makeTempDirSync } from "./make_temp_dir.js";
+import { mkdtemp, mkdtempSync } from "./mkdtemp.js";
 import { writeFile, writeFileSync } from "./write_file.js";
-import { remove, removeSync } from "./remove.js";
+import { rm, rmSync } from "./rm.js";
 import { symlink, symlinkSync } from "./symlink.js";
 import { WIN } from "./globals.js";
 test("fs::exists() returns false for a non-existent path", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   try {
     equal(await exists(path.join(tempDirPath, "not_exists")), false);
   } finally {
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns false for a non-existent path", function () {
-  const tempDirPath = makeTempDirSync();
+  const tempDirPath = mkdtempSync();
   try {
     const p = path.join(tempDirPath, "not_exists");
     console.log(p);
@@ -26,11 +26,11 @@ test("fs::existsSync() returns false for a non-existent path", function () {
     console.log("existsSync", v);
     equal(v, false);
   } finally {
-    removeSync(tempDirPath, { recursive: true });
+    rmSync(tempDirPath, { recursive: true });
   }
 });
 test("fs::exists() returns true for an existing file", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   const tempFilePath = path.join(tempDirPath, "0.ts");
   await writeFile(tempFilePath, new Uint8Array([0]));
   try {
@@ -62,11 +62,11 @@ test("fs::exists() returns true for an existing file", async function () {
     if (!WIN) {
       await chmod(tempFilePath, 0o644);
     }
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::exists() returns true for an existing file symlink", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   const tempFilePath = path.join(tempDirPath, "0.ts");
   const tempLinkFilePath = path.join(tempDirPath, "0-link.ts");
   await writeFile(tempFilePath, new Uint8Array());
@@ -101,11 +101,11 @@ test("fs::exists() returns true for an existing file symlink", async function ()
     if (!WIN) {
       await chmod(tempFilePath, 0o644);
     }
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns true for an existing file", function () {
-  const tempDirPath = makeTempDirSync();
+  const tempDirPath = mkdtempSync();
   const tempFilePath = path.join(tempDirPath, "0.ts");
   writeFileSync(tempFilePath, new Uint8Array());
   try {
@@ -137,11 +137,11 @@ test("fs::existsSync() returns true for an existing file", function () {
     if (!WIN) {
       chmodSync(tempFilePath, 0o644);
     }
-    removeSync(tempDirPath, { recursive: true });
+    rmSync(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns true for an existing file symlink", function () {
-  const tempDirPath = makeTempDirSync();
+  const tempDirPath = mkdtempSync();
   const tempFilePath = path.join(tempDirPath, "0.ts");
   const tempLinkFilePath = path.join(tempDirPath, "0-link.ts");
   writeFileSync(tempFilePath, new Uint8Array());
@@ -176,11 +176,11 @@ test("fs::existsSync() returns true for an existing file symlink", function () {
     if (!WIN) {
       chmodSync(tempFilePath, 0o644);
     }
-    removeSync(tempDirPath, { recursive: true });
+    rmSync(tempDirPath, { recursive: true });
   }
 });
 test("fs::exists() returns true for an existing dir", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   try {
     equal(await exists(tempDirPath), true);
     equal(await exists(tempDirPath, {}), true);
@@ -210,11 +210,11 @@ test("fs::exists() returns true for an existing dir", async function () {
     if (!WIN) {
       await chmod(tempDirPath, 0o755);
     }
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::exists() returns true for an existing dir symlink", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   const tempLinkDirPath = path.join(tempDirPath, "temp-link");
   try {
     await symlink(tempDirPath, tempLinkDirPath);
@@ -247,11 +247,11 @@ test("fs::exists() returns true for an existing dir symlink", async function () 
     if (!WIN) {
       await chmod(tempDirPath, 0o755);
     }
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns true for an existing dir", function () {
-  const tempDirPath = makeTempDirSync();
+  const tempDirPath = mkdtempSync();
   try {
     equal(existsSync(tempDirPath), true);
     equal(existsSync(tempDirPath, {}), true);
@@ -281,11 +281,11 @@ test("fs::existsSync() returns true for an existing dir", function () {
     if (!WIN) {
       chmodSync(tempDirPath, 0o755);
     }
-    removeSync(tempDirPath, { recursive: true });
+    rmSync(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns true for an existing dir symlink", function () {
-  const tempDirPath = makeTempDirSync();
+  const tempDirPath = mkdtempSync();
   const tempLinkDirPath = path.join(tempDirPath, "temp-link");
   try {
     symlinkSync(tempDirPath, tempLinkDirPath);
@@ -318,11 +318,11 @@ test("fs::existsSync() returns true for an existing dir symlink", function () {
     if (!WIN) {
       chmodSync(tempDirPath, 0o755);
     }
-    removeSync(tempDirPath, { recursive: true });
+    rmSync(tempDirPath, { recursive: true });
   }
 });
 test("fs::exists() returns false when both isDirectory and isFile sets true", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   try {
     equal(
       await exists(tempDirPath, {
@@ -338,11 +338,11 @@ test("fs::exists() returns false when both isDirectory and isFile sets true", as
       "ExistsOptions.options.isDirectory and ExistsOptions.options.isFile must not be true together.",
     );
   } finally {
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });
 test("fs::existsSync() returns false when both isDirectory and isFile sets true", async function () {
-  const tempDirPath = await makeTempDir();
+  const tempDirPath = await mkdtemp();
   try {
     equal(
       await existsSync(tempDirPath, {
@@ -358,6 +358,6 @@ test("fs::existsSync() returns false when both isDirectory and isFile sets true"
       "ExistsOptions.options.isDirectory and ExistsOptions.options.isFile must not be true together.",
     );
   } finally {
-    await remove(tempDirPath, { recursive: true });
+    await rm(tempDirPath, { recursive: true });
   }
 });

@@ -3,20 +3,54 @@
  *
  * @module
  */
-import type { ReadOptions } from "./types.js";
+import type { ReadFileOptions } from "./types.js";
 /**
- * Reads the contents of a file as text.
- * @param path The path to the file.
- * @param options The options for reading the file (optional).
- * @returns A promise that resolves with the file contents as a string.
+ * Asynchronously reads and returns the entire contents of a file as an UTF-8 decoded string.
+ *
+ * Reading a directory throws an error.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { readTextFile } from "@frostyeti/fs/read-text-file";
+ *
+ * const content = await readTextFile("README.md"); // full content of README.md
+ *
+ * ok(content.length > 0);
+ * ```
+ *
+ * @tags allow-read
+ *
+ * @param path The path of the symbolic link.
+ * @param options Options when reading a file. See {@linkcode ReadFileOptions}.
+ * @returns A promise that resolves to string of the file content.
  */
 export declare function readTextFile(
   path: string | URL,
-  options?: ReadOptions,
+  options?: ReadFileOptions,
 ): Promise<string>;
 /**
- * Synchronously Reads the contents of a file as text.
- * @param path The path to the file.
- * @returns The file contents as a string.
+ * Synchronously reads and returns the entire contents of a file as an UTF-8 decoded string.
+ *
+ * Reading a directory throws an error.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { readTextFileSync } from "@frostyeti/fs/read-text-file";
+ *
+ * const content = readTextFileSync("README.md"); // full content of README.md
+ *
+ * ok(content.length > 0);
+ * ```
+ *
+ * @tags allow-read
+ *
+ * @param path The path of the symbolic link.
+ * @returns The string of file content.
  */
 export declare function readTextFileSync(path: string | URL): string;

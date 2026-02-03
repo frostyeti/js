@@ -33,4 +33,4 @@
  * @param path The path to get the extension from.
  * @returns The extension (ex. for `file.ts` returns `.ts`).
  */
-export declare function extname(path: string): string;
+export declare function extname(path: string | URL): string;

@@ -24,15 +24,11 @@ export function toFileUrl(path) {
     throw new TypeError(`Path must be absolute: received "${path}"`);
   }
   const url = new URL("file:///");
-  if (globals.Deno) {
-    url.pathname = encodeWhitespace(
-      path.replace(/%/g, "%25").replace(/\\/g, "%5C"),
-    );
-    return url;
+  if (!globals.Deno && path.startsWith("//")) {
+    path = path.substring(1);
   }
-  let p = encodeWhitespace(path.replace(/%/g, "%25").replace(/\\/g, "%5C"));
-  // Remove leading slash for node
-  p = p.replace(/^\//, "");
-  url.pathname = p;
+  url.pathname = encodeWhitespace(
+    path.replace(/%/g, "%25").replace(/\\/g, "%5C"),
+  );
   return url;
 }

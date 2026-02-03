@@ -6,8 +6,8 @@ import { equal, throws } from "@frostyeti/assert";
 import { dirname } from "./dirname.js";
 import * as posix from "./posix/mod.js";
 import * as windows from "./windows/mod.js";
-import { dirname as windowsUnstableDirname } from "./windows/unstable_dirname.js";
-import { dirname as posixUnstableDirname } from "./posix/unstable_dirname.js";
+import { dirname as windowsUnstableDirname } from "./windows/dirname.js";
+import { dirname as posixUnstableDirname } from "./posix/dirname.js";
 // Test suite from "GNU core utilities"
 // https://github.com/coreutils/coreutils/blob/master/tests/misc/dirname.pl
 const COREUTILS_TESTSUITE = [

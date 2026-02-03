@@ -4,171 +4,87 @@
  *
  * @module
  */
-import type { DirectoryInfo } from "./types.ts";
-import { join } from "@frostyeti/path";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-import { lstatSync } from "./lstat.ts";
-
-let fn: typeof import("node:fs").readdirSync | undefined = undefined;
-let fnAsync: typeof import("node:fs/promises").readdir | undefined = undefined;
-let lstat: typeof import("node:fs").lstatSync | undefined = undefined;
-let lstatAsync: typeof import("node:fs/promises").lstat | undefined = undefined;
+import type { DirEntry } from "./types.ts";
+import { getNodeFs, globals } from "./globals.ts";
+import { mapError } from "./_map_error.ts";
+import { toDirEntry } from "./_to_dir_entry.ts";
 
 /**
- * Reads the contents of a directory.
- * @param path The path to the directory.
- * @returns An async iterable that yields directory information.
+ * Reads the directory given by `path` and returns an async iterable of
+ * {@linkcode DirEntry}. The order of entries is not guaranteed.
+ *
+ * Throws Error if `path` is not a directory.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts no-assert
+ * import { readDir } from "@frostyeti/fs/readdir";
+ *
+ * for await (const dirEntry of readDir("/")) {
+ *   console.log(dirEntry.name);
+ * }
+ * ```
+ *
+ * @tags allow-read
+ * @category File System
+ *
+ * @param path The path to the directory to read.
+ * @returns An async iterable of {@linkcode DirEntry}.
  */
-export function readdir(
+export async function* readdir(
     path: string | URL,
-    options = {
-        /**
-         * Whether to log debug information.
-         * @default false
-         */
-        debug: false,
-    },
-): AsyncIterable<DirectoryInfo> {
+): AsyncIterable<DirEntry> {
     if (globals.Deno) {
-        return globals.Deno.readDir(path);
-    }
-
-    if (!fnAsync) {
-        fnAsync = loadFsAsync()?.readdir;
-        if (!fnAsync) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    if (!lstatAsync) {
-        lstatAsync = loadFsAsync()?.lstat;
-        if (!lstatAsync) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    if (path instanceof URL) {
-        path = path.toString();
-    }
-
-    const iterator = async function* () {
-        const data = await fnAsync!(path);
-        for (const d of data) {
-            const next = join(path, d);
-            try {
-                const info = await lstatAsync!(join(path, d));
-                yield {
-                    name: d,
-                    isFile: info.isFile(),
-                    isDirectory: info.isDirectory(),
-                    isSymlink: info.isSymbolicLink(),
-                };
-            } catch (e) {
-                if (options.debug && e instanceof Error) {
-                    const message = e.stack ?? e.message;
-                    const e2 = e as NodeJS.ErrnoException;
-                    if (e2.code) {
-                        console.debug(`Failed to lstat ${next}\n${e2.code}\n${message}`);
-                    } else {
-                        console.debug(`Failed to lstat ${next}\n${message}`);
-                    }
-                }
+        yield* globals.Deno.readDir(path);
+    } else {
+        try {
+            const dir = await getNodeFs().promises.opendir(path);
+            for await (const entry of dir) {
+                yield toDirEntry(entry);
             }
+        } catch (error) {
+            throw mapError(error);
         }
-    };
-
-    return iterator();
+    }
 }
 
 /**
- * Synchronously reads the contents of a directory.
- * @param path The path to the directory.
- * @returns An iterable that yields directory information.
+ * Synchronously reads the directory given by `path` and returns an iterable
+ * of {@linkcode DirEntry}. The order of entries is not guaranteed.
+ *
+ * Throws Error if `path` is not a directory.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts no-assert
+ * import { readDirSync } from "@frostyeti/fs/readdir";
+ *
+ * for (const dirEntry of readDirSync("/")) {
+ *   console.log(dirEntry.name);
+ * }
+ * ```
+ *
+ * @tags allow-read
+ * @category File System
+ *
+ * @param path The path to the directory to read.
+ * @returns An iterable of {@linkcode DirEntry}.
  */
-export function readdirSync(
+export function* readdirSync(
     path: string | URL,
-    options = {
-        /**
-         * Whether to log debug information.
-         * @default false
-         */
-        debug: false,
-    },
-): IteratorObject<DirectoryInfo, unknown, unknown> & Iterable<DirectoryInfo> {
+): Iterable<DirEntry> {
     if (globals.Deno) {
-        return globals.Deno.readDirSync(path);
-    }
-
-    if (path instanceof URL) {
-        path = path.toString();
-    }
-
-    if (!fn) {
-        fn = loadFs()?.readdirSync;
-        if (!fn) {
-            throw new Error("No suitable file system module found.");
+        return yield* globals.Deno.readDirSync(path);
+    } else {
+        try {
+            const dir = getNodeFs().readdirSync(path, { withFileTypes: true });
+            for (const entry of dir) {
+                yield toDirEntry(entry);
+            }
+        } catch (error) {
+            throw mapError(error);
         }
     }
-
-    if (!lstat) {
-        lstat = loadFs()?.lstatSync;
-        if (!lstat) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    const o = Object.create(globals.Iterator.prototype, {});
-
-    Object.assign(o, {
-        _data: fn!(path),
-        _current: 0,
-
-        *[Symbol.iterator](): Iterator<DirectoryInfo> {
-            while (this._current < this._data.length) {
-                const n = this.next();
-                if (n.done) {
-                    break;
-                }
-
-                yield n.value;
-            }
-        },
-
-        next(): IteratorResult<DirectoryInfo> {
-            if (this._current >= this._data.length) {
-                return { done: true, value: undefined };
-            } else {
-                try {
-                    const file = this._data[this._current];
-                    const name = join(path, file);
-                    this._current++;
-                    const info = lstatSync(name);
-                    return {
-                        done: false,
-                        value: {
-                            name: file,
-                            isFile: info.isFile,
-                            isDirectory: info.isDirectory,
-                            isSymlink: info.isSymlink,
-                        },
-                    };
-                } catch (e) {
-                    if (options.debug && e instanceof Error) {
-                        const message = e.stack ?? e.message;
-                        const e2 = e as NodeJS.ErrnoException;
-                        if (e2.code) {
-                            console.debug(`Failed to lstat ${path}\n${e2.code}\n${message}`);
-                        } else {
-                            console.debug(`Failed to lstat ${path}\n${message}`);
-                        }
-                    }
-                    return this.next();
-                }
-            }
-        },
-    });
-
-    return o as unknown as
-        & IteratorObject<DirectoryInfo, unknown, unknown>
-        & Iterable<DirectoryInfo>;
 }

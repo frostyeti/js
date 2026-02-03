@@ -1,50 +1,45 @@
 /**
- * The copy-file module provides functions to copy files synchronously and asynchronously.
+ * Copies the contents and permissions of one file to another specified path, by default creating a
+ * new file if needed, else overwriting. Fails if target path is a directory or is unwritable.
  *
- * @module
- */
-/**
- * Copies a file asynchronously.
- * @param from The path to the source file.
- * @param to The path to the destination file.
- * @returns A promise that resolves when the operation is complete.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { copyFile } from "@frostyeti/fs/copy-file";
- * async function copy() {
- *    try {
- *       await copyFile("source.txt", "destination.txt");
- *       console.log("File copied successfully.");
- *   } catch (error) {
- *       console.error("Error copying file:", error);
- *   }
- * }
- * await copy();
+ * Requires `allow-read` and `allow-write` permission.
+ *
+ * For a full description, see {@linkcode copyFile}.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { copyFile } from "@std/fs/unstable-copy-file";
+ * copyFile("README.md", "README-Copy.md");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param from The path of source filename to copy.
+ * @param to The path of destination filename.
  */
 export declare function copyFile(
   from: string | URL,
   to: string | URL,
 ): Promise<void>;
 /**
- * Synchronously copies a file.
- * @param from The path to the source file.
- * @param to The path to the destination file.
- * @throws {Error} If the operation fails.
- * @example
- * ```ts
- * import { copyFileSync } from "@frostyeti/fs/copy-file";
- * function copy() {
- *   try {
- *      copyFileSync("source.txt", "destination.txt");
- *      console.log("File copied successfully.");
- *   } catch (error) {
- *      console.error("Error copying file:", error);
- *   }
- * }
- * copy();
+ * Synchronously copies the contents and permissions of one file to another specified path,
+ * by default creating a new file if needed, else overwriting. Fails if target path is a directory
+ * or is unwritable.
+ *
+ * Requires `allow-read` and `allow-write` permission.
+ *
+ * For a full description, see {@linkcode copyFileSync}.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { copyFileSync } from "@std/fs/unstable-copy-file";
+ * copyFileSync("README.md", "README-Copy.md");
  * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param from The path of source filename to copy.
+ * @param to The path of destination filename.
  */
 export declare function copyFileSync(
   from: string | URL,

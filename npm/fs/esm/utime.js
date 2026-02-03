@@ -3,43 +3,84 @@
  *
  * @module
  */
-import { globals, loadFs, loadFsAsync } from "./globals.js";
-let fn;
-let fnAsync;
-/**
- * Changes the access time and modification time of a file or directory.
- * @param path The path to the file or directory.
- * @param atime The new access time.
- * @param mtime The new modification time.
- * @returns A promise that resolves when the operation is complete.
+import { getNodeFs, globals } from "./globals.js";
+import { mapError } from "./_map_error.js";
+/** Changes the access (`atime`) and modification (`mtime`) times of a file
+ * system object referenced by `path`. Given times are either in seconds
+ * (UNIX epoch time) or as `Date` objects.
+ *
+ * Requires `allow-write` permission for the target path
+ *
+ * @example Usage
+ *
+ * ```ts
+ * import { ok } from "@frostyeti/assert"
+ * import { utime } from "@frostyeti/fs/utime";
+ * import { stat } from "@frostyeti/fs/stat"
+ *
+ * const newAccessDate = new Date()
+ * const newModifiedDate = new Date()
+ *
+ * const fileBefore = await Deno.stat("README.md")
+ * await Deno.utime("README.md", newAccessDate, newModifiedDate)
+ * const fileAfter = await Deno.stat("README.md")
+ *
+ * ok(fileBefore.atime !== fileAfter.atime)
+ * ok(fileBefore.mtime !== fileAfter.mtime)
+ * ```
+ * @tags allow-write
+ * @category File System
+ * @param path The path to the file to be updated
+ * @param atime The new access time
+ * @param mtime The new modification time
  */
-export function utime(path, atime, mtime) {
+export async function utime(path, atime, mtime) {
   if (globals.Deno) {
-    return globals.Deno.utime(path, atime, mtime);
+    return await globals.Deno.utime(path, atime, mtime);
   }
-  if (!fnAsync) {
-    fnAsync = loadFsAsync()?.utimes;
-    if (!fnAsync) {
-      throw new Error("No suitable file system module found.");
-    }
+  try {
+    await getNodeFs().promises.utimes(path, atime, mtime);
+    return;
+  } catch (error) {
+    throw mapError(error);
   }
-  return fnAsync(path, atime, mtime);
 }
-/**
- * Synchronously changes the access time and modification time of a file or directory.
- * @param path The path to the file or directory.
- * @param atime The new access time.
- * @param mtime The new modification time.
+/** Synchronously changes the access (`atime`) and modification (`mtime`)
+ * times of the file stream resource. Given times are either in seconds
+ * (UNIX epoch time) or as `Date` objects.
+ *
+ * Requires `allow-write` permission for the target path
+ *
+ * @example Usage
+ *
+ * ```ts
+ * import { ok } from "@frostyeti/assert"
+ * import { utimeSync } from "@frostyeti/fs/utime";
+ * import { stat } from "@frostyeti/fs/stat"
+ *
+ * const newAccessDate = new Date()
+ * const newModifiedDate = new Date()
+ *
+ * const fileBefore = await Deno.stat("README.md")
+ * Deno.utimeSync("README.md", newAccessDate, newModifiedDate)
+ * const fileAfter = await Deno.stat("README.md")
+ *
+ * ok(fileBefore.atime !== fileAfter.atime)
+ * ok(fileBefore.mtime !== fileAfter.mtime)
+ * ```
+ * @tags allow-write
+ * @category File System
+ * @param path The path to the file to be updated
+ * @param atime The new access time
+ * @param mtime The new modification time
  */
 export function utimeSync(path, atime, mtime) {
   if (globals.Deno) {
     return globals.Deno.utimeSync(path, atime, mtime);
   }
-  if (!fn) {
-    fn = loadFs()?.utimesSync;
-    if (!fn) {
-      throw new Error("No suitable file system module found.");
-    }
+  try {
+    getNodeFs().utimesSync(path, atime, mtime);
+  } catch (error) {
+    throw mapError(error);
   }
-  fn(path, atime, mtime);
 }

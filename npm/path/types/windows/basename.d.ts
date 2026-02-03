@@ -5,19 +5,17 @@
  * @example Usage
  * ```ts
  * import { basename } from "@frostyeti/path/windows/basename";
- * import { equal } from "@frostyeti/assert";
+ * import { equals } from "@frostyeti/assert";
  *
- * equal(basename("C:\\user\\Documents\\"), "Documents");
- * equal(basename("C:\\user\\Documents\\image.png"), "image.png");
- * equal(basename("C:\\user\\Documents\\image.png", ".png"), "image");
+ * equals(basename("C:\\user\\Documents\\"), "Documents");
+ * equals(basename("C:\\user\\Documents\\image.png"), "image.png");
+ * equals(basename("C:\\user\\Documents\\image.png", ".png"), "image");
+ * equals(basename(new URL("file:///C:/user/Documents/image.png")), "image.png");
+ * equals(basename(new URL("file:///C:/user/Documents/image.png"), ".png"), "image");
  * ```
- *
- * Note: If you are working with file URLs,
- * use the new version of `basename` from `@frostyeti/path/windows/unstable-basename`.
  *
  * @param path The path to extract the name from.
  * @param suffix The suffix to remove from extracted name.
- * @throws TypeError if the path is not a string.
  * @returns The extracted name.
  */
-export declare function basename(path: string, suffix?: string): string;
+export declare function basename(path: string | URL, suffix?: string): string;

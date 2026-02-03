@@ -1,4 +1,10 @@
-import { basename, fromFileUrl, normalize, resolve, SEPARATOR } from "@frostyeti/path";
+import {
+  basename,
+  fromFileUrl,
+  normalize,
+  resolve,
+  SEPARATOR,
+} from "@frostyeti/path";
 import { stat, statSync } from "./stat.js";
 export function toPathString(pathUrl) {
   return pathUrl instanceof URL ? fromFileUrl(pathUrl) : pathUrl;
@@ -48,8 +54,8 @@ export function isSamePath(src, dest) {
 export function createWalkEntrySync(path) {
   path = toPathString(path);
   path = normalize(path);
-  const name = basename(path);
   const info = statSync(path);
+  const name = basename(path);
   return {
     path,
     name,

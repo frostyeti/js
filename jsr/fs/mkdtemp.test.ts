@@ -1,97 +1,79 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal, ok } from "@frostyeti/assert";
+import { ok, rejects, throws } from "@frostyeti/assert";
 import { mkdtemp, mkdtempSync } from "./mkdtemp.ts";
-import { globals, WIN } from "./globals.ts";
-import { mkdir } from "./mkdir.ts";
-import { rm } from "./rm.ts";
-import { exists, existsSync } from "./exists.ts";
+import { NotFound } from "./unstable_errors.ts";
+import { rmSync } from "node:fs";
+import { rm } from "node:fs/promises";
 
-// deno-lint-ignore no-explicit-any
-const g = globals as Record<string, any>;
+test("mkdtemp() creates temporary directories in the default temp directory path", async () => {
+  const dir1 = await mkdtemp({ prefix: "standard", suffix: "library" });
+  const dir2 = await mkdtemp({ prefix: "standard", suffix: "library" });
 
-test("fs::makeTempDir creates temporary directory with default options", async () => {
-    const tempDir = await mkdtemp();
-    ok(await exists(tempDir));
-    await rm(tempDir, { recursive: true });
-});
+  try {
+    ok(dir1 !== dir2);
 
-test("fs::makeTempDir creates directory with prefix", async () => {
-    const tempDir = await mkdtemp({ prefix: "test-" });
-    ok(await exists(tempDir));
-    ok(tempDir.includes("test-"), `Expected prefix 'test-' in ${tempDir}`);
-    await rm(tempDir, { recursive: true });
-});
-
-test("fs::makeTempDir creates directory with suffix", async () => {
-    const tempDir = await mkdtemp({ suffix: "-tmp" });
-    ok(await exists(tempDir));
-    ok(tempDir.endsWith("-tmp"), `Expected suffix '.tmp' in ${tempDir}`);
-    await rm(tempDir, { recursive: true });
-});
-
-test("fs::makeTempDir creates directory in specified dir", async () => {
-    const baseDir = !WIN ? "/tmp/test-base" : (globals.process.env.TEMP + "\\test-base");
-    await mkdir(baseDir, { recursive: true });
-    const tempDir = await mkdtemp({ dir: baseDir });
-    ok(tempDir.startsWith(baseDir));
-    ok(await exists(tempDir));
-    await rm(baseDir, { recursive: true });
-});
-
-test("fs::makeTempDir uses Deno.makeTempDir when available", async () => {
-    const { Deno: od } = globals;
-    delete g["Deno"];
-    try {
-        g.Deno = {
-            makeTempDir: () => Promise.resolve("/fake/temp/dir"),
-        };
-        const dir = await mkdtemp();
-        equal(dir, "/fake/temp/dir");
-    } finally {
-        globals.Deno = od;
+    for (const dir of [dir1, dir2]) {
+      const tempDirName = dir.replace(/^.*[\\\/]/, "");
+      ok(tempDirName.startsWith("standard"));
+      ok(tempDirName.endsWith("library"));
     }
+  } finally {
+    await rm(dir1, { recursive: true, force: true });
+    await rm(dir2, { recursive: true, force: true });
+  }
 });
 
-test("fs::makeTempDirSync creates temporary directory with default options", async () => {
-    const tempDir = mkdtempSync();
-    ok(existsSync(tempDir));
-    await rm(tempDir, { recursive: true });
+test("mkdtemp() creates temporary directories with the 'dir' option", async () => {
+  const tempParent = await mkdtemp({ prefix: "first", suffix: "last" });
+  const dir = await mkdtemp({ dir: tempParent });
+
+  try {
+    ok(dir.startsWith(tempParent));
+    ok(/^[\\\/]/.test(dir.slice(tempParent.length)));
+  } finally {
+    await rm(tempParent, { recursive: true, force: true });
+  }
 });
 
-test("fs::makeTempDirSync creates directory with prefix", async () => {
-    const tempDir = mkdtempSync({ prefix: "test-" });
-    ok(existsSync(tempDir));
-    ok(tempDir.includes("test-"));
-    await rm(tempDir, { recursive: true });
+test("mkdtemp() rejects with NotFound when passing a 'dir' path that does not exist", async () => {
+  await rejects(async () => {
+    await mkdtemp({ dir: "/non-existent-dir" });
+  }, NotFound);
 });
 
-test("fs::makeTempDirSync creates directory with suffix", async () => {
-    const tempDir = mkdtempSync({ suffix: "-tmp" });
-    ok(existsSync(tempDir));
-    ok(tempDir.endsWith("-tmp"));
-    await rm(tempDir, { recursive: true });
-});
+test("mkdtempSync() creates temporary directories in the default temp directory path", () => {
+  const dir1 = mkdtempSync({ prefix: "standard", suffix: "library" });
+  const dir2 = mkdtempSync({ prefix: "standard", suffix: "library" });
 
-test("fs::makeTempDirSync creates directory in specified dir", async () => {
-    const baseDir = !WIN ? "/tmp/test-base" : (globals.process.env.TEMP + "\\test-base");
-    await mkdir(baseDir, { recursive: true });
-    const tempDir = mkdtempSync({ dir: baseDir });
-    ok(tempDir.startsWith(baseDir));
+  try {
+    ok(dir1 !== dir2);
 
-    ok(existsSync(tempDir));
-    await rm(baseDir, { recursive: true });
-});
-
-test("fs::makeTempDirSync uses Deno.makeTempDirSync when available", () => {
-    const { Deno: od } = globals;
-    delete g["Deno"];
-    try {
-        g.Deno = {
-            makeTempDirSync: () => "/fake/temp/dir",
-        };
-        const dir = mkdtempSync();
-        equal(dir, "/fake/temp/dir");
-    } finally {
-        globals.Deno = od;
+    for (const dir of [dir1, dir2]) {
+      const tempDirName = dir.replace(/^.*[\\\/]/, "");
+      ok(tempDirName.startsWith("standard"));
+      ok(tempDirName.endsWith("library"));
     }
+  } finally {
+    rmSync(dir1, { recursive: true, force: true });
+    rmSync(dir2, { recursive: true, force: true });
+  }
+});
+
+test("mkdtempSync() creates temporary directories with the 'dir' option", () => {
+  const tempParent = mkdtempSync({ prefix: "first", suffix: "last" });
+  const dir = mkdtempSync({ dir: tempParent });
+
+  try {
+    ok(dir.startsWith(tempParent));
+    ok(/^[\\\/]/.test(dir.slice(tempParent.length)));
+  } finally {
+    rmSync(tempParent, { recursive: true, force: true });
+  }
+});
+
+test("mkdtempSync() throws with NotFound when passing a 'dir' path that does not exist", () => {
+  throws(() => {
+    mkdtempSync({ dir: "/non-existent-dir" });
+  }, NotFound);
 });

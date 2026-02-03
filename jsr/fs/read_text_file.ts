@@ -4,59 +4,79 @@
  * @module
  */
 
-import type { ReadOptions } from "./types.ts";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-
-let fn: typeof import("node:fs").readFileSync | undefined = undefined;
-let fnAsync: typeof import("node:fs/promises").readFile | undefined = undefined;
+import type { ReadFileOptions } from "./types.ts";
+import { getNodeFs, globals } from "./globals.ts";
+import { mapError } from "./_map_error.ts";
 
 /**
- * Reads the contents of a file as text.
- * @param path The path to the file.
- * @param options The options for reading the file (optional).
- * @returns A promise that resolves with the file contents as a string.
+ * Asynchronously reads and returns the entire contents of a file as an UTF-8 decoded string.
+ *
+ * Reading a directory throws an error.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { readTextFile } from "@frostyeti/fs/read-text-file";
+ *
+ * const content = await readTextFile("README.md"); // full content of README.md
+ *
+ * ok(content.length > 0);
+ * ```
+ *
+ * @tags allow-read
+ *
+ * @param path The path of the symbolic link.
+ * @param options Options when reading a file. See {@linkcode ReadFileOptions}.
+ * @returns A promise that resolves to string of the file content.
  */
-export function readTextFile(path: string | URL, options?: ReadOptions): Promise<string> {
-    if (globals.Deno) {
-        return globals.Deno.readTextFile(path, options);
+export async function readTextFile(path: string | URL, options?: ReadFileOptions): Promise<string> {
+     if (globals.Deno) {
+    return await globals.Deno.readTextFile(path, { ...options });
+  } else {
+    const { signal } = options ?? {};
+    try {
+      return await getNodeFs().promises.readFile(path, {
+        encoding: "utf-8",
+        signal,
+      });
+    } catch (error) {
+      throw mapError(error);
     }
-
-    if (!fnAsync) {
-        fnAsync = loadFsAsync()?.readFile;
-        if (!fnAsync) {
-            return Promise.reject(new Error("No suitable file system module found."));
-        }
-    }
-
-    if (options?.signal) {
-        if (options.signal.aborted) {
-            const e = new Error("The operation was aborted.");
-            e.name = "AbortError";
-            return Promise.reject(e);
-        }
-
-        return fnAsync(path, { encoding: "utf-8", signal: options.signal });
-    }
-
-    return fnAsync(path, { encoding: "utf-8" });
+  }
 }
 
 /**
- * Synchronously Reads the contents of a file as text.
- * @param path The path to the file.
- * @returns The file contents as a string.
+ * Synchronously reads and returns the entire contents of a file as an UTF-8 decoded string.
+ *
+ * Reading a directory throws an error.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @example Usage
+ * ```ts
+ * import { ok } from "@frostyeti/assert";
+ * import { readTextFileSync } from "@frostyeti/fs/read-text-file";
+ *
+ * const content = readTextFileSync("README.md"); // full content of README.md
+ *
+ * ok(content.length > 0);
+ * ```
+ *
+ * @tags allow-read
+ *
+ * @param path The path of the symbolic link.
+ * @returns The string of file content.
  */
 export function readTextFileSync(path: string | URL): string {
-    if (globals.Deno) {
-        return globals.Deno.readTextFileSync(path);
+   if (globals.Deno) {
+    return globals.Deno.readTextFileSync(path);
+  } else {
+    try {
+      return getNodeFs().readFileSync(path, "utf-8");
+    } catch (error) {
+      throw mapError(error);
     }
-
-    if (!fn) {
-        fn = loadFs()?.readFileSync;
-        if (!fn) {
-            throw new Error("No suitable file system module found.");
-        }
-    }
-
-    return fn(path, { encoding: "utf-8" });
+  }
 }

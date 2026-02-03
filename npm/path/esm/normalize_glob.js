@@ -29,5 +29,7 @@ import { normalizeGlob as windowsNormalizeGlob } from "./windows/normalize_glob.
  * @returns The normalized glob string.
  */
 export function normalizeGlob(glob, options = {}) {
-  return isWindows ? windowsNormalizeGlob(glob, options) : posixNormalizeGlob(glob, options);
+  return isWindows
+    ? windowsNormalizeGlob(glob, options)
+    : posixNormalizeGlob(glob, options);
 }

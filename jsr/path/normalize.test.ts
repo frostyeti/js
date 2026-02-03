@@ -3,8 +3,8 @@ import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
 import * as windows from "./windows/mod.ts";
 import * as posix from "./posix/mod.ts";
-import { normalize as windowsUnstableNormalize } from "./windows/unstable_normalize.ts";
-import { normalize as posixUnstableNormalize } from "./posix/unstable_normalize.ts";
+import { normalize as windowsUnstableNormalize } from "./windows/normalize.ts";
+import { normalize as posixUnstableNormalize } from "./posix/normalize.ts";
 
 test(`path::normalize() returns "." if input is empty`, function () {
     equal(posix.normalize(""), ".");

@@ -1,27 +1,28 @@
-// Copyright 2018-2025 the Deno authors. MIT license.
+// Copyright 2018-2026 the Deno authors. MIT license.
 // This module is browser compatible.
-import { CHAR_COLON, CHAR_DOT } from "@frostyeti/chars/constants";
+import { CHAR_COLON, CHAR_DOT } from "../_common/constants.js";
 import { assertPath } from "../_common/assert_path.js";
 import { isPathSeparator, isWindowsDeviceRoot } from "./_util.js";
+import { fromFileUrl } from "./from_file_url.js";
 /**
  * Return the extension of the `path` with leading period.
  *
  * @example Usage
  * ```ts
  * import { extname } from "@frostyeti/path/windows/extname";
- * import { equal } from "@frostyeti/assert";
+ * import { equals } from "@frostyeti/assert";
  *
- * const ext = extname("file.ts");
- * equal(ext, ".ts");
+ * equals(extname("file.ts"), ".ts");
+ * equals(extname(new URL("file:///C:/foo/bar/baz.ext")), ".ext");
  * ```
- *
- * Note: If you are working with file URLs,
- * use the new version of `extname` from `@frostyeti/path/windows/unstable-extname`.
  *
  * @param path The path to get the extension from.
  * @returns The extension of the `path`.
  */
 export function extname(path) {
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
   assertPath(path);
   let start = 0;
   let startDot = -1;

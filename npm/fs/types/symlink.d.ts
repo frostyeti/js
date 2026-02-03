@@ -5,11 +5,24 @@
  */
 import type { SymlinkOptions } from "./types.js";
 /**
- * Creates a symbolic link.
- * @param target The path to the target file or directory.
- * @param path The path to the symbolic link.
- * @param options The type of the symbolic link (optional).
- * @returns A promise that resolves when the operation is complete.
+ * Creates `newpath` as a symbolic link to `oldpath`.
+ *
+ * The `options.type` parameter can be set to `"file"`, `"dir"` or `"junction"`.
+ * This argument is only available on Windows and ignored on other platforms.
+ *
+ * Requires full `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { symlink } from "@frostyeti/fs/symlink";
+ * await symlink("README.md", "README.md.link");
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the symbolic link.
+ * @param newpath The path of the symbolic link.
+ * @param options Options when creating a symbolic link.
  */
 export declare function symlink(
   target: string | URL,
@@ -17,10 +30,24 @@ export declare function symlink(
   options?: SymlinkOptions,
 ): Promise<void>;
 /**
- * Synchronously creates a symbolic link.
- * @param target The path to the target file or directory.
- * @param path The path to the symbolic link.
- * @param options The type of the symbolic link (optional).
+ * Creates `newpath` as a symbolic link to `oldpath`.
+ *
+ * The `options.type` parameter can be set to `"file"`, `"dir"` or `"junction"`.
+ * This argument is only available on Windows and ignored on other platforms.
+ *
+ * Requires full `allow-read` and `allow-write` permissions.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { symlinkSync } from "@frostyeti/fs/symlink";
+ * symlinkSync("README.md", "README.md.link");
+ * ```
+ *
+ * @tags allow-read, allow-write
+ *
+ * @param oldpath The path of the resource pointed by the symbolic link.
+ * @param newpath The path of the symbolic link.
+ * @param options Options when creating a symbolic link.
  */
 export declare function symlinkSync(
   target: string | URL,

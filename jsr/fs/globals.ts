@@ -7,6 +7,8 @@ export { globals, WINDOWS };
  */
 export const WIN = WINDOWS;
 
+export const IS_DENO = typeof globals.Deno !== "undefined";
+
 export function loadFs(): typeof import("node:fs") | undefined {
     if (globals.process && globals.process.getBuiltinModule) {
         return globals.process.getBuiltinModule("node:fs") as typeof import("node:fs");
@@ -19,6 +21,11 @@ export function loadFs(): typeof import("node:fs") | undefined {
     }
 
     return undefined;
+}
+
+export function getNodeFs() {
+    // deno-lint-ignore no-explicit-any
+    return (globals as any).process.getBuiltinModule("node:fs");
 }
 
 export function loadFsAsync(): typeof import("node:fs/promises") | undefined {

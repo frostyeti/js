@@ -2,6 +2,7 @@ import { stat, statSync } from "./stat.js";
 import { uid } from "./uid.js";
 import { gid } from "./gid.js";
 import { globals, WIN } from "./globals.js";
+import { NotFound } from "./unstable_errors.js";
 /**
  * Asynchronously test whether or not the given path exists by checking with
  * the file system.
@@ -116,6 +117,9 @@ export async function exists(path, options) {
     }
     return true;
   } catch (error) {
+    if (error instanceof NotFound) {
+      return false;
+    }
     if (globals.process && error instanceof Error) {
       const { code } = error;
       if (code === "ENOENT") {
@@ -259,6 +263,9 @@ export function existsSync(path, options) {
     }
     return true;
   } catch (error) {
+    if (error instanceof NotFound) {
+      return false;
+    }
     if (globals.process && error instanceof Error) {
       const { code } = error;
       if (code === "ENOENT") {

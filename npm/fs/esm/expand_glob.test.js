@@ -1,7 +1,13 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
 import { test } from "node:test";
 import { equal, ok, stringIncludes } from "@frostyeti/assert";
-import { fromFileUrl, join, joinGlobs, normalize, relative } from "@frostyeti/path";
+import {
+  fromFileUrl,
+  join,
+  joinGlobs,
+  normalize,
+  relative,
+} from "@frostyeti/path";
 import { expandGlob, expandGlobSync } from "./expand_glob.js";
 import { cwd } from "./cwd.js";
 import { globals } from "./globals.js";
@@ -20,7 +26,9 @@ async function expandGlobArray(globString, options, { forceRoot = "" } = {}) {
   return relativePaths;
 }
 function expandGlobSyncArray(globString, options, { forceRoot = "" } = {}) {
-  const pathsSync = [...expandGlobSync(globString, options)].map(({ path }) => path);
+  const pathsSync = [...expandGlobSync(globString, options)].map(({ path }) =>
+    path
+  );
   pathsSync.sort();
   const root = normalize(forceRoot || options.root || cwd());
   for (const path of pathsSync) {

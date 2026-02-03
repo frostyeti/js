@@ -24,6 +24,6 @@ import { join as windowsJoin } from "./windows/join.js";
  * @param paths Paths to be joined and normalized.
  * @returns The joined and normalized path.
  */
-export function join(...paths) {
-  return isWindows ? windowsJoin(...paths) : posixJoin(...paths);
+export function join(path, ...paths) {
+  return isWindows ? windowsJoin(path, ...paths) : posixJoin(path, ...paths);
 }

@@ -1,42 +1,96 @@
+// Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import { equal, rejects, throws } from "@frostyeti/assert";
+import { ok, rejects, throws } from "@frostyeti/assert";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { copyFile, copyFileSync } from "./copy_file.js";
-import { join } from "@frostyeti/path";
-import { makeDir } from "./make_dir.js";
-import { writeTextFile } from "./write_text_file.js";
-import { readTextFile } from "./read_text_file.js";
-import { remove } from "./remove.js";
-const testDir = join(import.meta.dirname, "test-data", "cp");
-const sourceFile1 = join(testDir, "source1.txt");
-const destFile1 = join(testDir, "dest1.txt");
-const sourceFile2 = join(testDir, "source2.txt");
-const destFile2 = join(testDir, "dest2.txt");
-const content = "test content";
-test("fs::copyFile copies file asynchronously", async () => {
+test("copyFile() copies content to an existed file", async () => {
+  const tempDirPath = await mkdtemp(resolve(tmpdir(), "copy_file_async_"));
+  const source = join(tempDirPath, "source.txt");
+  const target = join(tempDirPath, "target.txt");
+  const content = "This is written by `copyFile` API";
+  await writeFile(source, content);
+  await writeFile(target, "");
+  await copyFile(source, target);
   try {
-    await makeDir(testDir, { recursive: true });
-    await writeTextFile(sourceFile1, content);
-    await copyFile(sourceFile1, destFile1);
-    const copied = await readTextFile(destFile1);
-    equal(copied, content);
+    const targetContent = await readFile(target, "utf-8");
+    ok(content === targetContent);
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(tempDirPath, { recursive: true, force: true });
   }
 });
-test("fs::copyFile throws when source doesn't exist", () => {
-  rejects(async () => await copyFile("nonexistent.txt", destFile1));
-});
-test("fs::copyFileSync copies file synchronously", async () => {
+test("copyFile() copies content to a directory, which will throw an error", async () => {
+  const tempDirPath = await mkdtemp(resolve(tmpdir(), "copy_file_async_"));
+  const source = join(tempDirPath, "source.txt");
+  const content = "This is written by `copyFile` API";
+  await writeFile(source, content);
   try {
-    await makeDir(testDir, { recursive: true });
-    await writeTextFile(sourceFile2, content);
-    copyFileSync(sourceFile2, destFile2);
-    const copied = await readTextFile(destFile2);
-    equal(copied, content);
+    await rejects(async () => {
+      await copyFile(source, tmpdir());
+    });
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(tempDirPath, { recursive: true, force: true });
   }
 });
-test("fs::copyFileSync throws when source doesn't exist", () => {
-  throws(() => copyFileSync("nonexistent.txt", destFile2), Error);
+test("copyFile() copies content to a non existed file", async () => {
+  const tempDirPath = await mkdtemp(resolve(tmpdir(), "copy_file_async_"));
+  const source = join(tempDirPath, "source.txt");
+  const target = join(tempDirPath, "target.txt");
+  const content = "This is written by `copyFile` API";
+  await writeFile(source, content);
+  await copyFile(source, target);
+  const fileInfo = await stat(target);
+  const targetContent = await readFile(target, "utf-8");
+  try {
+    ok(fileInfo.isFile());
+    ok(content === targetContent);
+  } finally {
+    await rm(tempDirPath, { recursive: true, force: true });
+  }
+});
+test("copyFileSync() copies content to an existed file", () => {
+  const tempDirPath = mkdtempSync(resolve(tmpdir(), "copy_file_sync_"));
+  const source = join(tempDirPath, "source.txt");
+  const target = join(tempDirPath, "target.txt");
+  const content = "This is written by `copyFileSync` API";
+  writeFileSync(source, content);
+  writeFileSync(target, "");
+  copyFileSync(source, target);
+  const targetContent = readFileSync(target, "utf-8");
+  ok(content === targetContent);
+  rmSync(tempDirPath, { recursive: true, force: true });
+});
+test("copyFileSync() copies content to a directory, which will throw an error", () => {
+  const tempDirPath = mkdtempSync(resolve(tmpdir(), "copy_file_sync_"));
+  const source = join(tempDirPath, "source.txt");
+  const content = "This is written by `copyFile` API";
+  writeFileSync(source, content);
+  try {
+    throws(() => {
+      copyFileSync(source, tmpdir());
+    });
+  } finally {
+    rmSync(tempDirPath, { recursive: true, force: true });
+  }
+});
+test("copyFileSync() copies content to a non existed file", () => {
+  const tempDirPath = mkdtempSync(resolve(tmpdir(), "copy_file_sync_"));
+  const source = join(tempDirPath, "source.txt");
+  const target = join(tempDirPath, "target.txt");
+  const content = "This is written by `copyFileSync` API";
+  writeFileSync(source, content);
+  copyFileSync(source, target);
+  const targetIsExists = existsSync(target);
+  const targetContent = readFileSync(target, "utf-8");
+  ok(targetIsExists);
+  ok(content === targetContent);
+  rmSync(tempDirPath, { recursive: true, force: true });
 });

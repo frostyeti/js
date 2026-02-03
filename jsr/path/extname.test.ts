@@ -5,8 +5,8 @@ import { test } from "node:test";
 import { equal } from "@frostyeti/assert";
 import * as posix from "./posix/mod.ts";
 import * as windows from "./windows/mod.ts";
-import { extname as posixUnstableExtname } from "./posix/unstable_extname.ts";
-import { extname as windowsUnstableExtname } from "./windows/unstable_extname.ts";
+import { extname as posixUnstableExtname } from "./posix/extname.ts";
+import { extname as windowsUnstableExtname } from "./windows/extname.ts";
 
 const slashRE = /\//g;
 

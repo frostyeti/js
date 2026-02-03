@@ -6,96 +6,39 @@
 
 import { basename } from "@frostyeti/path";
 import type { FileInfo } from "./types.ts";
-import { globals, loadFs, loadFsAsync } from "./globals.ts";
-
-let st: typeof import("node:fs").statSync | undefined;
-let stAsync: typeof import("node:fs/promises").stat | undefined;
+import { getNodeFs, globals } from "./globals.ts";
+import { toFileInfo } from "./_to_file_info.ts";
+import { mapError } from "./_map_error.ts";
 
 /**
- * Gets information about a file or directory.
- * @param path The path to the file or directory.
- * @returns A promise that resolves with the file information.
- * @throws {Error} If the operation fails.
- * @example
+ * Resolves to a {@linkcode FileInfo} for the specified `path`. Will
+ * always follow symlinks.
+ *
+ * Requires `allow-read` permission in Deno.
+ *
+ * @example Usage
  * ```ts
+ * import { assert } from "@frostyeti/assert";
  * import { stat } from "@frostyeti/fs/stat";
- * async function getFileInfo() {
- *     try {
- *          const info = await stat("example.txt");
- *          console.log("File information:", info);
- *     } catch (error) {
- *          console.error("Error getting file information:", error);
- *     }
- * }
- * await getFileInfo();
+ * const fileInfo = await stat("README.md");
+ * assert(fileInfo.isFile);
  * ```
+ *
+ * @tags allow-read
+ *
+ * @param path The path to the file or directory.
+ * @returns A promise that resolves to a {@linkcode FileInfo} for the specified `path`.
  */
-export function stat(path: string | URL): Promise<FileInfo> {
+export async function stat(path: string | URL): Promise<FileInfo> {
     if (globals.Deno) {
-        // deno-lint-ignore no-explicit-any
-        return globals.Deno.stat(path).then((stat: any) => {
-            const p = path instanceof URL ? path.toString() : path;
-            return {
-                isFile: stat.isFile,
-                isDirectory: stat.isDirectory,
-                isSymlink: stat.isSymlink,
-                name: basename(p),
-                path: p,
-                size: stat.size,
-                birthtime: stat.birthtime,
-                mtime: stat.mtime,
-                atime: stat.atime,
-                mode: stat.mode,
-                uid: stat.uid,
-                gid: stat.gid,
-                dev: stat.dev,
-                blksize: stat.blksize,
-                ino: stat.ino,
-                nlink: stat.nlink,
-                rdev: stat.rdev,
-                blocks: stat.blocks,
-                isBlockDevice: stat.isBlockDevice,
-                isCharDevice: stat.isCharDevice,
-                isSocket: stat.isSocket,
-                isFifo: stat.isFifo,
-            };
-        });
+        return  await globals.Deno.stat(path);
     }
 
-    if (!stAsync) {
-        stAsync = loadFsAsync()?.stat;
-        if (!stAsync) {
-            throw new Error("No suitable file system module found.");
-        }
+    try {
+        return toFileInfo(await getNodeFs().promises.stat(path));
+    } catch (error) {
+        throw mapError(error);
     }
-
-    return stAsync(path).then((stat) => {
-        const p = path instanceof URL ? path.toString() : path;
-        return {
-            isFile: stat.isFile(),
-            isDirectory: stat.isDirectory(),
-            isSymlink: stat.isSymbolicLink(),
-            name: basename(p),
-            path: p,
-            size: stat.size,
-            birthtime: stat.birthtime,
-            mtime: stat.mtime,
-            atime: stat.atime,
-            mode: stat.mode,
-            uid: stat.uid,
-            gid: stat.gid,
-            dev: stat.dev,
-            blksize: stat.blksize,
-            ino: stat.ino,
-            nlink: stat.nlink,
-            rdev: stat.rdev,
-            blocks: stat.blocks,
-            isBlockDevice: stat.isBlockDevice(),
-            isCharDevice: stat.isCharacterDevice(),
-            isSocket: stat.isSocket(),
-            isFifo: stat.isFIFO(),
-        };
-    });
 }
 
 /**
@@ -119,65 +62,12 @@ export function stat(path: string | URL): Promise<FileInfo> {
  */
 export function statSync(path: string | URL): FileInfo {
     if (globals.Deno) {
-        const stat = globals.Deno.statSync(path);
-        const p = path instanceof URL ? path.toString() : path;
-        return {
-            isFile: stat.isFile,
-            isDirectory: stat.isDirectory,
-            isSymlink: stat.isSymlink,
-            name: basename(p),
-            path: p,
-            size: stat.size,
-            birthtime: stat.birthtime,
-            mtime: stat.mtime,
-            atime: stat.atime,
-            mode: stat.mode,
-            uid: stat.uid,
-            gid: stat.gid,
-            dev: stat.dev,
-            blksize: stat.blksize,
-            ino: stat.ino,
-            nlink: stat.nlink,
-            rdev: stat.rdev,
-            blocks: stat.blocks,
-            isBlockDevice: stat.isBlockDevice,
-            isCharDevice: stat.isCharDevice,
-            isSocket: stat.isSocket,
-            isFifo: stat.isFifo,
-        };
+        return globals.Deno.statSync(path);
     }
 
-    if (!st) {
-        st = loadFs()?.statSync;
-        if (!st) {
-            throw new Error("No suitable file system module found.");
-        }
+    try {
+        return toFileInfo(getNodeFs().statSync(path));
+    } catch (error) {
+        throw mapError(error);
     }
-
-    const stat = st(path);
-    const p = path instanceof URL ? path.toString() : path;
-    return {
-        isFile: stat.isFile(),
-        isDirectory: stat.isDirectory(),
-        isSymlink: stat.isSymbolicLink(),
-        name: basename(p),
-        path: p,
-        size: stat.size,
-        birthtime: stat.birthtime,
-        mtime: stat.mtime,
-        atime: stat.atime,
-        mode: stat.mode,
-        uid: stat.uid,
-        gid: stat.gid,
-        dev: stat.dev,
-        blksize: stat.blksize,
-        ino: stat.ino,
-        nlink: stat.nlink,
-        rdev: stat.rdev,
-        blocks: stat.blocks,
-        isBlockDevice: stat.isBlockDevice(),
-        isCharDevice: stat.isCharacterDevice(),
-        isSocket: stat.isSocket(),
-        isFifo: stat.isFIFO(),
-    };
 }

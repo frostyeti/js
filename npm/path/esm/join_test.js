@@ -4,8 +4,8 @@ import { equal } from "@frostyeti/assert";
 import * as posix from "./posix/mod.js";
 import * as windows from "./windows/mod.js";
 import { join } from "./join.js";
-import { join as posixUnstableJoin } from "./posix/unstable_join.js";
-import { join as windowsUnstableJoin } from "./windows/unstable_join.js";
+import { join as posixUnstableJoin } from "./posix/join.js";
+import { join as windowsUnstableJoin } from "./windows/join.js";
 import { cwd } from "./globals.js";
 const backslashRE = /\\/g;
 const joinTests =

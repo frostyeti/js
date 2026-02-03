@@ -3,6 +3,7 @@
 import { assertArg } from "../_common/normalize.js";
 import { normalizeString } from "../_common/normalize_string.js";
 import { isPosixPathSeparator } from "./_util.js";
+import { fromFileUrl } from "./from_file_url.js";
 /**
  * Normalize the `path`, resolving `'..'` and `'.'` segments.
  * Note that resolving these segments does not necessarily mean that all will be eliminated.
@@ -42,6 +43,9 @@ import { isPosixPathSeparator } from "./_util.js";
  * @returns The normalized path.
  */
 export function normalize(path) {
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
   assertArg(path);
   const isAbsolute = isPosixPathSeparator(path.charCodeAt(0));
   const trailingSeparator = isPosixPathSeparator(

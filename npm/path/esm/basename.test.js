@@ -6,8 +6,8 @@ import { equal, throws } from "@frostyeti/assert";
 import { basename } from "./basename.js";
 import * as posix from "./posix/mod.js";
 import * as windows from "./windows/mod.js";
-import { basename as posixUnstableBasename } from "./posix/unstable_basename.js";
-import { basename as windowsUnstableBasename } from "./windows/unstable_basename.js";
+import { basename as posixUnstableBasename } from "./posix/basename.js";
+import { basename as windowsUnstableBasename } from "./windows/basename.js";
 // Test suite from "GNU core utilities"
 // https://github.com/coreutils/coreutils/blob/master/tests/misc/basename.pl
 const COREUTILS_TESTSUITE = [

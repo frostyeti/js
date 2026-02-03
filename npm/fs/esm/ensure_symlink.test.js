@@ -5,14 +5,15 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import * as path from "@frostyeti/path";
 import { ensureSymlink, ensureSymlinkSync } from "./ensure_symlink.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, mkdirSync } from "./make_dir.js";
-import { readLink, readLinkSync } from "./read_link.js";
+import { mkdir, mkdirSync } from "./mkdir.js";
+import { readlink, readlinkSync } from "./readlink.js";
 import { readTextFile, readTextFileSync } from "./read_text_file.js";
 import { stat, statSync } from "./stat.js";
 import { symlink, symlinkSync } from "./symlink.js";
-import { remove, removeSync } from "./remove.js";
+import { rm, rmSync } from "./rm.js";
 import { writeFile, writeFileSync } from "./write_file.js";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.js";
+import { exists, existsSync } from "./exists.js";
 const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
 const testdataDir = path.resolve(moduleDir, "testdata");
 test("ensureSymlink() rejects if file does not exist", async function () {
@@ -43,7 +44,14 @@ test("ensureSymlink() ensures linkName links to target", async function () {
   const testFile = path.join(testDir, "test.txt");
   const linkFile = path.join(testDir, "link.txt");
   try {
-    await makeDir(testDir, { recursive: true });
+    if (await exists(testDir)) {
+      await rm(testDir, { recursive: true });
+    }
+  } catch {
+    // ignore
+  }
+  try {
+    await mkdir(testDir, { recursive: true });
     await writeFile(testFile, new Uint8Array());
     await ensureSymlink(testFile, linkFile);
     await ensureSymlink(testFile, linkFile);
@@ -52,13 +60,20 @@ test("ensureSymlink() ensures linkName links to target", async function () {
     equal(srcStat.isFile, true);
     equal(linkStat.isSymlink, true);
   } finally {
-    await remove(testDir, { recursive: true });
+    await rm(testDir, { recursive: true });
   }
 });
 test("ensureSymlinkSync() ensures linkName links to target", function () {
   const testDir = path.join(testdataDir, "link_file_4");
   const testFile = path.join(testDir, "test.txt");
   const linkFile = path.join(testDir, "link.txt");
+  try {
+    if (existsSync(testDir)) {
+      rmSync(testDir, { recursive: true });
+    }
+  } catch {
+    // ignore
+  }
   try {
     mkdirSync(testDir, { recursive: true });
     writeFileSync(testFile, new Uint8Array());
@@ -69,7 +84,7 @@ test("ensureSymlinkSync() ensures linkName links to target", function () {
     equal(srcStat.isFile, true);
     equal(linkStat.isSymlink, true);
   } finally {
-    removeSync(testDir, { recursive: true });
+    rmSync(testDir, { recursive: true });
   }
 });
 test("ensureSymlink() rejects if the linkName path already exist", async function () {
@@ -78,9 +93,9 @@ test("ensureSymlink() rejects if the linkName path already exist", async functio
   const linkDir = path.join(testDir, "test_dir");
   const linkSymlink = path.join(testDir, "test_symlink");
   const targetFile = path.join(testDir, "target.txt");
-  await makeDir(testDir, { recursive: true });
+  await mkdir(testDir, { recursive: true });
   await writeTextFile(linkFile, "linkFile");
-  await makeDir(linkDir);
+  await mkdir(linkDir);
   await symlink("non-existent", linkSymlink, { type: "file" });
   await writeTextFile(targetFile, "targetFile");
   await rejects(async () => {
@@ -94,9 +109,9 @@ test("ensureSymlink() rejects if the linkName path already exist", async functio
   });
   equal(await readTextFile(linkFile), "linkFile");
   equal((await stat(linkDir)).isDirectory, true);
-  equal(await readLink(linkSymlink), "non-existent");
+  equal(await readlink(linkSymlink), "non-existent");
   equal(await readTextFile(targetFile), "targetFile");
-  await remove(testDir, { recursive: true });
+  await rm(testDir, { recursive: true });
 });
 test("ensureSymlinkSync() throws if the linkName path already exist", function () {
   const testDir = path.join(testdataDir, "link_file_6");
@@ -120,16 +135,16 @@ test("ensureSymlinkSync() throws if the linkName path already exist", function (
   });
   equal(readTextFileSync(linkFile), "linkFile");
   equal(statSync(linkDir).isDirectory, true);
-  equal(readLinkSync(linkSymlink), "non-existent");
+  equal(readlinkSync(linkSymlink), "non-existent");
   equal(readTextFileSync(targetFile), "targetFile");
-  removeSync(testDir, { recursive: true });
+  rmSync(testDir, { recursive: true });
 });
 test("ensureSymlink() ensures dir linkName links to dir target", async function () {
   const testDir = path.join(testdataDir, "link_file_origin_3");
   const linkDir = path.join(testdataDir, "link_file_link_3");
   const testFile = path.join(testDir, "test.txt");
   try {
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await writeFile(testFile, new Uint8Array());
     await ensureSymlink(testDir, linkDir);
     await ensureSymlink(testDir, linkDir);
@@ -140,8 +155,8 @@ test("ensureSymlink() ensures dir linkName links to dir target", async function 
     equal(testDirStat.isDirectory, true);
     equal(linkDirStat.isSymlink, true);
   } finally {
-    await remove(linkDir, { recursive: true });
-    await remove(testDir, { recursive: true });
+    await rm(linkDir, { recursive: true });
+    await rm(testDir, { recursive: true });
   }
 });
 test("ensureSymlinkSync() ensures dir linkName links to dir target", function () {
@@ -158,14 +173,14 @@ test("ensureSymlinkSync() ensures dir linkName links to dir target", function ()
   equal(testFileStat.isFile, true);
   equal(testDirStat.isDirectory, true);
   equal(linkDirStat.isSymlink, true);
-  removeSync(linkDir, { recursive: true });
-  removeSync(testDir, { recursive: true });
+  rmSync(linkDir, { recursive: true });
+  rmSync(testDir, { recursive: true });
 });
 test("ensureSymlink() creates symlink with relative target", async function () {
   const testDir = path.join(testdataDir, "symlink-relative");
   const testLinkName = path.join(testDir, "link.txt");
   const testFile = path.join(testDir, "target.txt");
-  await makeDir(testDir);
+  await mkdir(testDir);
   await writeFile(testFile, new Uint8Array());
   await ensureSymlink("target.txt", testLinkName);
   const testDirStat = await lstat(testDir);
@@ -174,7 +189,7 @@ test("ensureSymlink() creates symlink with relative target", async function () {
   equal(testFileStat.isFile, true);
   equal(testDirStat.isDirectory, true);
   equal(linkDirStat.isSymlink, true);
-  await remove(testDir, { recursive: true });
+  await rm(testDir, { recursive: true });
 });
 test("ensureSymlinkSync() creates symlink with relative target", function () {
   const testDir = path.join(testdataDir, "symlink-relative-sync");
@@ -189,5 +204,5 @@ test("ensureSymlinkSync() creates symlink with relative target", function () {
   equal(testFileStat.isFile, true);
   equal(testDirStat.isDirectory, true);
   equal(linkDirStat.isSymlink, true);
-  removeSync(testDir, { recursive: true });
+  rmSync(testDir, { recursive: true });
 });

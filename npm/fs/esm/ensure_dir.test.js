@@ -5,8 +5,8 @@ import * as path from "@frostyeti/path";
 import { ensureDir, ensureDirSync } from "./ensure_dir.js";
 import { ensureFile, ensureFileSync } from "./ensure_file.js";
 import { lstat, lstatSync } from "./lstat.js";
-import { makeDir, mkdirSync } from "./make_dir.js";
-import { remove, removeSync } from "./remove.js";
+import { mkdir, mkdirSync } from "./mkdir.js";
+import { rm, rmSync } from "./rm.js";
 import { stat, statSync } from "./stat.js";
 import { globals } from "./globals.js";
 const moduleDir = path.dirname(path.fromFileUrl(import.meta.url));
@@ -19,7 +19,7 @@ test("fs::ensureDir() creates dir if it does not exist", async function () {
     // test dir should exists.
     await stat(testDir);
   } finally {
-    await remove(baseDir, { recursive: true });
+    await rm(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDirSync() creates dir if it does not exist", function () {
@@ -30,7 +30,7 @@ test("fs::ensureDirSync() creates dir if it does not exist", function () {
     // test dir should exists.
     statSync(testDir);
   } finally {
-    removeSync(baseDir, { recursive: true });
+    rmSync(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDir() ensures existing dir exists", async function () {
@@ -38,12 +38,12 @@ test("fs::ensureDir() ensures existing dir exists", async function () {
   const testDir = path.join(baseDir, "test");
   try {
     // create test directory
-    await makeDir(testDir, { recursive: true });
+    await mkdir(testDir, { recursive: true });
     await ensureDir(testDir);
     // test dir should still exists.
     await stat(testDir);
   } finally {
-    await remove(baseDir, { recursive: true });
+    await rm(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDirSync() ensures existing dir exists", function () {
@@ -56,7 +56,7 @@ test("fs::ensureDirSync() ensures existing dir exists", function () {
     // test dir should still exists.
     statSync(testDir);
   } finally {
-    removeSync(baseDir, { recursive: true });
+    rmSync(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDir() accepts links to dirs", async function () {
@@ -90,7 +90,7 @@ test("fs::ensureDir() rejects if input is a file", async function () {
       `Ensure path exists, expected 'dir', got 'file'`,
     );
   } finally {
-    await remove(baseDir, { recursive: true });
+    await rm(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDirSync() throws if input is a file", function () {
@@ -106,7 +106,7 @@ test("fs::ensureDirSync() throws if input is a file", function () {
       `Ensure path exists, expected 'dir', got 'file'`,
     );
   } finally {
-    removeSync(baseDir, { recursive: true });
+    rmSync(baseDir, { recursive: true });
   }
 });
 test("fs::ensureDir() rejects links to files", async function () {

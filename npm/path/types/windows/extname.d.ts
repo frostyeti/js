@@ -4,16 +4,13 @@
  * @example Usage
  * ```ts
  * import { extname } from "@frostyeti/path/windows/extname";
- * import { equal } from "@frostyeti/assert";
+ * import { equals } from "@frostyeti/assert";
  *
- * const ext = extname("file.ts");
- * equal(ext, ".ts");
+ * equals(extname("file.ts"), ".ts");
+ * equals(extname(new URL("file:///C:/foo/bar/baz.ext")), ".ext");
  * ```
- *
- * Note: If you are working with file URLs,
- * use the new version of `extname` from `@frostyeti/path/windows/unstable-extname`.
  *
  * @param path The path to get the extension from.
  * @returns The extension of the `path`.
  */
-export declare function extname(path: string): string;
+export declare function extname(path: string | URL): string;
