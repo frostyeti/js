@@ -71,6 +71,7 @@ jobs:
         run: deno run -A ./eng/tasks/main.ts lint --all
         
       - name: Test Bun
+        shell: bash
         run: |
           bun test 
           ec=$?
