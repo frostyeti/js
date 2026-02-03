@@ -73,6 +73,7 @@ jobs:
       - name: Test Bun
         shell: bash
         run: |
+          set +o pipefail # Disable pipefail to avoid failing on warnings
           bun test 
           ec=$?
           # bun fails occassionally using node:test because "test inside of test" is not supported"
