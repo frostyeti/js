@@ -21,15 +21,15 @@ import { globals } from "./globals.ts";
  * @param newpath The path of the hard link.
  */
 export async function link(oldpath: string, newpath: string): Promise<void> {
-  if (isDeno) {
-    await globals.Deno.link(oldpath, newpath);
-  } else {
-    try {
-      await getNodeFs().promises.link(oldpath, newpath);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.link(oldpath, newpath);
+    } else {
+        try {
+            await getNodeFs().promises.link(oldpath, newpath);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -49,13 +49,13 @@ export async function link(oldpath: string, newpath: string): Promise<void> {
  * @param newpath The path of the hard link.
  */
 export function linkSync(oldpath: string, newpath: string): void {
-  if (isDeno) {
-    globals.Deno.linkSync(oldpath, newpath);
-  } else {
-    try {
-      getNodeFs().linkSync(oldpath, newpath);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.linkSync(oldpath, newpath);
+    } else {
+        try {
+            getNodeFs().linkSync(oldpath, newpath);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

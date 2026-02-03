@@ -17,36 +17,69 @@ import {
 import { secretMasker } from "@frostyeti/secrets";
 import { isSpaceAt } from "@frostyeti/chars/is-space";
 /**
- * Writes a message to the output.
+ * Writes a message to the output (without newline).
  * @param message The message to write.
- * @param args The message arguments.
+ * @param args The message arguments (sprintf-style formatting).
+ * @example
+ * ```ts
+ * import { write } from "@frostyeti/ci-env";
+ *
+ * write("Hello ");
+ * write("World!");
+ * // Output: Hello World!
+ *
+ * // With formatting
+ * write("Count: %d, Name: %s", 42, "test");
+ * ```
  */
 export function write(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
   stdout.writeSync(new TextEncoder().encode(formatted));
 }
 /**
- * Writes a line to the output.
- * @param message The messsage to write.
- * @param args The message arguments.
+ * Writes a line to the output (with newline).
+ * @param message The message to write.
+ * @param args The message arguments (sprintf-style formatting).
+ * @example
+ * ```ts
+ * import { writeLine } from "@frostyeti/ci-env";
+ *
+ * writeLine("Hello World!");
+ *
+ * // With formatting
+ * writeLine("Build %s completed in %d seconds", "v1.0.0", 45);
+ * ```
  */
 export function writeLine(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
   stdout.writeSync(new TextEncoder().encode(formatted + "\n"));
 }
 /**
- * Writes an error message to the error output.
+ * Writes a message to stderr (without newline).
  * @param message The message to write.
- * @param args The message arguments.
+ * @param args The message arguments (sprintf-style formatting).
+ * @example
+ * ```ts
+ * import { writeError } from "@frostyeti/ci-env";
+ *
+ * writeError("Warning: %s", "Something went wrong");
+ * ```
  */
 export function writeError(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
   stderr.writeSync(new TextEncoder().encode(formatted));
 }
 /**
- * Writes an error line to the error output.
+ * Writes a line to stderr (with newline).
  * @param message The message to write.
- * @param args The message arguments.
+ * @param args The message arguments (sprintf-style formatting).
+ * @example
+ * ```ts
+ * import { writeErrorLine } from "@frostyeti/ci-env";
+ *
+ * writeErrorLine("Error: File not found");
+ * writeErrorLine("Failed to process %s", "config.json");
+ * ```
  */
 export function writeErrorLine(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
@@ -54,8 +87,22 @@ export function writeErrorLine(message, ...args) {
 }
 /**
  * Writes a progress message to the output.
- * @param name The name of the progress.
- * @param value the progress value.
+ *
+ * In CI environments, this emits CI-specific progress commands:
+ * - **GitHub Actions**: `::progress name=...::...`
+ * - **Azure DevOps**: `##vso[task.setprogress]`
+ *
+ * @param name The name of the progress indicator.
+ * @param value The progress value (0-100).
+ * @example
+ * ```ts
+ * import { progress } from "@frostyeti/ci-env";
+ *
+ * for (let i = 0; i <= 100; i += 10) {
+ *   progress("Downloading", i);
+ *   await delay(100);
+ * }
+ * ```
  */
 export function progress(name, value) {
   if (!CI) {
@@ -132,7 +179,22 @@ export function handleArguments(args) {
 }
 /**
  * Registers a secret with the secret masker.
- * @param secret The secret to register.
+ *
+ * Once registered, the secret value will be masked (replaced with `***`)
+ * in all log output to prevent accidental exposure.
+ *
+ * @param secret The secret value to register.
+ * @example
+ * ```ts
+ * import { registerSecret, writeLine } from "@frostyeti/ci-env";
+ *
+ * const apiKey = "super-secret-key";
+ * registerSecret(apiKey);
+ *
+ * // Secret is automatically masked in output
+ * writeLine("Using API key: " + apiKey);
+ * // Output: Using API key: ***
+ * ```
  */
 export function registerSecret(secret) {
   secretMasker.add(secret);
@@ -207,17 +269,61 @@ export function info() {
 let debugEnabled = get("DEBUG") === "true" || get("DEBUG") === "1" ||
   get("SYSTEM_DEBUG") === "true" || get("SYSTEM_DEBUG") === "1" ||
   get("ACTIONS_STEP_DEBUG") === "true" || get("ACTIONS_STEP_DEBUG") === "1";
+/**
+ * Enables or disables debug logging.
+ *
+ * Debug mode is automatically enabled when `DEBUG`, `SYSTEM_DEBUG`,
+ * or `ACTIONS_STEP_DEBUG` environment variables are set to `true` or `1`.
+ *
+ * @param enabled Whether to enable debug logging.
+ * @example
+ * ```ts
+ * import { setDebug, debug } from "@frostyeti/ci-env";
+ *
+ * // Enable debug mode
+ * setDebug(true);
+ *
+ * // Now debug messages will be shown
+ * debug("Variable value: %s", someVar);
+ * ```
+ */
 export function setDebug(enabled) {
   debugEnabled = enabled;
 }
+/**
+ * Returns whether debug logging is enabled.
+ *
+ * @returns `true` if debug logging is enabled, `false` otherwise.
+ * @example
+ * ```ts
+ * import { isDebugEnabled } from "@frostyeti/ci-env";
+ *
+ * if (isDebugEnabled()) {
+ *   console.log("Detailed diagnostics enabled");
+ * }
+ * ```
+ */
 export function isDebugEnabled() {
   return debugEnabled;
 }
 /**
  * Writes a debug message to the output.
+ *
+ * Debug messages are only shown when debug mode is enabled.
+ * In CI environments, this emits CI-specific debug commands:
+ * - **GitHub Actions**: `::debug::...`
+ * - **Azure DevOps**: `##[debug]...`
+ *
  * @param message The message to write.
  * @param args The message arguments.
- * @returns the writer.
+ * @example
+ * ```ts
+ * import { debug, setDebug } from "@frostyeti/ci-env";
+ *
+ * setDebug(true);
+ * debug("Processing file: %s", filename);
+ * debug("Cache hit: %s", cacheKey);
+ * ```
  */
 export function debug(message, ...args) {
   if (!debugEnabled) {
@@ -246,10 +352,17 @@ export function debug(message, ...args) {
   }
 }
 /**
- * Writes an ok message to the output.
+ * Writes an "OK" message to the output.
+ *
  * @param message The message to write.
  * @param args The message arguments.
- * @returns the writer.
+ * @example
+ * ```ts
+ * import { ok } from "@frostyeti/ci-env";
+ *
+ * ok("All tests passed");
+ * ok("Deployed to %s successfully", "production");
+ * ```
  */
 export function ok(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
@@ -263,10 +376,17 @@ export function ok(message, ...args) {
   writeLine(formatted);
 }
 /**
- * Writes a success message to the output.
+ * Writes a "SUCCESS" message to the output.
+ *
  * @param message The message to write.
  * @param args The message arguments.
- * @returns the writer.
+ * @example
+ * ```ts
+ * import { success } from "@frostyeti/ci-env";
+ *
+ * success("Build completed");
+ * success("Published version %s", "1.2.3");
+ * ```
  */
 export function success(message, ...args) {
   const formatted = args.length ? sprintf(message, ...args) : message;
@@ -288,10 +408,23 @@ function hasSpace(string) {
   return false;
 }
 /**
- * Writes a command to the output.
- * @param command The executable.
+ * Writes a command to the output, with syntax highlighting.
+ *
+ * Arguments containing spaces are automatically quoted.
+ * Secrets are automatically masked.
+ *
+ * @param file The executable/command name.
  * @param args The arguments passed to the command.
- * @returns The writer.
+ * @example
+ * ```ts
+ * import { command } from "@frostyeti/ci-env";
+ *
+ * command("npm", ["install", "--save", "lodash"]);
+ * // Output: ❱ $ npm --save lodash
+ *
+ * command("git", ["commit", "-m", "Initial commit"]);
+ * // Output: ❱ $ git -m 'Initial commit'
+ * ```
  */
 export function command(file, args) {
   switch (CI_DRIVER) {
@@ -381,9 +514,26 @@ setLogger((file, args) => {
   command(file, args);
 });
 /**
- * Start a new group of log messages.
+ * Starts a new collapsible group of log messages.
+ *
+ * In CI environments, this emits CI-specific group commands:
+ * - **GitHub Actions**: `::group::...`
+ * - **Azure DevOps**: `##[group]...`
+ *
  * @param name The name of the group.
- * @returns The writer instance.
+ * @example
+ * ```ts
+ * import { startGroup, endGroup, writeLine } from "@frostyeti/ci-env";
+ *
+ * startGroup("Installing dependencies");
+ * writeLine("npm install lodash");
+ * writeLine("npm install typescript");
+ * endGroup();
+ *
+ * startGroup("Running tests");
+ * writeLine("Running 42 tests...");
+ * endGroup();
+ * ```
  */
 export function startGroup(name) {
   switch (CI_DRIVER) {
@@ -400,8 +550,16 @@ export function startGroup(name) {
   }
 }
 /**
- * Ends the current group.
- * @returns The writer instance.
+ * Ends the current collapsible group.
+ *
+ * @example
+ * ```ts
+ * import { startGroup, endGroup, writeLine } from "@frostyeti/ci-env";
+ *
+ * startGroup("Build");
+ * writeLine("Compiling...");
+ * endGroup();
+ * ```
  */
 export function endGroup() {
   switch (CI_DRIVER) {

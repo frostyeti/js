@@ -23,7 +23,10 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/secrets/doc)
 # Deno
 deno add jsr:@frostyeti/secrets
 
-# npm
+# npm from jsr
+npx jsr add @frostyeti/secrets
+
+# from npmjs.org
 npm install @frostyeti/secrets
 ```
 

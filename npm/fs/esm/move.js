@@ -9,11 +9,7 @@ import { rm, rmSync } from "./rm.js";
 import { rename, renameSync } from "./rename.js";
 import { stat, statSync } from "./stat.js";
 import { isSamePath, isSubdir } from "./utils.js";
-import {
-  AlreadyExistsError,
-  isNotFoundError,
-  SubdirectoryMoveError,
-} from "./errors.js";
+import { AlreadyExistsError, isNotFoundError, SubdirectoryMoveError } from "./errors.js";
 const EXISTS_ERROR = new AlreadyExistsError("dest already exists.");
 /**
  * Asynchronously moves a file or directory.

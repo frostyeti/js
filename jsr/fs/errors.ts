@@ -49,7 +49,7 @@ export class SubdirectoryMoveError extends Error {
  * @returns A boolean indicating whether the error indicates that the file or directory was not found.
  */
 export function isNotFoundError(err: unknown): boolean {
-    if (err instanceof  NotFoundError || err instanceof NotFound) {
+    if (err instanceof NotFoundError || err instanceof NotFound) {
         return true;
     }
 
@@ -71,7 +71,7 @@ export function isNotFoundError(err: unknown): boolean {
  * @returns A boolean indicating whether the error indicates that the file or directory already exists.
  */
 export function isAlreadyExistsError(err: unknown): boolean {
-    if (err instanceof  AlreadyExistsError || err instanceof AlreadyExists) {
+    if (err instanceof AlreadyExistsError || err instanceof AlreadyExists) {
         return true;
     }
 

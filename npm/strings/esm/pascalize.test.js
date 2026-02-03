@@ -1,22 +1,51 @@
 import { test } from "node:test";
-import { equal, isDebugTests } from "@frostyeti/assert";
+import { equal } from "@frostyeti/assert";
 import { pascalize } from "./pascalize.js";
-test("slices::pascalize", () => {
-  const tests = [
-    { input: "hello world", result: "HelloWorld" },
-    { input: "HelloWorld", result: "Helloworld" },
-    { input: "helloWorld", result: "Helloworld" },
-    { input: "hello wörld", result: "HelloWörld" },
-    { input: "helloWörld", result: "Hellowörld" },
-    { input: "hello WÖrLD", result: "HelloWörld" },
-  ];
-  let i = 0;
-  for (const { input, result } of tests) {
-    const actual = pascalize(input);
-    if (isDebugTests()) {
-      console.log(i, input, actual, result);
-    }
-    equal(actual, result);
-    i++;
-  }
+// =============================================================================
+// Basic conversions
+// =============================================================================
+test("strings::pascalize converts space-separated words", () => {
+  equal(pascalize("hello world"), "HelloWorld");
+});
+test("strings::pascalize converts underscore case", () => {
+  equal(pascalize("hello_world"), "HelloWorld");
+});
+test("strings::pascalize converts kebab case", () => {
+  equal(pascalize("hello-world"), "HelloWorld");
+});
+test("strings::pascalize handles existing PascalCase", () => {
+  equal(pascalize("HelloWorld"), "Helloworld");
+});
+test("strings::pascalize handles camelCase", () => {
+  equal(pascalize("helloWorld"), "Helloworld");
+});
+// =============================================================================
+// Unicode support
+// =============================================================================
+test("strings::pascalize handles unicode characters", () => {
+  equal(pascalize("hello wörld"), "HelloWörld");
+});
+test("strings::pascalize handles unicode in existing case", () => {
+  equal(pascalize("helloWörld"), "Hellowörld");
+});
+test("strings::pascalize handles mixed unicode case", () => {
+  equal(pascalize("hello WÖrLD"), "HelloWörld");
+});
+// =============================================================================
+// Edge cases
+// =============================================================================
+test("strings::pascalize handles empty string", () => {
+  equal(pascalize(""), "");
+});
+test("strings::pascalize handles single word", () => {
+  equal(pascalize("hello"), "Hello");
+});
+test("strings::pascalize handles single character", () => {
+  equal(pascalize("a"), "A");
+});
+test("strings::pascalize handles all uppercase", () => {
+  equal(pascalize("HELLO"), "Hello");
+});
+test("strings::pascalize handles multiple separators", () => {
+  equal(pascalize("hello_world-test"), "HelloWorldTest");
 });

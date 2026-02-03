@@ -47,9 +47,7 @@ describe("assert::rejects", () => {
     equal(message.includes("should have rejected"), true);
   });
   test("returns the error when successful", async () => {
-    const error = await rejects(() =>
-      Promise.reject(new Error("test message"))
-    );
+    const error = await rejects(() => Promise.reject(new Error("test message")));
     equal(error instanceof Error, true);
   });
   test("works with async functions", async () => {

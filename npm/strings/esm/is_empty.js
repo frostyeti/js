@@ -7,6 +7,15 @@
  * Determines whether the string is empty.
  * @param s The string to check.
  * @returns `true` if the string is empty; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { isEmpty } from "@frostyeti/strings";
+ *
+ * isEmpty("");       // true
+ * isEmpty("hello");  // false
+ * isEmpty(" ");      // false (whitespace is not empty)
+ * ```
  */
 export function isEmpty(s) {
   return s.length === 0;
@@ -15,6 +24,17 @@ export function isEmpty(s) {
  * Determines whether the string is null, undefined, or empty.
  * @param s The string to check.
  * @returns `true` if the string is null or undefined or empty; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { isNullOrEmpty } from "@frostyeti/strings";
+ *
+ * isNullOrEmpty(null);      // true
+ * isNullOrEmpty(undefined); // true
+ * isNullOrEmpty("");        // true
+ * isNullOrEmpty("hello");   // false
+ * isNullOrEmpty(" ");       // false (whitespace is not empty)
+ * ```
  */
 export function isNullOrEmpty(s) {
   return s === null || s === undefined || s.length === 0;

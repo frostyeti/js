@@ -43,15 +43,15 @@ import { mapError } from "./_map_error.ts";
  * @param mode A sequence of 3 octal numbers representing file permissions.
  */
 export async function chmod(path: string | URL, mode: number) {
-  if (isDeno) {
-    await globals.Deno.chmod(path, mode);
-  } else {
-    try {
-      await getNodeFs().promises.chmod(path, mode);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.chmod(path, mode);
+    } else {
+        try {
+            await getNodeFs().promises.chmod(path, mode);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -77,13 +77,13 @@ export async function chmod(path: string | URL, mode: number) {
  * @param mode A sequence of 3 octal numbers representing permissions. See {@linkcode chmod}.
  */
 export function chmodSync(path: string | URL, mode: number) {
-  if (isDeno) {
-    globals.Deno.chmodSync(path, mode);
-  } else {
-    try {
-      getNodeFs().chmodSync(path, mode);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.chmodSync(path, mode);
+    } else {
+        try {
+            getNodeFs().chmodSync(path, mode);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

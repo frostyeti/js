@@ -18,9 +18,7 @@ import {
   symlinkSync,
 } from "node:fs";
 import { globals } from "./globals.js";
-const version = typeof globals.Deno !== "undefined"
-  ? globals.Deno.version.deno
-  : "0.0.0";
+const version = typeof globals.Deno !== "undefined" ? globals.Deno.version.deno : "0.0.0";
 // In Deno 2.2.2 or earlier, the `rename` function has an issue on Windows.
 const RENAME_HAS_ISSUE = typeof globals.Deno !== "undefined" &&
   globals.Deno.version &&
@@ -85,7 +83,9 @@ test("rename() rejects with Error when an existing directory is renamed with an 
 });
 test(
   "rename() succeeds when an existing directory is renamed with another directory path",
-  { skip: RENAME_HAS_ISSUE },
+  {
+    skip: RENAME_HAS_ISSUE,
+  },
   async () => {
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "rename_"));
     const testDir = join(tempDirPath, "testDir");
@@ -226,7 +226,9 @@ test(
 );
 test(
   "renameSync() succeeds when an existing directory is renamed with another directory path",
-  { skip: RENAME_HAS_ISSUE },
+  {
+    skip: RENAME_HAS_ISSUE,
+  },
   () => {
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "renameSync_"));
     const testDir = join(tempDirPath, "testDir");

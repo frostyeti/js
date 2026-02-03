@@ -115,21 +115,33 @@ export function inspect(value: unknown, options?: InspectOptions): string {
         }
 
         const o: Record<string, unknown> = {
-            colors: options.colors ?? false,
-            showHidden: options.showHidden,
-            depth: depth,
-            breakLength: options.breakLength,
             compact: compact,
-            sorted: options.sorted,
-            getters: options.getters,
-            showProxy: options.showProxy,
-            trailingComma: options.trailingComma,
-            escapeSequences: options.escapeSequences,
-            maxArrayLength: options.iterableLimit,
-            maxStringLength: options.strAbbreviateSize,
-            numericSeparator: options.escapeSequences,
-            customInspect: true,
+            depth: depth,
+            colors: options.colors ?? false,
         };
+
+        for (const key in options) {
+            if (Object.prototype.hasOwnProperty.call(options, key)) {
+                if (key === "compact" || key === "depth") {
+                    continue;
+                }
+
+                switch (key) {
+                    case "iterableLimit":
+                        o["maxArrayLength"] = options.iterableLimit;
+                        break;
+                    case "strAbbreviateSize":
+                        o["maxStringLength"] = options.strAbbreviateSize;
+                        break;
+                    case "escapeSequences":
+                        o["numericSeparator"] = options.escapeSequences;
+                        break;
+                    default:
+                        o[key] = options[key as keyof InspectOptions];
+                        break;
+                }
+            }
+        }
 
         return getNodeUtil().inspect(value, o) as string;
     }

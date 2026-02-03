@@ -9,7 +9,17 @@ import { pascalize as og } from "@frostyeti/slices/pascalize";
  * code to pascal case.
  * @param value The string to pascalize.
  * @param options The options for the function.
- * @returns A string in camel case.
+ * @returns A string in pascal case.
+ *
+ * @example
+ * ```typescript
+ * import { pascalize } from "@frostyeti/strings";
+ *
+ * pascalize("hello world");    // "HelloWorld"
+ * pascalize("hello_world");    // "HelloWorld"
+ * pascalize("hello-world");    // "HelloWorld"
+ * pascalize("helloWorld");     // "HelloWorld"
+ * ```
  */
 export function pascalize(value) {
   const r = og(value);

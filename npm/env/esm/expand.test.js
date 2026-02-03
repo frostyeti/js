@@ -207,7 +207,7 @@ test("expand::custom get function", () => {
 });
 test("expand::custom set function", () => {
   const captured = { key: "", value: "" };
-  const { env, get, set } = createEnv();
+  const { get, set } = createEnv();
   const options = {
     set: (key, value) => {
       captured.key = key;

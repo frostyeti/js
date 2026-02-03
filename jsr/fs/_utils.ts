@@ -1,4 +1,3 @@
-
 // Copyright 2018-2026 the Deno authors. MIT license.
 // deno-lint-ignore-file no-explicit-any no-explicit-any no-explicit-any
 
@@ -10,61 +9,59 @@ export function toPathString(
     return pathUrl instanceof URL ? fromFileUrl(pathUrl) : pathUrl;
 }
 
-
-
 /**
  * True if the runtime is Deno, false otherwise.
  */
 export const isDeno = (globalThis as any).navigator
-  ?.userAgent?.includes("Deno");
+    ?.userAgent?.includes("Deno");
 
 /**
  * @returns The Node.js `fs` module.
  */
 export function getNodeFs() {
-  return (globalThis as any).process.getBuiltinModule("node:fs");
+    return (globalThis as any).process.getBuiltinModule("node:fs");
 }
 
 /**
  * @returns The Node.js `os` module.
  */
 export function getNodeOs() {
-  return (globalThis as any).process.getBuiltinModule("node:os");
+    return (globalThis as any).process.getBuiltinModule("node:os");
 }
 
 /**
  * @returns The Node.js `path` module.
  */
 export function getNodePath() {
-  return (globalThis as any).process.getBuiltinModule("node:path");
+    return (globalThis as any).process.getBuiltinModule("node:path");
 }
 
 /**
  * @returns The Node.js `process` module.
  */
 export function getNodeProcess() {
-  return (globalThis as any).process.getBuiltinModule("node:process");
+    return (globalThis as any).process.getBuiltinModule("node:process");
 }
 
 /**
  * @returns The Node.js `stream` module.
  */
 export function getNodeStream() {
-  return (globalThis as any).process.getBuiltinModule("node:stream");
+    return (globalThis as any).process.getBuiltinModule("node:stream");
 }
 
 /**
  * @returns The Node.js `tty` module.
  */
 export function getNodeTty() {
-  return (globalThis as any).process.getBuiltinModule("node:tty");
+    return (globalThis as any).process.getBuiltinModule("node:tty");
 }
 
 /**
  * @returns The Node.js `util` module.
  */
 export function getNodeUtil() {
-  return (globalThis as any).process.getBuiltinModule("node:util");
+    return (globalThis as any).process.getBuiltinModule("node:util");
 }
 
 /**
@@ -73,6 +70,6 @@ export function getNodeUtil() {
  * @returns A randomized 6-digit hexadecimal string.
  */
 export function randomId(): string {
-  const n = (Math.random() * 0xfffff * 1_000_000).toString(16);
-  return "".concat(n.slice(0, 6));
+    const n = (Math.random() * 0xfffff * 1_000_000).toString(16);
+    return "".concat(n.slice(0, 6));
 }

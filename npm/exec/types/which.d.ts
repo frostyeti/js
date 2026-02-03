@@ -20,6 +20,20 @@
  * @param {IEnvironment} env The environment class to use to lookup environment variables. Defaults to `envDefault`.
  * @param {boolean} useCache
  * @returns {string | undefined}
+ * @example
+ * ```ts
+ * import { whichSync } from "@frostyeti/exec";
+ *
+ * // Find an executable on the PATH
+ * const gitPath = whichSync("git");
+ * console.log(gitPath); // "/usr/bin/git" or undefined
+ *
+ * // Search with additional paths
+ * const customPath = whichSync("my-tool", ["/opt/tools/bin"]);
+ *
+ * // Disable caching for fresh lookup
+ * const freshPath = whichSync("node", undefined, false);
+ * ```
  */
 export declare function whichSync(
   fileName: string,
@@ -43,6 +57,21 @@ export declare function whichSync(
  * @param {IEnvironment} env The environment class to use to lookup environment variables. Defaults to `envDefault`.
  * @param {boolean} useCache
  * @returns {string | undefined}
+ * @example
+ * ```ts
+ * import { which } from "@frostyeti/exec";
+ *
+ * // Find an executable on the PATH
+ * const gitPath = await which("git");
+ * console.log(gitPath); // "/usr/bin/git" or undefined
+ *
+ * // Check if an executable exists
+ * const hasDocker = await which("docker") !== undefined;
+ * console.log("Docker installed:", hasDocker);
+ *
+ * // Search with additional paths
+ * const toolPath = await which("my-tool", ["/opt/custom/bin"]);
+ * ```
  */
 export declare function which(
   fileName: string,

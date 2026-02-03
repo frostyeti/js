@@ -8,7 +8,7 @@ import { equalFold } from "@frostyeti/strings/equal";
 import { expand, get } from "@frostyeti/env";
 import { underscore } from "@frostyeti/strings/underscore";
 import { which, whichSync } from "./which.js";
-import { isFile, isFileSync } from "@frostyeti/fs";
+import { isfile, isfileSync } from "@frostyeti/fs";
 import { DARWIN, WIN } from "./globals.js";
 /**
  * Represents a path finder that allows storing and retrieving
@@ -51,6 +51,18 @@ export class PathFinder {
    * Sets the path finder options for a given name.
    * @param name - The name of the path finder.
    * @param options - The path finder options.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * pathFinder.set("my-tool", {
+   *   name: "my-tool",
+   *   envVariable: "MY_TOOL_PATH",
+   *   windows: ["C:\\Program Files\\MyTool\\my-tool.exe"],
+   *   linux: ["/opt/my-tool/bin/my-tool"],
+   *   darwin: ["/Applications/MyTool.app/Contents/MacOS/my-tool"],
+   * });
+   * ```
    */
   set(name, options) {
     this.#map.set(name, options);
@@ -59,6 +71,15 @@ export class PathFinder {
    * Retrieves the path finder options for a given name.
    * @param name - The name of the path finder.
    * @returns The path finder options, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const options = pathFinder.get("deno");
+   * if (options) {
+   *   console.log("Deno options:", options);
+   * }
+   * ```
    */
   get(name) {
     return this.#map.get(name);
@@ -67,6 +88,14 @@ export class PathFinder {
    * Checks if a path finder with the given name exists.
    * @param name - The name of the path finder.
    * @returns True if the path finder exists, false otherwise.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * if (pathFinder.has("deno")) {
+   *   console.log("Deno is registered");
+   * }
+   * ```
    */
   has(name) {
     return this.#map.has(name);
@@ -112,6 +141,15 @@ export class PathFinder {
    * Finds the executable path for a given name.
    * @param name - The name of the executable.
    * @returns The executable path, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const gitPath = await pathFinder.findExe("git");
+   * if (gitPath) {
+   *   console.log("Git found at:", gitPath);
+   * }
+   * ```
    */
   async findExe(name) {
     let options = this.find(name);
@@ -137,7 +175,7 @@ export class PathFinder {
       ) {
         return envPath;
       }
-      if (envPath && await isFile(envPath)) {
+      if (envPath && await isfile(envPath)) {
         options.cached = envPath;
         return envPath;
       }
@@ -155,7 +193,7 @@ export class PathFinder {
         for (const path of options.windows) {
           let next = path;
           next = expand(next);
-          if (await isFile(next)) {
+          if (await isfile(next)) {
             options.cached = next;
             return next;
           }
@@ -168,7 +206,7 @@ export class PathFinder {
         for (const path of options.darwin) {
           let next = path;
           next = expand(next);
-          if (await isFile(next)) {
+          if (await isfile(next)) {
             options.cached = next;
             return next;
           }
@@ -181,7 +219,7 @@ export class PathFinder {
       for (const path of options.linux) {
         let next = path;
         next = expand(next);
-        if (await isFile(next)) {
+        if (await isfile(next)) {
           options.cached = next;
           return next;
         }
@@ -193,6 +231,13 @@ export class PathFinder {
    * Synchronously finds the executable path for a given name.
    * @param name - The name of the executable.
    * @returns The executable path, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const nodePath = pathFinder.findExeSync("node");
+   * console.log("Node.js path:", nodePath);
+   * ```
    */
   findExeSync(name) {
     let options = this.find(name);
@@ -219,7 +264,7 @@ export class PathFinder {
         return envPath;
       }
       if (envPath) {
-        if (envPath && isFileSync(envPath)) {
+        if (envPath && isfileSync(envPath)) {
           options.cached = envPath;
           return envPath;
         }
@@ -242,7 +287,7 @@ export class PathFinder {
           } catch {
             continue;
           }
-          if (isFileSync(next)) {
+          if (isfileSync(next)) {
             options.cached = next;
             return next;
           }
@@ -260,7 +305,7 @@ export class PathFinder {
             // todo: get trace/debug writer to handle
             continue;
           }
-          if (isFileSync(next)) {
+          if (isfileSync(next)) {
             options.cached = next;
             return next;
           }
@@ -277,7 +322,7 @@ export class PathFinder {
         } catch {
           continue;
         }
-        if (isFileSync(next)) {
+        if (isfileSync(next)) {
           options.cached = next;
           return next;
         }

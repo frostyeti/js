@@ -30,9 +30,7 @@ export async function ensureDir(dir) {
     const fileInfo = await stat(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${
-          getFileInfoType(fileInfo)
-        }'`,
+        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
       );
     }
     return;
@@ -52,9 +50,7 @@ export async function ensureDir(dir) {
     const fileInfo = await stat(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${
-          getFileInfoType(fileInfo)
-        }'`,
+        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
       );
     }
   }
@@ -80,9 +76,7 @@ export function ensureDirSync(dir) {
     const fileInfo = statSync(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${
-          getFileInfoType(fileInfo)
-        }'`,
+        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
       );
     }
     return;
@@ -102,9 +96,7 @@ export function ensureDirSync(dir) {
     const fileInfo = statSync(dir);
     if (!fileInfo.isDirectory) {
       throw new Error(
-        `Ensure path exists, expected 'dir', got '${
-          getFileInfoType(fileInfo)
-        }'`,
+        `Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`,
       );
     }
   }

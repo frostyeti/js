@@ -2,7 +2,7 @@ import { test } from "node:test";
 import { equal, ok } from "@frostyeti/assert";
 import { cwd } from "./cwd.ts";
 import { chdir } from "./chdir.ts";
-import { dirname, resolve, join } from "@frostyeti/path";
+import { dirname } from "@frostyeti/path";
 
 // =============================================================================
 // Basic functionality tests
@@ -38,10 +38,10 @@ test("process::cwd is consistent on repeated calls", () => {
 test("process::cwd reflects chdir changes", () => {
     const original = cwd();
     const parent = dirname(original);
-    
+
     chdir(parent);
     equal(cwd(), parent);
-    
+
     // Restore
     chdir(original);
     equal(cwd(), original);
@@ -49,18 +49,18 @@ test("process::cwd reflects chdir changes", () => {
 
 test("process::cwd handles relative path changes", () => {
     const original = cwd();
-    
+
     chdir("..");
     const parent = cwd();
     ok(parent !== original || original === "/");
-    
+
     // Restore
     chdir(original);
 });
 
 test("process::cwd handles current directory reference", () => {
     const original = cwd();
-    
+
     chdir(".");
     equal(cwd(), original);
 });

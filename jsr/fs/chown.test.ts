@@ -13,58 +13,56 @@ import { globals } from "./globals.ts";
 const isBun = typeof globals.Bun !== "undefined";
 
 type IdResult = {
-  id: string;
-  code: number;
+    id: string;
+    code: number;
 };
 
 function runId(
-  option?: "group" | "user",
+    option?: "group" | "user",
 ): Promise<IdResult> {
-  return new Promise((resolve, reject) => {
-    let id;
-    if (option === "user") {
-      id = spawn("id", ["-u"]);
-    } else if (option === "group") {
-      id = spawn("id", ["-g"]);
-    } else {
-      return reject(new Error("Invalid option."));
-    }
+    return new Promise((resolve, reject) => {
+        let id;
+        if (option === "user") {
+            id = spawn("id", ["-u"]);
+        } else if (option === "group") {
+            id = spawn("id", ["-g"]);
+        } else {
+            return reject(new Error("Invalid option."));
+        }
 
-    id.stderr.on("error", (err: Error) => {
-      return reject(err);
-    });
+        id.stderr.on("error", (err: Error) => {
+            return reject(err);
+        });
 
-    let data = "";
-    const result: Partial<IdResult> = {};
-    id.stdout.on("data", (chunk) => {
-      data += chunk;
-    });
+        let data = "";
+        const result: Partial<IdResult> = {};
+        id.stdout.on("data", (chunk) => {
+            data += chunk;
+        });
 
-    id.stdout.on("end", () => {
-      result.id = data;
-    });
+        id.stdout.on("end", () => {
+            result.id = data;
+        });
 
-    id.on("close", (code: number) => {
-      result.code = code;
-      resolve(result as IdResult);
+        id.on("close", (code: number) => {
+            result.code = code;
+            resolve(result as IdResult);
+        });
     });
-  });
 }
 
 async function getUidAndGid(): Promise<{ uid: number; gid: number }> {
-  const uidProc = await runId("user");
-  const gidProc = await runId("group");
-  equal(uidProc.code, 0);
-  equal(gidProc.code, 0);
-  return {
-    uid: parseInt(uidProc.id),
-    gid: parseInt(gidProc.id),
-  };
+    const uidProc = await runId("user");
+    const gidProc = await runId("group");
+    equal(uidProc.code, 0);
+    equal(gidProc.code, 0);
+    return {
+        uid: parseInt(uidProc.id),
+        gid: parseInt(gidProc.id),
+    };
 }
 
-test("chown() changes user and group ids",
-  { skip: platform() === "win32" },
-  async () => {
+test("chown() changes user and group ids", { skip: platform() === "win32" }, async () => {
     const { uid, gid } = await getUidAndGid();
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "chown_"));
     const testFile = join(tempDirPath, "chown_file.txt");
@@ -76,14 +74,12 @@ test("chown() changes user and group ids",
 
     await tempFh.close();
     await rm(tempDirPath, { recursive: true, force: true });
-  });
+});
 
-test("chown() handles `null` id arguments",
-  { skip: platform() === "win32" || isBun },
-  async () => {
+test("chown() handles `null` id arguments", { skip: platform() === "win32" || isBun }, async () => {
     if (isBun) {
         console.warn("Skipping test in Bun: Bun's fs.chown does not support null arguments.");
-        return 
+        return;
     }
 
     const { uid, gid } = await getUidAndGid();
@@ -96,34 +92,34 @@ test("chown() handles `null` id arguments",
 
     await tempFh.close();
     await rm(tempDirPath, { recursive: true, force: true });
-  });
+});
 
-test("chown() rejects with NotFound for a non-existent file",
-  { skip: platform() === "win32" },
-  async () => {
-    await rejects(async () => {
-      await chown("non-existent-file.txt", null, null);
-    }, NotFound);
-  });
+test(
+    "chown() rejects with NotFound for a non-existent file",
+    { skip: platform() === "win32" },
+    async () => {
+        await rejects(async () => {
+            await chown("non-existent-file.txt", null, null);
+        }, NotFound);
+    },
+);
 
-test("chown() rejects with Error when called without elevated privileges",
-  { skip: platform() === "win32" },
-  async () => {
+test("chown() rejects with Error when called without elevated privileges", {
+    skip: platform() === "win32",
+}, async () => {
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "chown_"));
     const testFile = join(tempDirPath, "chown_file.txt");
     const tempFh = await open(testFile, "w");
 
     await rejects(async () => {
-      await chown(testFile, 0, 0);
+        await chown(testFile, 0, 0);
     }, Error);
 
     await tempFh.close();
     await rm(tempDirPath, { recursive: true, force: true });
-  });
+});
 
-test("chownSync() changes user and group ids",
-  { skip: platform() === "win32" },
-  async () => {
+test("chownSync() changes user and group ids", { skip: platform() === "win32" }, async () => {
     const { uid, gid } = await getUidAndGid();
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "chownSync_"));
     const testFile = join(tempDirPath, "chown_file.txt");
@@ -136,46 +132,50 @@ test("chownSync() changes user and group ids",
 
     closeSync(tempFd);
     rmSync(tempDirPath, { recursive: true, force: true });
-  });
+});
 
-test("chownSync() handles `null` id arguments",
-  { skip: platform() === "win32" || isBun },
-  async () => {
-    if (isBun) {
-        console.warn("Skipping test in Bun: Bun's fs.chown does not support null arguments.");
-        return 
-    }
-    const { uid, gid } = await getUidAndGid();
+test(
+    "chownSync() handles `null` id arguments",
+    { skip: platform() === "win32" || isBun },
+    async () => {
+        if (isBun) {
+            console.warn("Skipping test in Bun: Bun's fs.chown does not support null arguments.");
+            return;
+        }
+        const { uid, gid } = await getUidAndGid();
+        const tempDirPath = mkdtempSync(resolve(tmpdir(), "chownSync_"));
+        const testFile = join(tempDirPath, "chown_file.txt");
+        const tempFd = openSync(testFile, "w");
+
+        chownSync(testFile, uid, null);
+        chownSync(testFile, null, gid);
+
+        closeSync(tempFd);
+        rmSync(tempDirPath, { recursive: true, force: true });
+    },
+);
+
+test(
+    "chownSync() throws with NotFound for a non-existent file",
+    { skip: platform() === "win32" },
+    () => {
+        throws(() => {
+            chownSync("non-existent-file.txt", null, null);
+        }, NotFound);
+    },
+);
+
+test("chownSync() throws with Error when called without elevated privileges", {
+    skip: platform() === "win32",
+}, () => {
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "chownSync_"));
     const testFile = join(tempDirPath, "chown_file.txt");
     const tempFd = openSync(testFile, "w");
 
-    chownSync(testFile, uid, null);
-    chownSync(testFile, null, gid);
-
-    closeSync(tempFd);
-    rmSync(tempDirPath, { recursive: true, force: true });
-  });
-
-test("chownSync() throws with NotFound for a non-existent file",
-  { skip: platform() === "win32" },
-  () => {
     throws(() => {
-      chownSync("non-existent-file.txt", null, null);
-    }, NotFound);
-  });
-
-test("chownSync() throws with Error when called without elevated privileges",
-  { skip: platform() === "win32" },
-  () => {
-    const tempDirPath = mkdtempSync(resolve(tmpdir(), "chownSync_"));
-    const testFile = join(tempDirPath, "chown_file.txt");
-    const tempFd = openSync(testFile, "w");
-
-    throws(() => {
-      chownSync(testFile, 0, 0);
+        chownSync(testFile, 0, 0);
     }, Error);
 
     closeSync(tempFd);
     rmSync(tempDirPath, { recursive: true, force: true });
-  });
+});

@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { equal, ok } from "@frostyeti/assert";
+import { equal, ok, throws } from "@frostyeti/assert";
 import { globals, WIN } from "./globals.js";
 import { which, whichSync } from "./which.js";
 let rt = "node";
@@ -81,5 +81,60 @@ test("exec::whichSync", () => {
         }
       }
       break;
+  }
+});
+test("exec::which - returns undefined for non-existent command", async () => {
+  const result = await which("definitely-not-a-real-command-12345");
+  equal(result, undefined);
+});
+test("exec::whichSync - returns undefined for non-existent command", () => {
+  const result = whichSync("definitely-not-a-real-command-12345");
+  equal(result, undefined);
+});
+test("exec::which - throws for empty fileName", async () => {
+  let threw = false;
+  try {
+    await which("");
+  } catch {
+    threw = true;
+  }
+  ok(threw, "Expected which to throw for empty filename");
+});
+test("exec::whichSync - throws for empty fileName", () => {
+  throws(() => whichSync(""));
+});
+test("exec::which - throws for whitespace-only fileName", async () => {
+  let threw = false;
+  try {
+    await which("   ");
+  } catch {
+    threw = true;
+  }
+  ok(threw, "Expected which to throw for whitespace-only filename");
+});
+test("exec::which - with useCache false", async () => {
+  // First call caches
+  const first = await which("git");
+  // Second call without cache
+  const second = await which("git", undefined, false);
+  equal(first, second);
+});
+test("exec::whichSync - with useCache false", () => {
+  const first = whichSync("git");
+  const second = whichSync("git", undefined, false);
+  equal(first, second);
+});
+test("exec::which - with prependPath", async () => {
+  // Even with invalid prepend paths, should still find on PATH
+  const result = await which("git", ["/non-existent-path"]);
+  // git should still be found on the system PATH
+  if (result) {
+    ok(result.includes("git"));
+  }
+});
+test("exec::whichSync - with prependPath", () => {
+  const result = whichSync("git", ["/non-existent-path"]);
+  if (result) {
+    ok(result.includes("git"));
   }
 });

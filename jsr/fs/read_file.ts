@@ -9,7 +9,6 @@ import type { ReadFileOptions } from "./types.ts";
 import { getNodeFs } from "./globals.ts";
 import { mapError } from "./_map_error.ts";
 
-
 /**
  * Reads and resolves to the entire contents of a file as an array of bytes.
  * `TextDecoder` can be used to transform the bytes to string if required.
@@ -31,17 +30,17 @@ import { mapError } from "./_map_error.ts";
  * @returns A promise that resolves to a `Uint8Array` of the file contents.
  */
 export async function readFile(path: string | URL, options?: ReadFileOptions): Promise<Uint8Array> {
-     if (globals.Deno) {
-    return await globals.Deno.readFile(path, { ...options });
-  } else {
-    const { signal } = options ?? {};
-    try {
-      const buf = await getNodeFs().promises.readFile(path, { signal });
-      return new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
-    } catch (error) {
-      throw mapError(error);
+    if (globals.Deno) {
+        return await globals.Deno.readFile(path, { ...options });
+    } else {
+        const { signal } = options ?? {};
+        try {
+            const buf = await getNodeFs().promises.readFile(path, { signal });
+            return new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -69,10 +68,10 @@ export function readFileSync(path: string | URL): Uint8Array {
         return globals.Deno.readFileSync(path);
     }
 
-  try {
-      const buf = getNodeFs().readFileSync(path);
-      return new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
+    try {
+        const buf = getNodeFs().readFileSync(path);
+        return new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
     } catch (error) {
-      throw mapError(error);
+        throw mapError(error);
     }
 }

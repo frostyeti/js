@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { equal, ok, nope } from "@frostyeti/assert";
+import { equal, nope } from "@frostyeti/assert";
 import { stripAnsiCode } from "./strip_ansi_code.ts";
 
 // =============================================================================

@@ -2058,9 +2058,7 @@ export function charSlice(buffer, start, end) {
   if (typeof buffer === "string") {
     return CharSlice.fromString(buffer).slice(start ?? 0, end ?? undefined);
   }
-  const uint32Buffer = buffer instanceof Uint32Array
-    ? buffer
-    : new Uint32Array(buffer);
+  const uint32Buffer = buffer instanceof Uint32Array ? buffer : new Uint32Array(buffer);
   const s = start ?? 0;
   const e = end ?? uint32Buffer.length;
   return new CharSlice(uint32Buffer, s, e);
@@ -2087,9 +2085,7 @@ export function readonlyCharSlice(buffer, start, end) {
       end ?? undefined,
     );
   }
-  const uint32Buffer = buffer instanceof Uint32Array
-    ? buffer
-    : new Uint32Array(buffer);
+  const uint32Buffer = buffer instanceof Uint32Array ? buffer : new Uint32Array(buffer);
   const s = start ?? 0;
   const e = end ?? uint32Buffer.length;
   return new ReadonlyCharSlice(uint32Buffer, s, e);

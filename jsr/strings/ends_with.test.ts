@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { ok, nope } from "@frostyeti/assert";
+import { nope, ok } from "@frostyeti/assert";
 import { endsWith, endsWithFold } from "./ends_with.ts";
 
 // =============================================================================

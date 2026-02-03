@@ -35,8 +35,7 @@ export async function writeFile(path, data, options) {
   if (globals.Deno) {
     return await globals.Deno.writeFile(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode, signal } =
-      options ?? {};
+    const { append = false, create = true, createNew = false, mode, signal } = options ?? {};
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       await getNodeFs().promises.writeFile(path, data, { flag, signal });
@@ -76,8 +75,7 @@ export function writeFileSync(path, data, options) {
   if (globals.Deno) {
     return globals.Deno.writeFileSync(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode, signal } =
-      options ?? {};
+    const { append = false, create = true, createNew = false, mode, signal } = options ?? {};
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       getNodeFs().writeFileSync(path, data, { flag, signal });

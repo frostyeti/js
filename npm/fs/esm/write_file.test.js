@@ -1,13 +1,6 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import {
-  equal,
-  exists,
-  ok,
-  rejects,
-  throws,
-  unreachable,
-} from "@frostyeti/assert";
+import { equal, exists, ok, rejects, throws, unreachable } from "@frostyeti/assert";
 import { isDeno } from "./_utils.js";
 import { writeFile, writeFileSync } from "./write_file.js";
 import { readFile, readFileSync } from "./read_file.js";

@@ -29,7 +29,7 @@ import { mapError } from "./_map_error.ts";
 export async function lstat(path: string | URL): Promise<FileInfo> {
     if (globals.Deno) {
         // deno-lint-ignore no-explicit-any
-        return  await globals.Deno.lstat(path) as any as FileInfo;
+        return await globals.Deno.lstat(path) as any as FileInfo;
     }
 
     try {

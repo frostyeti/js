@@ -10,7 +10,6 @@ import { getNodeFs, globals } from "./globals.ts";
 import { getWriteFsFlag } from "./_get_fs_flag.ts";
 import { mapError } from "./_map_error.ts";
 
-
 /**
  * Write `data` to the given `path`, by default creating a new file if needed,
  * else overwriting.
@@ -62,7 +61,6 @@ export async function writeFile(
         }
     }
 }
-
 
 /**
  * Synchronously write `data` to the given `path`, by default creating a new

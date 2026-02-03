@@ -15,11 +15,27 @@ import { pathFinder } from "./path_finder.js";
 import { getLogger } from "./set_logger.js";
 import { splat } from "@frostyeti/args/splat";
 import { split } from "@frostyeti/args/split";
-import { remove, removeSync } from "@frostyeti/fs/remove";
+import { rm, rmSync } from "@frostyeti/fs/rm";
 /**
  * Converts the command arguments to an array of strings.
  * @param args Converts the command arguments to an array of strings.
  * @returns The array of strings.
+ * @example
+ * ```ts
+ * import { convertCommandArgs } from "@frostyeti/exec";
+ *
+ * // Convert a string with spaces
+ * const args1 = convertCommandArgs("git commit -m 'hello world'");
+ * console.log(args1); // ["git", "commit", "-m", "hello world"]
+ *
+ * // Convert an object with options
+ * const args2 = convertCommandArgs({ verbose: true, count: 5 });
+ * console.log(args2); // ["--verbose", "--count", "5"]
+ *
+ * // Convert an array (pass-through)
+ * const args3 = convertCommandArgs(["git", "status"]);
+ * console.log(args3); // ["git", "status"]
+ * ```
  */
 export function convertCommandArgs(args) {
   if (args === undefined || args === null) {
@@ -35,6 +51,28 @@ export function convertCommandArgs(args) {
 }
 /**
  * Represents a command that can be executed.
+ *
+ * @example
+ * ```ts
+ * import { Command } from "@frostyeti/exec";
+ *
+ * // Create and execute a simple command
+ * const cmd = new Command(["echo", "hello world"]);
+ * const output = await cmd.output();
+ * console.log(output.text()); // "hello world\n"
+ *
+ * // Use with options
+ * const cmd2 = new Command(["ls", "-la"], {
+ *   cwd: "/tmp",
+ *   env: { MY_VAR: "value" }
+ * });
+ * const result = await cmd2.output();
+ * console.log(result.code); // 0
+ *
+ * // Commands can be awaited directly
+ * const output2 = await new Command(["cat", "file.txt"]);
+ * console.log(output2.text());
+ * ```
  */
 export class Command {
   file;
@@ -48,10 +86,21 @@ export class Command {
    * @param options The options for the command.
    */
   constructor(args, options) {
-    const a = convertCommandArgs(args);
-    this.file = a.shift() ?? "";
-    this.args = a;
     options ??= {};
+    if (args === undefined || args === null) {
+      this.file = "";
+      this.args = [];
+    } else if (typeof args === "string" && !args.includes(" ")) {
+      this.file = args;
+      this.args = [];
+    } else if (Array.isArray(args)) {
+      this.file = args[0];
+      this.args = args.length > 0 ? args.slice(1) : [];
+    } else {
+      const a = convertCommandArgs(args);
+      this.file = a.shift() ?? "";
+      this.args = a;
+    }
     options.stdin ??= "inherit";
     options.stderr ??= "piped";
     options.stdout ??= "piped";
@@ -73,6 +122,15 @@ export class Command {
    * Sets the current working directory for the command.
    * @param value The current working directory.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["ls", "-la"])
+   *   .withCwd("/tmp")
+   *   .output();
+   * console.log(output.text());
+   * ```
    */
   withCwd(value) {
     this.options ??= {};
@@ -83,6 +141,15 @@ export class Command {
    * Sets the environment variables for the command.
    * @param value The environment variables.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["printenv", "MY_VAR"])
+   *   .withEnv({ MY_VAR: "hello" })
+   *   .output();
+   * console.log(output.text()); // "hello\n"
+   * ```
    */
   withEnv(value) {
     this.options ??= {};
@@ -136,6 +203,15 @@ export class Command {
    * Sets the stdin behavior for the command.
    * @param value The stdin behavior.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["cat"])
+   *   .withStdin("piped")
+   *   .withStdout("piped")
+   *   .output();
+   * ```
    */
   withStdin(value) {
     this.options ??= {};
@@ -188,6 +264,14 @@ export class Command {
    * Runs the command asynchronously and returns a promise that resolves to the output of the command.
    * The stdout and stderr are set to `inherit`.
    * @returns A promise that resolves to the output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * // Run command with inherited stdout/stderr (output shown in terminal)
+   * const output = await cmd(["npm", "install"]).run();
+   * console.log(output.code); // 0
+   * ```
    */
   async run() {
     this.options ??= {};
@@ -205,6 +289,14 @@ export class Command {
    * Runs the command synchronously and returns the output of the command.
    * The stdout and stderr are set to `inherit`.
    * @returns The output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * // Run command synchronously with inherited stdout/stderr
+   * const output = cmd(["echo", "hello"]).runSync();
+   * console.log(output.code); // 0
+   * ```
    */
   runSync() {
     this.options ??= {};
@@ -250,6 +342,13 @@ export class Command {
   /**
    * Gets the output of the command as text.
    * @returns A promise that resolves to the output of the command as text.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const text = await cmd(["echo", "hello"]).text();
+   * console.log(text); // "hello\n"
+   * ```
    */
   async text() {
     this.options ??= {};
@@ -265,6 +364,15 @@ export class Command {
   /**
    * Gets the output of the command as an array of lines.
    * @returns A promise that resolves to the output of the command as an array of lines.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const lines = await cmd(["ls", "-la"]).lines();
+   * for (const line of lines) {
+   *   console.log(line);
+   * }
+   * ```
    */
   async lines() {
     this.options ??= {};
@@ -280,6 +388,13 @@ export class Command {
   /**
    * Gets the output of the command as JSON.
    * @returns A promise that resolves to the output of the command as JSON.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const data = await cmd(["echo", '{"name": "test"}']).json();
+   * console.log(data); // { name: "test" }
+   * ```
    */
   async json() {
     this.options ??= {};
@@ -295,6 +410,15 @@ export class Command {
   /**
    * Gets the output of the command.
    * @returns A promise that resolves to the output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["git", "status"]).output();
+   * console.log(output.code);    // Exit code (0 = success)
+   * console.log(output.success); // true if code === 0
+   * console.log(output.text());  // stdout as string
+   * ```
    */
   output() {
     throw new Error("Not implemented");
@@ -302,6 +426,13 @@ export class Command {
   /**
    * Gets the output of the command synchronously.
    * @returns The output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = cmd(["echo", "hello"]).outputSync();
+   * console.log(output.text()); // "hello\n"
+   * ```
    */
   outputSync() {
     throw new Error("Not implemented");
@@ -309,6 +440,15 @@ export class Command {
   /**
    * Spawns a child process for the command.
    * @returns The spawned child process.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * await using process = cmd(["node", "server.js"]).spawn();
+   * console.log(process.pid); // Process ID
+   * // ... later
+   * process.kill("SIGTERM");
+   * ```
    */
   spawn() {
     throw new Error("Not implemented");
@@ -316,6 +456,30 @@ export class Command {
 }
 /**
  * Represents a shell command.
+ *
+ * @example
+ * ```ts
+ * import { ShellCommand, type ShellCommandOptions } from "@frostyeti/exec";
+ *
+ * // Extend ShellCommand for a specific shell
+ * class BashCommand extends ShellCommand {
+ *   constructor(script: string, options?: ShellCommandOptions) {
+ *     super("bash", script, options);
+ *   }
+ *
+ *   override get ext(): string {
+ *     return ".sh";
+ *   }
+ *
+ *   override getShellArgs(script: string, isFile: boolean): string[] {
+ *     return isFile ? [script] : ["-c", script];
+ *   }
+ * }
+ *
+ * const cmd = new BashCommand("echo 'Hello from bash'");
+ * const output = await cmd.output();
+ * console.log(output.text()); // "Hello from bash\n"
+ * ```
  */
 export class ShellCommand extends Command {
   shellArgs;
@@ -389,6 +553,19 @@ export class ShellCommand extends Command {
  * @param args - The arguments to pass to the executable.
  * @param options - The options for the command.
  * @returns A new `CommandType` instance.
+ * @example
+ * ```ts
+ * import { cmd } from "@frostyeti/exec";
+ *
+ * // Create a command with an array
+ * const output1 = await cmd(["git", "status"]).output();
+ *
+ * // Create a command with a string (auto-split)
+ * const output2 = await cmd("git status").output();
+ *
+ * // Create with options
+ * const output3 = await cmd(["ls", "-la"], { cwd: "/tmp" }).output();
+ * ```
  */
 export function cmd(args, options) {
   return new Command(args, options);
@@ -400,6 +577,18 @@ export function cmd(args, options) {
  * @param args - The command arguments to execute.
  * @param options - The options for the command.
  * @returns A promise that resolves to the output of the command.
+ * @example
+ * ```ts
+ * import { exec } from "@frostyeti/exec";
+ *
+ * // Execute and get output directly
+ * const output = await exec(["echo", "hello"]);
+ * console.log(output.text()); // "hello\n"
+ *
+ * // Execute with a string command
+ * const output2 = await exec("git config --list");
+ * console.log(output2.lines());
+ * ```
  */
 export function exec(args, options) {
   return new Command(args, options).output();
@@ -409,6 +598,14 @@ export function exec(args, options) {
  * @param args - The command arguments to execute.
  * @param options - The options for the command.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { execSync } from "@frostyeti/exec";
+ *
+ * const output = execSync(["echo", "hello"]);
+ * console.log(output.text()); // "hello\n"
+ * console.log(output.code);   // 0
+ * ```
  */
 export function execSync(args, options) {
   return new Command(args, options).outputSync();
@@ -747,7 +944,7 @@ if (globals.Deno) {
       }, this.file);
     } finally {
       if (isFile && generated) {
-        await remove(file);
+        await rm(file);
       }
     }
   };
@@ -785,7 +982,7 @@ if (globals.Deno) {
       }, this.file);
     } finally {
       if (isFile && generated) {
-        removeSync(file);
+        rmSync(file);
       }
     }
   };
@@ -812,7 +1009,7 @@ if (globals.Deno) {
     const proc = new DenoChildProcess(process.spawn(), options, this.file);
     proc.onDispose = () => {
       if (isFile && generated) {
-        removeSync(file);
+        rmSync(file);
       }
     };
     return proc;
@@ -1147,7 +1344,7 @@ if (globals.Deno) {
     promises.push(
       new Promise((resolve) => {
         child.on("exit", (c, s) => {
-          code = c !== null ? c : 1;
+          code = c !== null ? c : 0;
           sig = s === null ? undefined : s;
           resolve();
         });
@@ -1186,12 +1383,12 @@ if (globals.Deno) {
       stdio: [mapPipe(o.stdin), mapPipe(o.stdout), mapPipe(o.stderr)],
       windowsVerbatimArguments: o.windowsRawArguments,
     });
-    const code = child.status ? child.status : 1;
+    const code = child.status ? child.status : 0;
     return new NodeOutput({
       file: this.file,
       stdout: new Uint8Array(0),
       stderr: new Uint8Array(0),
-      code: child.status ? child.status : 1,
+      code: code,
       signal: child.signal,
       success: code === 0,
     });
@@ -1315,7 +1512,7 @@ if (globals.Deno) {
       });
     } finally {
       if (isFile && generated) {
-        await remove(file);
+        await rm(file);
       }
     }
   };
@@ -1363,7 +1560,7 @@ if (globals.Deno) {
       });
     } finally {
       if (isFile && generated) {
-        removeSync(file);
+        rmSync(file);
       }
     }
   };
@@ -1402,7 +1599,7 @@ if (globals.Deno) {
     const proc = new NodeChildProcess(child, this.file, o.signal);
     proc.onDispose = () => {
       if (isFile && generated) {
-        removeSync(file);
+        rmSync(file);
       }
     };
     return proc;
@@ -1416,6 +1613,14 @@ if (globals.Deno) {
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { run } from "@frostyeti/exec";
+ *
+ * // Run a command with inherited stdout/stderr (visible in terminal)
+ * const output = await run(["npm", "install"]);
+ * console.log(output.code); // 0 if successful
+ * ```
  */
 export function run(args, options) {
   const o = options || {};
@@ -1431,6 +1636,14 @@ export function run(args, options) {
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { runSync } from "@frostyeti/exec";
+ *
+ * // Run synchronously with inherited stdout/stderr
+ * const output = runSync(["echo", "hello"]);
+ * console.log(output.code); // 0
+ * ```
  */
 export function runSync(args, options) {
   const o = options || {};
@@ -1446,6 +1659,18 @@ export function runSync(args, options) {
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The process of the command.
+ * @example
+ * ```ts
+ * import { spawn } from "@frostyeti/exec";
+ *
+ * // Spawn a long-running process
+ * await using process = spawn(["node", "server.js"]);
+ * console.log("Server started with PID:", process.pid);
+ *
+ * // Wait for process to complete
+ * const output = await process.output();
+ * console.log(output.code);
+ * ```
  */
 export function spawn(args, options) {
   options ??= {};

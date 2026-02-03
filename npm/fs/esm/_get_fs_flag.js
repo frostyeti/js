@@ -6,8 +6,7 @@ import { getNodeFs } from "./globals.js";
  * Node.js `writeFile` function.
  */
 export function getWriteFsFlag(opt) {
-  const { O_APPEND, O_CREAT, O_EXCL, O_TRUNC, O_WRONLY } =
-    getNodeFs().constants;
+  const { O_APPEND, O_CREAT, O_EXCL, O_TRUNC, O_WRONLY } = getNodeFs().constants;
   let flag = O_WRONLY;
   if (opt.create) {
     flag |= O_CREAT;
@@ -28,8 +27,7 @@ export function getWriteFsFlag(opt) {
  * function.
  */
 export function getOpenFsFlag(opt) {
-  const { O_APPEND, O_CREAT, O_EXCL, O_WRONLY, O_RDONLY, O_RDWR, O_TRUNC } =
-    getNodeFs().constants;
+  const { O_APPEND, O_CREAT, O_EXCL, O_WRONLY, O_RDONLY, O_RDWR, O_TRUNC } = getNodeFs().constants;
   if (
     !opt.read && !opt.write && !opt.append && !opt.truncate && !opt.create &&
     !opt.createNew

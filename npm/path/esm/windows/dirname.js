@@ -3,11 +3,7 @@
 import { assertArg } from "../_common/dirname.js";
 import { CHAR_COLON } from "@frostyeti/chars/constants";
 import { stripTrailingSeparators } from "../_common/strip_trailing_separators.js";
-import {
-  isPathSeparator,
-  isPosixPathSeparator,
-  isWindowsDeviceRoot,
-} from "./_util.js";
+import { isPathSeparator, isPosixPathSeparator, isWindowsDeviceRoot } from "./_util.js";
 import { fromFileUrl } from "./from_file_url.js";
 /**
  * Return the directory path of a `path`.

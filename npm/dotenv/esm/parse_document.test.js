@@ -17,8 +17,6 @@ FOO=bar`;
 test("dotenv::parseDocument - multiline using escape character", () => {
   const source = `FOO="bar\\nbaz"`;
   const document = parseDocument(source);
-  const set = document.toArray();
-  console.log(set);
   equal(document.length, 1);
   const [variable] = document.toArray();
   equal(variable.kind, "item");
@@ -29,8 +27,6 @@ test("dotenv::parseDocument - multiline with new line", () => {
   const source = `FOO="bar
 baz"`;
   const document = parseDocument(source);
-  const set = document.toArray();
-  console.log(set);
   equal(document.length, 1);
   const [variable] = document.toArray();
   equal(variable.kind, "item");
@@ -86,7 +82,6 @@ test("dotenv::parseDocument - spacing around unquoted value", () => {
 
   `;
   document = parseDocument(source);
-  console.log(document.toArray());
   equal(document.length, 3);
   const [variable4] = document.toArray();
   equal(variable4.kind, "item");
@@ -119,7 +114,6 @@ test("dotenv::parseDocument - spacing around quoted value", () => {
 
   `;
   document = parseDocument(source);
-  console.log(document.toArray());
   equal(document.length, 3);
   const [variable4] = document.toArray();
   equal(variable4.kind, "item");

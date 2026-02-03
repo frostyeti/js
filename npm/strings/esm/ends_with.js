@@ -12,6 +12,15 @@ import { endsWith as og, endsWithFold as ogFold } from "@frostyeti/slices/ends-w
  * @param value The string to check.
  * @param suffix The suffix to check for.
  * @returns `true` if the string ends with the suffix; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { endsWithFold } from "@frostyeti/strings";
+ *
+ * endsWithFold("Hello World", "WORLD");  // true
+ * endsWithFold("Hello World", "world");  // true
+ * endsWithFold("Hello World", "Hello");  // false
+ * ```
  */
 export function endsWithFold(value, suffix) {
   if (suffix.length > value.length) {
@@ -24,6 +33,15 @@ export function endsWithFold(value, suffix) {
  * @param value The string to check.
  * @param suffix The suffix to check for.
  * @returns `true` if the string ends with the suffix; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { endsWith } from "@frostyeti/strings";
+ *
+ * endsWith("Hello World", "World");  // true
+ * endsWith("Hello World", "world");  // false (case-sensitive)
+ * endsWith("Hello World", "Hello");  // false
+ * ```
  */
 export function endsWith(value, suffix) {
   if (suffix.length > value.length) {

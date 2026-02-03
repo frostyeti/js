@@ -43,7 +43,10 @@ export async function rm(
         try {
             await getNodeFs().promises.rm(path, { recursive: recursive });
         } catch (error) {
-            if ((error as Error & { code: string }).code === "ERR_FS_EISDIR" || (globals.Bun && (error as Error & { code: string }).code === "EFAULT")) {
+            if (
+                (error as Error & { code: string }).code === "ERR_FS_EISDIR" ||
+                (globals.Bun && (error as Error & { code: string }).code === "EFAULT")
+            ) {
                 try {
                     await getNodeFs().promises.rmdir(path);
                 } catch (error) {
@@ -92,7 +95,10 @@ export function rmSync(
         try {
             getNodeFs().rmSync(path, { recursive: recursive });
         } catch (error) {
-            if ((error as Error & { code: string }).code === "ERR_FS_EISDIR" || (globals.Bun && (error as Error & { code: string }).code === "EFAULT")) {
+            if (
+                (error as Error & { code: string }).code === "ERR_FS_EISDIR" ||
+                (globals.Bun && (error as Error & { code: string }).code === "EFAULT")
+            ) {
                 try {
                     getNodeFs().rmdirSync(path);
                 } catch (error) {

@@ -1,6 +1,6 @@
 {
   "name": "@frostyeti/chars",
-  "version": "0.0.0-alpha.0",
+  "version": "0.0.0-alpha.0.1.0",
   "type": "module",
   "module": "./esm/mod.js",
   "types": "./types/mod.d.ts",

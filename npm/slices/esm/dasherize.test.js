@@ -9,9 +9,7 @@ function toDash(input, options) {
 // dasherize - Basic Tests
 // =============================================================================
 test("slices::dasherize throws when preserveCase and screaming both true", () => {
-  throws(() =>
-    dasherize("hello world", { preserveCase: true, screaming: true })
-  );
+  throws(() => dasherize("hello world", { preserveCase: true, screaming: true }));
 });
 test("slices::dasherize with space-separated words", () => {
   equal(toDash("hello world"), "hello-world");

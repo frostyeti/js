@@ -26,19 +26,19 @@ import { globals } from "./globals.ts";
  * @param gid The group id (GID) of the new owner, or `null` for no change.
  */
 export async function chown(
-  path: string | URL,
-  uid: number | null,
-  gid: number | null,
+    path: string | URL,
+    uid: number | null,
+    gid: number | null,
 ): Promise<void> {
-  if (isDeno) {
-    await globals.Deno.chown(path, uid, gid);
-  } else {
-    try {
-      await getNodeFs().promises.chown(path, uid ?? -1, gid ?? -1);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.chown(path, uid, gid);
+    } else {
+        try {
+            await getNodeFs().promises.chown(path, uid ?? -1, gid ?? -1);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -63,17 +63,17 @@ export async function chown(
  * @param gid The group id (GID) of the new owner, or `null` for no change.
  */
 export function chownSync(
-  path: string | URL,
-  uid: number | null,
-  gid: number | null,
+    path: string | URL,
+    uid: number | null,
+    gid: number | null,
 ): void {
-  if (isDeno) {
-    globals.Deno.chownSync(path, uid, gid);
-  } else {
-    try {
-      getNodeFs().chownSync(path, uid ?? -1, gid ?? -1);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.chownSync(path, uid, gid);
+    } else {
+        try {
+            getNodeFs().chownSync(path, uid ?? -1, gid ?? -1);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

@@ -6,7 +6,6 @@
 import { mapError } from "./_map_error.ts";
 import { getNodeFs, globals } from "./globals.ts";
 
-
 /**
  * Resolves to the absolute normalized path, with symbolic links resolved.
  *
@@ -19,7 +18,7 @@ import { getNodeFs, globals } from "./globals.ts";
  * ```ts ignore
  * import { realpath } from "@frostyeti/fs/realpath";
  * import { symlink } from "@frostyeti/fs/symlink";
- * 
+ *
  * // e.g. given /home/alice/file.txt and current directory /home/alice
  * await symlink("file.txt", "symlink_file.txt");
  * const fileRealPath = await realpath("./file.txt");
@@ -38,10 +37,10 @@ export async function realpath(path: string | URL): Promise<string> {
         return globals.Deno.realPath(path);
     }
 
-     try {
-      return await getNodeFs().promises.realpath(path);
+    try {
+        return await getNodeFs().promises.realpath(path);
     } catch (error) {
-      throw mapError(error);
+        throw mapError(error);
     }
 }
 

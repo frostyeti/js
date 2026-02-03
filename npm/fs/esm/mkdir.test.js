@@ -4,13 +4,7 @@ import { equal, exists, ok, rejects, throws } from "@frostyeti/assert";
 import { AlreadyExists } from "./unstable_errors.js";
 import { mkdir, mkdirSync } from "./mkdir.js";
 import { mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
-import {
-  lstatSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { lstatSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { platform, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { umask } from "./umask.js";
@@ -75,7 +69,9 @@ test("mkdir() rejects with AlreadyExists when creating a directory that is the s
 });
 test(
   "mkdir() rejects with AlreadyExists when creating a directory on symlinks",
-  { skip: platform() === "win32" },
+  {
+    skip: platform() === "win32",
+  },
   async () => {
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "mkdir_"));
     const testDir = join(tempDirPath, "dir");
@@ -146,7 +142,9 @@ test("mkdirSync() throws with AlreadyExists when creating a directory that is th
 });
 test(
   "mkdirSync() throws with AlreadyExists when creating a directory on symlinks",
-  { skip: platform() === "win32" },
+  {
+    skip: platform() === "win32",
+  },
   () => {
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "mkdirSync_"));
     const testDir = join(tempDirPath, "dir");

@@ -3,8 +3,6 @@
  *
  * @module
  */
-
-import { basename } from "@frostyeti/path";
 import type { FileInfo } from "./types.ts";
 import { getNodeFs, globals } from "./globals.ts";
 import { toFileInfo } from "./_to_file_info.ts";
@@ -31,7 +29,7 @@ import { mapError } from "./_map_error.ts";
  */
 export async function stat(path: string | URL): Promise<FileInfo> {
     if (globals.Deno) {
-        return  await globals.Deno.stat(path);
+        return await globals.Deno.stat(path);
     }
 
     try {

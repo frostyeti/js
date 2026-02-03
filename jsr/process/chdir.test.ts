@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import { equal, ok, throws } from "@frostyeti/assert";
-import { join, resolve, dirname } from "@frostyeti/path";
-import { chdir, ChangeDirectoryError } from "./chdir.ts";
+import { dirname, join, resolve } from "@frostyeti/path";
+import { ChangeDirectoryError, chdir } from "./chdir.ts";
 import { cwd } from "./cwd.ts";
 
 // =============================================================================
@@ -11,10 +11,10 @@ import { cwd } from "./cwd.ts";
 test("process::chdir changes to absolute path", () => {
     const original = cwd();
     const parent = dirname(original);
-    
+
     chdir(parent);
     equal(cwd(), parent);
-    
+
     // Restore
     chdir(original);
 });
@@ -22,17 +22,17 @@ test("process::chdir changes to absolute path", () => {
 test("process::chdir changes to relative path", () => {
     const original = cwd();
     const parent = resolve(join(original, ".."));
-    
+
     chdir("..");
     equal(cwd(), parent);
-    
+
     // Restore
     chdir(original);
 });
 
 test("process::chdir handles current directory", () => {
     const original = cwd();
-    
+
     chdir(".");
     equal(cwd(), original);
 });
@@ -49,7 +49,7 @@ test("process::chdir returns undefined", () => {
 test("process::chdir throws ChangeDirectoryError for non-existent path", () => {
     throws(
         () => chdir("/nonexistent/path/that/should/not/exist/12345"),
-        ChangeDirectoryError
+        ChangeDirectoryError,
     );
 });
 
@@ -76,24 +76,23 @@ test("process::ChangeDirectoryError preserves cause", () => {
 test("process::chdir handles consecutive calls", () => {
     const original = cwd();
     const parent = dirname(original);
-    
+
     chdir(parent);
     chdir(original);
     chdir(parent);
     chdir(original);
-    
+
     equal(cwd(), original);
 });
 
 test("process::chdir preserves path after failed chdir", () => {
     const original = cwd();
-    
+
     try {
         chdir("/nonexistent/path/12345");
     } catch {
         // Expected
     }
-    
+
     equal(cwd(), original);
 });
-

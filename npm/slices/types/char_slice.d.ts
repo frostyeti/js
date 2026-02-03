@@ -1,8 +1,4 @@
-import {
-  type CharBuffer,
-  type CharSequence,
-  type CharSliceLike,
-} from "./utils.js";
+import { type CharBuffer, type CharSequence, type CharSliceLike } from "./utils.js";
 /**
  * A read-only slice of a character buffer.
  * The slice is a view of the buffer and the buffer is not copied.
@@ -15,8 +11,7 @@ import {
  * @experimental
  * API is experimental and subject to change.
  */
-export declare class ReadonlyCharSlice
-  implements CharSequence, Iterable<number> {
+export declare class ReadonlyCharSlice implements CharSequence, Iterable<number> {
   #private;
   /**
    * Creates a new instance of the ReadOnlyCharSlice class.

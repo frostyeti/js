@@ -10,7 +10,6 @@ test("dotenv::stringifyDocument basic", () => {
   doc.item("FOO", "bar");
   doc.item("BAR", "baz\n");
   doc.newline();
-  console.log(doc.toArray());
   const source = stringifyDocument(doc);
   let expected = `#comment=1
 

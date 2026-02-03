@@ -2,8 +2,9 @@
 
 ## Overview
 
-A module for formatting strings using sprintf, printf, print, printLn, printfLn,
-errorf, and inspect functions that works for Deno, Node, Bun, and the browser.
+A cross-runtime string formatting module providing printf-style formatting,
+value inspection, and ANSI code handling. Works seamlessly with Deno, Node.js,
+Bun, and the browser.
 
 ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
 
@@ -18,37 +19,117 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/fmt/doc)
 A list of other modules can be found at
 [github.com/frostyeti/js](https://github.com/frostyeti/js)
 
-### Basic Usage
+## Installation
 
-```typescript
-import { echo, print, printf, sprintf } from "@frostyeti/fmt";
-import { args, chdir, cwd, execPath } from "@frostyeti/process";
+```bash
+# Deno
+deno add jsr:@frostyeti/fmt
 
-const message = sprintf("Hello %s", "world");
-print(message);
-print("\n");
+# npm from jsr
+npx jsr add @frostyeti/fmt
 
-printf("Hello %s", "world");
-
-print("test");
-echo("");
-echo(chdir("../"));
-echo(cwd());
-echo(execPath);
-echo(args.join(" "));
+# from npmjs.org
+npm install @frostyeti/fmt
 ```
 
-## Functions
+## Quick Start
 
-- `sprintf` - formats a string using posix style string formatting.
-- `print` - formats and prints the string to the standard output.
-- `printf` - prints a string to the standard output.
-- `echo` - prints a string to the standard output and writes a new line after.
-- `echof` - prints a string using posix style string formatting and writes a new
-  line after.
-- `errorf` - creates a new error using posix style formatted string.
-- `inspect` - creates a string representation of the value(s) passed to it.
-  Powered by util.inspect, Deno.inspect or Json.parse.
+```typescript
+import { echo, inspect, printf, sprintf, stripAnsiCode } from "@frostyeti/fmt";
+
+// Format strings with sprintf
+const msg = sprintf("Hello %s! You have %d messages.", "Alice", 5);
+// "Hello Alice! You have 5 messages."
+
+// Print directly to stdout
+printf("Processing: %d%%\n", 75);
+
+// Print with automatic newline
+echo("Hello, World!");
+
+// Inspect complex values for debugging
+const obj = { user: "bob", scores: [95, 87, 92] };
+console.log(inspect(obj));
+
+// Strip ANSI escape codes from colored text
+const colored = "\x1b[31mError\x1b[0m: Something failed";
+const plain = stripAnsiCode(colored); // "Error: Something failed"
+```
+
+## API Reference
+
+### Formatting Functions
+
+| Function                   | Description                                                    |
+| -------------------------- | -------------------------------------------------------------- |
+| `sprintf(format, ...args)` | Returns a formatted string using POSIX-style format specifiers |
+| `printf(format, ...args)`  | Formats and prints to stdout                                   |
+| `print(...args)`           | Prints arguments to stdout without formatting                  |
+| `echo(...args)`            | Prints arguments to stdout followed by a newline               |
+| `echof(format, ...args)`   | Printf with automatic newline                                  |
+| `errorf(format, ...args)`  | Creates an Error with a formatted message                      |
+
+```typescript
+import { echo, errorf, printf, sprintf } from "@frostyeti/fmt";
+
+// sprintf - format and return
+const formatted = sprintf("Value: %d, Hex: %x, Float: %.2f", 255, 255, 3.14159);
+// "Value: 255, Hex: ff, Float: 3.14"
+
+// printf - format and print
+printf("Name: %-10s Age: %d\n", "Alice", 30);
+
+// echo - simple output with newline
+echo("Starting process...");
+
+// errorf - create formatted errors
+throw errorf("File %s not found at line %d", "config.json", 42);
+```
+
+### Inspection Functions
+
+| Function                   | Description                                  |
+| -------------------------- | -------------------------------------------- |
+| `inspect(value, options?)` | Returns a string representation of any value |
+
+The `inspect` function works cross-runtime using `Deno.inspect`, `util.inspect`
+(Node.js), or falls back to `JSON.stringify`.
+
+```typescript
+import { inspect } from "@frostyeti/fmt";
+
+// Simple values
+inspect("hello"); // "'hello'"
+inspect(42); // "42"
+inspect(true); // "true"
+
+// Complex objects
+inspect({ a: 1, b: [2, 3] });
+// "{ a: 1, b: [ 2, 3 ] }"
+
+// With options
+inspect(deepObject, { depth: 2 }); // Limit nesting depth
+inspect(data, { colors: true }); // Enable ANSI colors
+inspect(obj, { compact: false }); // Multi-line output
+```
+
+### ANSI Utilities
+
+| Function             | Description                                     |
+| -------------------- | ----------------------------------------------- |
+| `stripAnsiCode(str)` | Removes all ANSI escape sequences from a string |
+
+```typescript
+import { stripAnsiCode } from "@frostyeti/fmt";
+
+// Remove color codes for logging or comparison
+const colored = "\x1b[1m\x1b[32m✓\x1b[0m Test passed";
+const plain = stripAnsiCode(colored); // "✓ Test passed"
+
+// Clean terminal output for file logging
+const logLine = "\x1b[90m[INFO]\x1b[0m Server started on port 3000";
+fs.writeFileSync("app.log", stripAnsiCode(logLine));
+```
 
 ## Notes
 

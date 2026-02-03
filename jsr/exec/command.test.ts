@@ -164,7 +164,8 @@ test("exec::Command - set cwd", async (t) => {
     equal(output2.code, 0);
     ok(output2.text().includes("command.ts") || output2.text().includes("command.js"));
 
-    const home = (env.get("HOME") ?? env.get("USERPROFILE")) ?? ("/home/" + (env.get("USERNAME") ?? env.get("USER")));
+    const home = (env.get("HOME") ?? env.get("USERPROFILE")) ??
+        ("/home/" + (env.get("USERNAME") ?? env.get("USER")));
     const cmd = new Command(["ls", "-l"], { cwd: home });
     const output = await cmd.output();
     equal(output.code, 0);
@@ -491,4 +492,200 @@ test("exec:ShellCommand - use spawn", async (t) => {
     } finally {
         await rm("hello2.ps1");
     }
+});
+
+test("exec::Command - withFile method", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test: Bun does not support skipping tests");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const cmd = new Command(["placeholder", "hello"]);
+    cmd.withFile(echo!);
+    const output = await cmd.output();
+    equal(output.code, 0);
+    ok(output.text().includes("hello"));
+});
+
+test("exec::Command - withArgs method", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test: Bun does not support skipping tests");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const cmd = new Command(["echo"]);
+    cmd.withArgs(["world"]);
+    const output = await cmd.output();
+    equal(output.code, 0);
+    ok(output.text().includes("world"));
+});
+
+test("exec::Command - withArgs with includesFile", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test: Bun does not support skipping tests");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const cmd = new Command([]);
+    cmd.withArgs(["echo", "test123"], true);
+    const output = await cmd.output();
+    equal(output.code, 0);
+    ok(output.text().includes("test123"));
+});
+
+test("exec::Command - withStdout and withStderr", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test: Bun does not support skipping tests");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const cmd = new Command(["echo", "test"]);
+    cmd.withStdout("piped").withStderr("piped");
+    const output = await cmd.output();
+    equal(output.code, 0);
+    ok(output.text().includes("test"));
+});
+
+test("exec::Command - toArgs returns correct format", () => {
+    const cmd = new Command(["git", "status", "--short"]);
+    const args = cmd.toArgs();
+    equal(args.length, 3);
+    equal(args[0], "git");
+    equal(args[1], "status");
+    equal(args[2], "--short");
+});
+
+test("exec::Command - toOptions returns options", () => {
+    const cmd = new Command(["echo"], { cwd: "/tmp" });
+    const options = cmd.toOptions();
+    equal(options.cwd, "/tmp");
+});
+
+test("exec::convertCommandArgs - handles string input", async () => {
+    const { convertCommandArgs } = await import("./command.ts");
+    const result = convertCommandArgs("git status --short");
+    equal(result.length, 3);
+    equal(result[0], "git");
+    equal(result[1], "status");
+    equal(result[2], "--short");
+});
+
+test("exec::convertCommandArgs - handles array input", async () => {
+    const { convertCommandArgs } = await import("./command.ts");
+    const result = convertCommandArgs(["git", "commit", "-m", "test"]);
+    equal(result.length, 4);
+    equal(result[0], "git");
+    equal(result[3], "test");
+});
+
+test("exec::convertCommandArgs - handles undefined/null", async () => {
+    const { convertCommandArgs } = await import("./command.ts");
+    equal(convertCommandArgs(undefined).length, 0);
+    equal(convertCommandArgs(null as unknown as string).length, 0);
+});
+
+test("exec::convertCommandArgs - handles object with options", async () => {
+    const { convertCommandArgs } = await import("./command.ts");
+    const result = convertCommandArgs({ verbose: true, count: 5 });
+    ok(result.includes("--verbose"));
+    ok(result.includes("--count"));
+    ok(result.includes("5"));
+});
+
+test("exec::Command - output validate with custom function", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test: Bun does not support skipping tests");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const output = await new Command(["echo", "test"]).output();
+    // Custom validator that accepts any code
+    output.validate((code) => code >= 0);
+    ok(output.success);
+});
+
+test("exec::Command - outputSync method", { skip: !echo }, (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const cmd = new Command(["git", "status", "--short"]);
+    const output = cmd.outputSync();
+    equal(
+        output.code,
+        0,
+        `exit code was ${output.code} and should be 0. Stdout: ${output.text()} Stderr: ${output.errorText()}`,
+    );
+});
+
+test("exec::Command - constructor with single word string", () => {
+    // When a string has no spaces, it should be treated as the file only
+    const cmd = new Command("echo");
+    equal(cmd.toArgs()[0], "echo");
+    equal(cmd.toArgs().length, 1);
+});
+
+test("exec::Command - constructor with object args", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    // Object-based args (splat)
+    const cmd = new Command({ _: ["echo", "hello"] });
+    const output = await cmd.output();
+    equal(output.code, 0);
+});
+
+test("exec::Command - withUid and withGid methods exist", () => {
+    const cmd = new Command(["echo"]);
+    // Just verify the methods exist and return this
+    ok(cmd.withUid(1000) === cmd);
+    ok(cmd.withGid(1000) === cmd);
+});
+
+test("exec::Command - withSignal method", async (t) => {
+    if (!echo) {
+        if (rt === "bun") {
+            ok(true, "Skipping test");
+            return;
+        }
+        t.skip("Skipping test: echo command not found");
+        return;
+    }
+
+    const controller = new AbortController();
+    const cmd = new Command(["echo", "test"]);
+    cmd.withSignal(controller.signal);
+    const output = await cmd.output();
+    equal(output.code, 0);
 });

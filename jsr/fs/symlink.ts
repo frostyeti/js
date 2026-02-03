@@ -7,7 +7,6 @@ import type { SymlinkOptions } from "./types.ts";
 import { getNodeFs, globals } from "./globals.ts";
 import { mapError } from "./_map_error.ts";
 
-
 /**
  * Creates `newpath` as a symbolic link to `oldpath`.
  *
@@ -37,13 +36,13 @@ export async function symlink(
         return await globals.Deno.symlink(target, path, options);
     }
     try {
-     return await getNodeFs().promises.symlink(
-        target,
-        path,
-        options?.type,
-      );
+        return await getNodeFs().promises.symlink(
+            target,
+            path,
+            options?.type,
+        );
     } catch (error) {
-      throw mapError(error);
+        throw mapError(error);
     }
 }
 
@@ -77,12 +76,12 @@ export function symlinkSync(
     }
 
     try {
-      getNodeFs().symlinkSync(
-        target,
-        path,
-        options?.type,
-      );
+        getNodeFs().symlinkSync(
+            target,
+            path,
+            options?.type,
+        );
     } catch (error) {
-      throw mapError(error);
+        throw mapError(error);
     }
 }

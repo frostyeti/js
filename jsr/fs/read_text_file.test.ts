@@ -14,74 +14,74 @@ const testFile = join(testDir, "copy_file.txt");
 const testFile2 = join(testDir, "copy_file_bom.txt");
 
 test("readTextFile() reads content from txt file", async () => {
-  const content = await readTextFile(testFile);
+    const content = await readTextFile(testFile);
 
-  ok(content.length > 0);
-  ok(content === "txt");
+    ok(content.length > 0);
+    ok(content === "txt");
 });
 
 test("readTextFile() reads a file with byte order mark", async () => {
-  const content = await readTextFile(testFile2);
+    const content = await readTextFile(testFile2);
 
-  equal(content, "\ufeffhello");
+    equal(content, "\ufeffhello");
 });
 
 test("readTextFile() throws an Error when reading a directory", async () => {
-  await rejects(async () => {
-    await readTextFile(testDir);
-  }, Error);
+    await rejects(async () => {
+        await readTextFile(testDir);
+    }, Error);
 });
 
 test("readTextFile() handles an AbortSignal", async () => {
-  const ac = new AbortController();
-  queueMicrotask(() => ac.abort());
+    const ac = new AbortController();
+    queueMicrotask(() => ac.abort());
 
-  const error = await rejects(async () => {
-    await readTextFile(testFile, { signal: ac.signal });
-  }, Error);
+    const error = await rejects(async () => {
+        await readTextFile(testFile, { signal: ac.signal });
+    }, Error);
 
-  equal(error.name, "AbortError");
+    equal(error.name, "AbortError");
 });
 
 test("readTextFile() handles an AbortSignal with a reason", async () => {
-  const ac = new AbortController();
-  const reasonErr = new Error();
-  queueMicrotask(() => ac.abort(reasonErr));
+    const ac = new AbortController();
+    const reasonErr = new Error();
+    queueMicrotask(() => ac.abort(reasonErr));
 
-  const error = await rejects(async () => {
-    await readTextFile(testFile, { signal: ac.signal });
-  }, Error);
+    const error = await rejects(async () => {
+        await readTextFile(testFile, { signal: ac.signal });
+    }, Error);
 
-  if (isDeno) {
-    equal(error, ac.signal.reason);
+    if (isDeno) {
+        equal(error, ac.signal.reason);
     } else if (typeof globals.Bun !== "undefined") {
         equal(error.message, ac.signal.reason?.message);
-  } else {
-    equal(error.cause, ac.signal.reason);
-  }
+    } else {
+        equal(error.cause, ac.signal.reason);
+    }
 });
 
 test("readTextFileSync() reads content from txt file", () => {
-  const content = readTextFileSync(testFile);
+    const content = readTextFileSync(testFile);
 
-  ok(content.length > 0);
-  ok(content === "txt");
+    ok(content.length > 0);
+    ok(content === "txt");
 });
 
 test("readTextFileSync() reads a file with byte order mark", () => {
-  const content = readTextFileSync(testFile2);
+    const content = readTextFileSync(testFile2);
 
-  equal(content, "\ufeffhello");
+    equal(content, "\ufeffhello");
 });
 
 test("readTextFileSync() throws an Error when reading a directory", () => {
-  throws(() => {
-    readTextFileSync(testDir);
-  }, Error);
+    throws(() => {
+        readTextFileSync(testDir);
+    }, Error);
 });
 
 test("readTextFileSync() throws NotFound when reading through a non-existent file", () => {
-  throws(() => {
-    readTextFileSync("no-this-file.txt");
-  }, NotFound);
+    throws(() => {
+        readTextFileSync("no-this-file.txt");
+    }, NotFound);
 });

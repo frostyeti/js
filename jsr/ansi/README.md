@@ -17,6 +17,19 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/ansi/doc)
 
 A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
 
+## Installation
+
+```bash
+# Deno
+deno add jsr:@frostyeti/ansi
+
+# npm from jsr
+npx jsr add @frostyeti/ansi
+
+# from npmjs.org
+npm install @frostyeti/ansi
+```
+
 ## Usage
 
 ```typescript

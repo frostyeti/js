@@ -24,18 +24,18 @@ import { globals } from "./globals.ts";
  * @param to The path of destination filename.
  */
 export async function copyFile(
-  from: string | URL,
-  to: string | URL,
+    from: string | URL,
+    to: string | URL,
 ): Promise<void> {
-  if (isDeno) {
-    await globals.Deno.copyFile(from, to);
-  } else {
-    try {
-      await getNodeFs().promises.copyFile(from, to);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.copyFile(from, to);
+    } else {
+        try {
+            await getNodeFs().promises.copyFile(from, to);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -59,16 +59,16 @@ export async function copyFile(
  * @param to The path of destination filename.
  */
 export function copyFileSync(
-  from: string | URL,
-  to: string | URL,
+    from: string | URL,
+    to: string | URL,
 ) {
-  if (isDeno) {
-    globals.Deno.copyFileSync(from, to);
-  } else {
-    try {
-      getNodeFs().copyFileSync(from, to);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.copyFileSync(from, to);
+    } else {
+        try {
+            getNodeFs().copyFileSync(from, to);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

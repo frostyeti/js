@@ -14,6 +14,15 @@ import type { CharBuffer } from "@frostyeti/slices/utils";
  * @param index The index to start searching from.
  * @returns The index of the first occurrence of the characters in the string.
  * If the string is not found, returns -1.
+ *
+ * @example
+ * ```typescript
+ * import { indexOfFold } from "@frostyeti/strings";
+ *
+ * indexOfFold("Hello World", "world");  // 6
+ * indexOfFold("Hello World", "HELLO");  // 0
+ * indexOfFold("Hello World", "xyz");    // -1
+ * ```
  */
 export declare function indexOfFold(
   value: string,
@@ -28,6 +37,16 @@ export declare function indexOfFold(
  * @param index The index to start searching from.
  * @returns The index of the first occurrence of the characters in the string.
  * If the string is not found, returns -1.
+ *
+ * @example
+ * ```typescript
+ * import { indexOf } from "@frostyeti/strings";
+ *
+ * indexOf("Hello World", "World");  // 6
+ * indexOf("Hello World", "world");  // -1 (case-sensitive)
+ * indexOf("Hello World", "o");      // 4
+ * indexOf("Hello World", "o", 5);   // 7 (start from index 5)
+ * ```
  */
 export declare function indexOf(
   value: string,

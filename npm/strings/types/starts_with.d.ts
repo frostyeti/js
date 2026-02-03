@@ -9,6 +9,15 @@ import type { CharBuffer } from "@frostyeti/slices/utils";
  * @param value The string to check.
  * @param prefix The characters to search for.
  * @returns `true` if the string starts with the prefix; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { startsWith } from "@frostyeti/strings";
+ *
+ * startsWith("Hello World", "Hello");  // true
+ * startsWith("Hello World", "hello");  // false (case-sensitive)
+ * startsWith("Hello World", "World");  // false
+ * ```
  */
 export declare function startsWith(value: string, prefix: CharBuffer): boolean;
 /**
@@ -17,6 +26,15 @@ export declare function startsWith(value: string, prefix: CharBuffer): boolean;
  * @param value The string to check.
  * @param prefix The characters to search for.
  * @returns `true` if the string starts with the prefix; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { startsWithFold } from "@frostyeti/strings";
+ *
+ * startsWithFold("Hello World", "hello");  // true
+ * startsWithFold("Hello World", "HELLO");  // true
+ * startsWithFold("Hello World", "World");  // false
+ * ```
  */
 export declare function startsWithFold(
   value: string,

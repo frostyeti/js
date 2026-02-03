@@ -22,9 +22,12 @@ A list of other modules can be found at [github.com/frostyeti/js](https://github
 
 ```bash
 # Deno
-deno add @frostyeti/fmt
+deno add jsr:@frostyeti/fmt
 
-# npm
+# npm from jsr
+npx jsr add @frostyeti/fmt
+
+# from npmjs.org
 npm install @frostyeti/fmt
 ```
 

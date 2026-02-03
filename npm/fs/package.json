@@ -1,6 +1,6 @@
 {
   "name": "@frostyeti/fs",
-  "version": "0.0.0-alpha.0",
+  "version": "0.0.0-alpha.0.1.0",
   "type": "module",
   "module": "./esm/mod.js",
   "types": "./types/mod.d.ts",
@@ -145,20 +145,20 @@
     },
     "./mkdir": {
       "import": {
-        "default": "./esm/make_dir.js",
-        "types": "./types/make_dir.d.ts"
+        "default": "./esm/mkdir.js",
+        "types": "./types/mkdir.d.ts"
       }
     },
     "./mkdtemp": {
       "import": {
-        "default": "./esm/make_temp_dir.js",
-        "types": "./types/make_temp_dir.d.ts"
+        "default": "./esm/mkdtemp.js",
+        "types": "./types/mkdtemp.d.ts"
       }
     },
     "./mktemp": {
       "import": {
-        "default": "./esm/make_temp_file.js",
-        "types": "./types/make_temp_file.d.ts"
+        "default": "./esm/mkdtemp.js",
+        "types": "./types/mkdtemp.d.ts"
       }
     },
     "./move": {
@@ -173,28 +173,28 @@
         "types": "./types/open.d.ts"
       }
     },
-    "./readdir": {
-      "import": {
-        "default": "./esm/read_dir.js",
-        "types": "./types/read_dir.d.ts"
-      }
-    },
     "./read-file": {
       "import": {
         "default": "./esm/read_file.js",
         "types": "./types/read_file.d.ts"
       }
     },
-    "./readlink": {
-      "import": {
-        "default": "./esm/read_link.js",
-        "types": "./types/read_link.d.ts"
-      }
-    },
     "./read-text-file": {
       "import": {
         "default": "./esm/read_text_file.js",
         "types": "./types/read_text_file.d.ts"
+      }
+    },
+    "./readdir": {
+      "import": {
+        "default": "./esm/readdir.js",
+        "types": "./types/readdir.d.ts"
+      }
+    },
+    "./readlink": {
+      "import": {
+        "default": "./esm/readlink.js",
+        "types": "./types/readlink.d.ts"
       }
     },
     "./realpath": {
@@ -205,8 +205,8 @@
     },
     "./rm": {
       "import": {
-        "default": "./esm/remove.js",
-        "types": "./types/remove.d.ts"
+        "default": "./esm/rm.js",
+        "types": "./types/rm.d.ts"
       }
     },
     "./rename": {

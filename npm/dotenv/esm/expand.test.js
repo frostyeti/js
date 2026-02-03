@@ -114,22 +114,31 @@ test("dotenv::expand with escaped dollar", () => {
   equal(expanded.PRICE, "$100");
 });
 test("dotenv::expand complex real-world example", () => {
-  env.set("HOME", "/home/user");
-  const source = {
-    APP_NAME: "myapp",
-    APP_ENV: "production",
-    APP_ROOT: "${HOME}/apps/${APP_NAME}",
-    LOG_PATH: "${APP_ROOT}/logs",
-    CONFIG_PATH: "${APP_ROOT}/config/${APP_ENV}.json",
-    DATABASE_URL: "postgres://localhost/${APP_NAME}_${APP_ENV}",
-  };
-  const expanded = expand(source);
-  equal(expanded.APP_NAME, "myapp");
-  equal(expanded.APP_ENV, "production");
-  equal(expanded.APP_ROOT, "/home/user/apps/myapp");
-  equal(expanded.LOG_PATH, "/home/user/apps/myapp/logs");
-  equal(expanded.CONFIG_PATH, "/home/user/apps/myapp/config/production.json");
-  equal(expanded.DATABASE_URL, "postgres://localhost/myapp_production");
+  const originalHome = env.get("HOME");
+  try {
+    env.set("HOME", "/home/user");
+    const source = {
+      APP_NAME: "myapp",
+      APP_ENV: "production",
+      APP_ROOT: "${HOME}/apps/${APP_NAME}",
+      LOG_PATH: "${APP_ROOT}/logs",
+      CONFIG_PATH: "${APP_ROOT}/config/${APP_ENV}.json",
+      DATABASE_URL: "postgres://localhost/${APP_NAME}_${APP_ENV}",
+    };
+    const expanded = expand(source);
+    equal(expanded.APP_NAME, "myapp");
+    equal(expanded.APP_ENV, "production");
+    equal(expanded.APP_ROOT, "/home/user/apps/myapp");
+    equal(expanded.LOG_PATH, "/home/user/apps/myapp/logs");
+    equal(expanded.CONFIG_PATH, "/home/user/apps/myapp/config/production.json");
+    equal(expanded.DATABASE_URL, "postgres://localhost/myapp_production");
+  } finally {
+    if (originalHome !== undefined) {
+      env.set("HOME", originalHome);
+    } else {
+      env.remove("HOME");
+    }
+  }
 });
 test("dotenv::expand with custom get function", () => {
   const source = { RESULT: "${CUSTOM_VAR}" };

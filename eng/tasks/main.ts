@@ -151,7 +151,7 @@ switch (task) {
             const projects = getConfig().projects;
             let projectNames: Array<string> | undefined = undefined;
 
-            if (parsed.all || (taskArgs && (taskArgs.includes("--all")))) {
+            if (parsed.all || (taskArgs && (taskArgs.includes("--all") || taskArgs.includes("all")))) {
                 projectNames = projects.map((p) => p.name);
             } else {
                 projectNames = [];
@@ -163,10 +163,11 @@ switch (task) {
                 }
             }
 
-            console.log(projects);
-            console.log(projectNames);
-
-            await runTsc(projectNames);
+            for (const projectName of projectNames) {
+                console.log("");
+                console.log(`### DENO NPM TRANSPILER FOR ${projectName.toUpperCase()} ###`);
+                await runTsc([projectName]);
+            }
         }
 
         break;
@@ -567,6 +568,7 @@ switch (task) {
         break;
 
     case "versions":
+    case "version":
         {
             const sub = taskArgs.shift();
             switch (sub) {

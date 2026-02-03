@@ -9,26 +9,26 @@ import { globals } from "./globals.ts";
  * {@linkcode mkdirSync}.
  */
 export interface MkdirOptions {
-  /**
-   * If set to `true`, means that any intermediate directories will also be
-   * created (as with the shell command `mkdir -p`).
-   *
-   * Intermediate directories are created with the same permissions.
-   *
-   * When recursive is set to `true`, succeeds silently (without changing any
-   * permissions) if a directory already exists at the path, or if the path
-   * is a symlink to an existing directory.
-   *
-   * @default {false}
-   */
-  recursive?: boolean;
-  /**
-   * Permissions to use when creating the directory (defaults to `0o777`,
-   * before the process's umask).
-   *
-   * Ignored on Windows.
-   */
-  mode?: number;
+    /**
+     * If set to `true`, means that any intermediate directories will also be
+     * created (as with the shell command `mkdir -p`).
+     *
+     * Intermediate directories are created with the same permissions.
+     *
+     * When recursive is set to `true`, succeeds silently (without changing any
+     * permissions) if a directory already exists at the path, or if the path
+     * is a symlink to an existing directory.
+     *
+     * @default {false}
+     */
+    recursive?: boolean;
+    /**
+     * Permissions to use when creating the directory (defaults to `0o777`,
+     * before the process's umask).
+     *
+     * Ignored on Windows.
+     */
+    mode?: number;
 }
 
 /**
@@ -52,18 +52,18 @@ export interface MkdirOptions {
  * @param options Options for creating directories.
  */
 export async function mkdir(
-  path: string | URL,
-  options?: MkdirOptions,
+    path: string | URL,
+    options?: MkdirOptions,
 ): Promise<void> {
-  if (isDeno) {
-    await globals.Deno.mkdir(path, { ...options });
-  } else {
-    try {
-      await getNodeFs().promises.mkdir(path, { ...options });
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.mkdir(path, { ...options });
+    } else {
+        try {
+            await getNodeFs().promises.mkdir(path, { ...options });
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -87,13 +87,13 @@ export async function mkdir(
  * @param options Options for creating directories.
  */
 export function mkdirSync(path: string | URL, options?: MkdirOptions) {
-  if (isDeno) {
-    globals.Deno.mkdirSync(path, { ...options });
-  } else {
-    try {
-      getNodeFs().mkdirSync(path, { ...options });
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.mkdirSync(path, { ...options });
+    } else {
+        try {
+            getNodeFs().mkdirSync(path, { ...options });
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

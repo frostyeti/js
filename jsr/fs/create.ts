@@ -24,15 +24,15 @@ import type { FsFile } from "./types.ts";
  * @returns A promise that resolves to a {@linkcode FsFile} instance.
  */
 export async function create(path: string | URL): Promise<FsFile> {
-  if (isDeno) {
-    return globals.Deno.create(path) as unknown as FsFile
-  } else {
-    try {
-      return await open(path, { create: true, write: true, truncate: true });
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        return globals.Deno.create(path) as unknown as FsFile;
+    } else {
+        try {
+            return await open(path, { create: true, write: true, truncate: true });
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -53,13 +53,13 @@ export async function create(path: string | URL): Promise<FsFile> {
  * @returns A {@linkcode FsFile} instance.
  */
 export function createSync(path: string | URL): FsFile {
-  if (isDeno) {
-    return globals.Deno.createSync(path);
-  } else {
-    try {
-      return openSync(path, { create: true, write: true, truncate: true });
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        return globals.Deno.createSync(path);
+    } else {
+        try {
+            return openSync(path, { create: true, write: true, truncate: true });
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

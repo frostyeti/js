@@ -32,8 +32,7 @@ export async function mkdtemp(options) {
   if (isDeno) {
     return globals.Deno.makeTempDir({ ...options });
   } else {
-    const { dir = undefined, prefix = undefined, suffix = undefined } =
-      options ?? {};
+    const { dir = undefined, prefix = undefined, suffix = undefined } = options ?? {};
     try {
       const { mkdtemp, rename } = getNodeFs().promises;
       const { tmpdir } = getNodeOs();
@@ -95,8 +94,7 @@ export function mkdtempSync(options) {
   if (isDeno) {
     return globals.Deno.makeTempDirSync({ ...options });
   } else {
-    const { dir = undefined, prefix = undefined, suffix = undefined } =
-      options ?? {};
+    const { dir = undefined, prefix = undefined, suffix = undefined } = options ?? {};
     try {
       const { mkdtempSync, renameSync } = getNodeFs();
       const { tmpdir } = getNodeOs();

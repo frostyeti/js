@@ -30,7 +30,5 @@ import { basename as windowsBasename } from "./windows/basename.js";
  * @returns The basename of the path.
  */
 export function basename(path, suffix = "") {
-  return isWindows
-    ? windowsBasename(path, suffix)
-    : posixBasename(path, suffix);
+  return isWindows ? windowsBasename(path, suffix) : posixBasename(path, suffix);
 }

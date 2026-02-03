@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { ok, equal } from "@frostyeti/assert";
+import { equal, ok } from "@frostyeti/assert";
 import { pid } from "./pid.ts";
 import { globals } from "@frostyeti/globals";
 

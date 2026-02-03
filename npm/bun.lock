@@ -7,22 +7,22 @@
     },
     "ansi": {
       "name": "@frostyeti/ansi",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/env": "0.0.0-alpha.0",
-        "@frostyeti/globals": "0.0.0-alpha.0",
-        "@frostyeti/process": "0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/env": "^0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
+        "@frostyeti/process": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "args": {
       "name": "@frostyeti/args",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
         "@frostyeti/chars": "^0.0.0-alpha.0",
         "@frostyeti/slices": "^0.0.0-alpha.0",
@@ -37,7 +37,7 @@
     },
     "assert": {
       "name": "@frostyeti/assert",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "devDependencies": {
         "@types/node": "^22.14.1",
         "typescript": "^5.9.3",
@@ -45,7 +45,7 @@
     },
     "chars": {
       "name": "@frostyeti/chars",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "devDependencies": {
         "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
@@ -54,26 +54,26 @@
     },
     "ci-env": {
       "name": "@frostyeti/ci-env",
-      "version": "0.0.0-alpha.3",
+      "version": "0.0.0",
       "dependencies": {
-        "@frostyeti/ansi": "0.0.0-alpha.0",
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/env": "0.0.0-alpha.0",
-        "@frostyeti/exec": "0.0.0-alpha.0",
-        "@frostyeti/fmt": "0.0.0-alpha.0",
-        "@frostyeti/fs": "0.0.0-alpha.0",
-        "@frostyeti/process": "0.0.0-alpha.0",
-        "@frostyeti/secrets": "^0.0.0-alpha.0",
+        "@frostyeti/ansi": "^0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/env": "^0.0.0-alpha.0",
+        "@frostyeti/exec": "^0.0.0-alpha.0",
+        "@frostyeti/fmt": "^0.0.0-alpha.0",
+        "@frostyeti/fs": "^0.0.0-alpha.0",
+        "@frostyeti/process": "^0.0.0-alpha.0",
+        "@frostyeti/secrets": "^0.0.0-alpha.1",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "dotenv": {
       "name": "@frostyeti/dotenv",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
         "@frostyeti/chars": "0.0.0-alpha.0",
         "@frostyeti/env": "0.0.0-alpha.0",
@@ -88,53 +88,53 @@
     },
     "env": {
       "name": "@frostyeti/env",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/args": "0.0.0-alpha.0",
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/globals": "0.0.0-alpha.0",
-        "@frostyeti/strings": "0.0.0-alpha.0",
+        "@frostyeti/args": "^0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
+        "@frostyeti/strings": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "exec": {
       "name": "@frostyeti/exec",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/args": "0.0.0-alpha.0",
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/env": "0.0.0-alpha.0",
-        "@frostyeti/fs": "0.0.0-alpha.0",
-        "@frostyeti/globals": "0.0.0-alpha.0",
-        "@frostyeti/path": "0.0.0-alpha.0",
-        "@frostyeti/strings": "0.0.0-alpha.0",
+        "@frostyeti/args": "^0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/env": "^0.0.0-alpha.0",
+        "@frostyeti/fs": "^0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
+        "@frostyeti/path": "^0.0.0-alpha.0",
+        "@frostyeti/strings": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "fmt": {
       "name": "@frostyeti/fmt",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0",
       "dependencies": {
-        "@frostyeti/globals": "0.0.0-alpha.0",
-        "@frostyeti/process": "0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
+        "@frostyeti/process": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "fs": {
       "name": "@frostyeti/fs",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
         "@frostyeti/globals": "^0.0.0-alpha.0",
         "@frostyeti/path": "^0.0.0-alpha.0",
@@ -149,7 +149,7 @@
     },
     "globals": {
       "name": "@frostyeti/globals",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "devDependencies": {
         "@frostyeti/assert": "0.0.0-alpha.0",
         "@types/node": "^22.17.0",
@@ -158,7 +158,7 @@
     },
     "path": {
       "name": "@frostyeti/path",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
         "@frostyeti/chars": "^0.0.0-alpha.0",
         "@frostyeti/globals": "^0.0.0-alpha.0",
@@ -171,20 +171,20 @@
     },
     "process": {
       "name": "@frostyeti/process",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/globals": "0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
-        "@frostyeti/path": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
+        "@frostyeti/path": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "secrets": {
       "name": "@frostyeti/secrets",
-      "version": "0.0.0-alpha.1",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
         "@frostyeti/chars": "^0.0.0-alpha.0",
         "@frostyeti/globals": "^0.0.0-alpha.0",
@@ -198,26 +198,26 @@
     },
     "slices": {
       "name": "@frostyeti/slices",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/globals": "0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
     },
     "strings": {
       "name": "@frostyeti/strings",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/slices": "0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/slices": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
@@ -265,5 +265,9 @@
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
+
+    "@frostyeti/ci-env/@frostyeti/secrets": ["@frostyeti/secrets@0.0.0-alpha.1", "", { "dependencies": { "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/globals": "^0.0.0-alpha.0", "@frostyeti/strings": "^0.0.0-alpha.0" } }, "sha512-Cush6vvm2LAY9OJpbCy45het3oRKX0f0nJzvGiHWaEs4bXa6V0MD0rPZma2A9rRqmHHhQMj/ML0bOhZEhYqlSw=="],
+
+    "@frostyeti/globals/@frostyeti/assert": ["@frostyeti/assert@0.0.0-alpha.0", "", {}, "sha512-XqZS17qy+7sceSWzUAdcB6luNusU9PjclYlhjxrnzo9XSuMWw2/iIELasEyhv2w/YSKKw9ibkj7nxVAP0DlIFg=="],
   }
 }

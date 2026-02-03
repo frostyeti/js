@@ -31,6 +31,19 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/env/doc)
 
 A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
 
+## Installation
+
+```bash
+# Deno
+deno add jsr:@frostyeti/env
+
+# npm from jsr
+npx jsr add @frostyeti/env
+
+# from npmjs.org
+npm install @frostyeti/env
+```
+
 ## Usage
 
 ```typescript

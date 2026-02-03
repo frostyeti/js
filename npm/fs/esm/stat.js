@@ -1,8 +1,3 @@
-/**
- * The `stat` module provides functions to get information about a file or directory.
- *
- * @module
- */
 import { getNodeFs, globals } from "./globals.js";
 import { toFileInfo } from "./_to_file_info.js";
 import { mapError } from "./_map_error.js";

@@ -6,7 +6,6 @@
 import { getNodeFs, globals } from "./globals.ts";
 import { mapError } from "./_map_error.ts";
 
-
 /** Changes the access (`atime`) and modification (`mtime`) times of a file
  * system object referenced by `path`. Given times are either in seconds
  * (UNIX epoch time) or as `Date` objects.

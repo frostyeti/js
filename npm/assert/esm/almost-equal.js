@@ -64,9 +64,7 @@ export function notAlmostEqual(actual, expected, tolerance = 1e-7, msg) {
     const msgSuffix = msg ? `: ${msg}` : ".";
     const f = (n) => Number.isInteger(n) ? n : n.toExponential();
     throw new AssertionError(
-      `Expected actual: "${f(actual)}" to not be close to "${
-        f(expected)
-      }"${msgSuffix}`,
+      `Expected actual: "${f(actual)}" to not be close to "${f(expected)}"${msgSuffix}`,
     );
   }
   const delta = Math.abs(expected - actual);

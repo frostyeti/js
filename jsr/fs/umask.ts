@@ -1,4 +1,3 @@
-
 // Copyright 2018-2026 the Deno authors. MIT license.
 
 import { mapError } from "./_map_error.ts";
@@ -28,13 +27,13 @@ import { globals } from "./globals.ts";
  * @returns The previous mask
  */
 export function umask(mask?: number): number {
-  if (isDeno) {
-    return globals.Deno.umask(mask);
-  } else {
-    try {
-      return getNodeProcess().umask(mask);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        return globals.Deno.umask(mask);
+    } else {
+        try {
+            return getNodeProcess().umask(mask);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

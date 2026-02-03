@@ -89,9 +89,7 @@ function code(open, close) {
  * @param code color code to apply
  */
 function run(str, code) {
-  return isColorEnabled()
-    ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}`
-    : str;
+  return isColorEnabled() ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
 }
 /**
  * Applies multiple ansi codes and styles to the string.

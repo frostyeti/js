@@ -32,50 +32,50 @@ import { globals } from "./globals.ts";
  * @returns A promise that resolves to a path to the temporary directory.
  */
 export async function mkdtemp(options?: MakeTempOptions): Promise<string> {
-  if (isDeno) {
-    return globals.Deno.makeTempDir({ ...options });
-  } else {
-    const {
-      dir = undefined,
-      prefix = undefined,
-      suffix = undefined,
-    } = options ?? {};
+    if (isDeno) {
+        return globals.Deno.makeTempDir({ ...options });
+    } else {
+        const {
+            dir = undefined,
+            prefix = undefined,
+            suffix = undefined,
+        } = options ?? {};
 
-    try {
-      const { mkdtemp, rename } = getNodeFs().promises;
-      const { tmpdir } = getNodeOs();
-      const { join, sep } = getNodePath();
+        try {
+            const { mkdtemp, rename } = getNodeFs().promises;
+            const { tmpdir } = getNodeOs();
+            const { join, sep } = getNodePath();
 
-      if (!options) {
-        return await mkdtemp(join(tmpdir(), sep));
-      }
+            if (!options) {
+                return await mkdtemp(join(tmpdir(), sep));
+            }
 
-      let prependPath = tmpdir();
-      if (dir != null) {
-        prependPath = typeof dir === "string" ? dir : ".";
-        if (prependPath === "") {
-          prependPath = ".";
+            let prependPath = tmpdir();
+            if (dir != null) {
+                prependPath = typeof dir === "string" ? dir : ".";
+                if (prependPath === "") {
+                    prependPath = ".";
+                }
+            }
+
+            if (prefix != null && typeof prefix === "string") {
+                prependPath = join(prependPath, prefix || sep);
+            } else {
+                prependPath = join(prependPath, sep);
+            }
+
+            if (suffix != null && typeof suffix === "string") {
+                const tempPath = await mkdtemp(prependPath);
+                const combinedTempPath = "".concat(tempPath, suffix);
+                await rename(tempPath, combinedTempPath);
+                return combinedTempPath;
+            }
+
+            return await mkdtemp(prependPath);
+        } catch (error) {
+            throw mapError(error);
         }
-      }
-
-      if (prefix != null && typeof prefix === "string") {
-        prependPath = join(prependPath, prefix || sep);
-      } else {
-        prependPath = join(prependPath, sep);
-      }
-
-      if (suffix != null && typeof suffix === "string") {
-        const tempPath = await mkdtemp(prependPath);
-        const combinedTempPath = "".concat(tempPath, suffix);
-        await rename(tempPath, combinedTempPath);
-        return combinedTempPath;
-      }
-
-      return await mkdtemp(prependPath);
-    } catch (error) {
-      throw mapError(error);
     }
-  }
 }
 
 /**
@@ -105,48 +105,48 @@ export async function mkdtemp(options?: MakeTempOptions): Promise<string> {
  * @returns The path of the temporary directory.
  */
 export function mkdtempSync(options?: MakeTempOptions): string {
-  if (isDeno) {
-    return globals.Deno.makeTempDirSync({ ...options });
-  } else {
-    const {
-      dir = undefined,
-      prefix = undefined,
-      suffix = undefined,
-    } = options ?? {};
+    if (isDeno) {
+        return globals.Deno.makeTempDirSync({ ...options });
+    } else {
+        const {
+            dir = undefined,
+            prefix = undefined,
+            suffix = undefined,
+        } = options ?? {};
 
-    try {
-      const { mkdtempSync, renameSync } = getNodeFs();
-      const { tmpdir } = getNodeOs();
-      const { join, sep } = getNodePath();
+        try {
+            const { mkdtempSync, renameSync } = getNodeFs();
+            const { tmpdir } = getNodeOs();
+            const { join, sep } = getNodePath();
 
-      if (!options) {
-        return mkdtempSync(join(tmpdir(), sep));
-      }
+            if (!options) {
+                return mkdtempSync(join(tmpdir(), sep));
+            }
 
-      let prependPath = tmpdir();
-      if (dir != null) {
-        prependPath = typeof dir === "string" ? dir : ".";
-        if (prependPath === "") {
-          prependPath = ".";
+            let prependPath = tmpdir();
+            if (dir != null) {
+                prependPath = typeof dir === "string" ? dir : ".";
+                if (prependPath === "") {
+                    prependPath = ".";
+                }
+            }
+
+            if (prefix != null && typeof prefix === "string") {
+                prependPath = join(prependPath, prefix || sep);
+            } else {
+                prependPath = join(prependPath, sep);
+            }
+
+            if (suffix != null && typeof prefix === "string") {
+                const tempPath = mkdtempSync(prependPath);
+                const combinedTempPath = "".concat(tempPath, suffix);
+                renameSync(tempPath, combinedTempPath);
+                return combinedTempPath;
+            }
+
+            return mkdtempSync(prependPath);
+        } catch (error) {
+            throw mapError(error);
         }
-      }
-
-      if (prefix != null && typeof prefix === "string") {
-        prependPath = join(prependPath, prefix || sep);
-      } else {
-        prependPath = join(prependPath, sep);
-      }
-
-      if (suffix != null && typeof prefix === "string") {
-        const tempPath = mkdtempSync(prependPath);
-        const combinedTempPath = "".concat(tempPath, suffix);
-        renameSync(tempPath, combinedTempPath);
-        return combinedTempPath;
-      }
-
-      return mkdtempSync(prependPath);
-    } catch (error) {
-      throw mapError(error);
     }
-  }
 }

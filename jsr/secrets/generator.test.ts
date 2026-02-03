@@ -1,10 +1,5 @@
 import { test } from "node:test";
-import {
-    DefaultSecretGenerator,
-    generateSecret,
-    secretGenerator,
-    validate,
-} from "./generator.ts";
+import { DefaultSecretGenerator, generateSecret, secretGenerator, validate } from "./generator.ts";
 import { equal, nope, ok, throws } from "@frostyeti/assert";
 
 // =============================================================================

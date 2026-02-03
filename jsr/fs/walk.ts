@@ -12,8 +12,6 @@ import { lstat, lstatSync } from "./lstat.ts";
 import { readdir, readdirSync } from "./readdir.ts";
 import { realpath, realpathSync } from "./realpath.ts";
 
-
-
 /** Error thrown in {@linkcode walk} or {@linkcode walkSync} during iteration. */
 export class WalkError extends Error {
     /** File path of the root that's being walked. */
@@ -48,7 +46,6 @@ function include(
     }
     return true;
 }
-
 
 /** Options for {@linkcode walk} and {@linkcode walkSync}. */
 export interface WalkOptions {
@@ -473,78 +470,78 @@ export type { WalkEntry };
  * ```
  */
 export async function* walk(
-  root: string | URL,
-  options?: WalkOptions,
+    root: string | URL,
+    options?: WalkOptions,
 ): AsyncIterableIterator<WalkEntry> {
-  let {
-    maxDepth = Infinity,
-    includeFiles = true,
-    includeDirs = true,
-    includeSymlinks = true,
-    followSymlinks = false,
-    canonicalize = true,
-    exts = undefined,
-    match = undefined,
-    skip = undefined,
-  } = options ?? {};
+    let {
+        maxDepth = Infinity,
+        includeFiles = true,
+        includeDirs = true,
+        includeSymlinks = true,
+        followSymlinks = false,
+        canonicalize = true,
+        exts = undefined,
+        match = undefined,
+        skip = undefined,
+    } = options ?? {};
 
-  if (maxDepth < 0) {
-    return;
-  }
-  root = toPathString(root);
-  if (exts) {
-    exts = exts.map((ext) => ext.startsWith(".") ? ext : `.${ext}`);
-  }
-  if (includeDirs && include(root, exts, match, skip)) {
-    yield await createWalkEntry(root);
-  }
-  if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
-    return;
-  }
-  for await (const entry of readdir(root)) {
-    let path = join(root, entry.name);
+    if (maxDepth < 0) {
+        return;
+    }
+    root = toPathString(root);
+    if (exts) {
+        exts = exts.map((ext) => ext.startsWith(".") ? ext : `.${ext}`);
+    }
+    if (includeDirs && include(root, exts, match, skip)) {
+        yield await createWalkEntry(root);
+    }
+    if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
+        return;
+    }
+    for await (const entry of readdir(root)) {
+        let path = join(root, entry.name);
 
-    let { isSymlink, isDirectory } = entry;
+        let { isSymlink, isDirectory } = entry;
 
-    if (isSymlink) {
-      if (!followSymlinks) {
-        if (includeSymlinks && include(path, exts, match, skip)) {
-          yield { path, ...entry };
+        if (isSymlink) {
+            if (!followSymlinks) {
+                if (includeSymlinks && include(path, exts, match, skip)) {
+                    yield { path, ...entry };
+                }
+                continue;
+            }
+            const realPath = await realpath(path);
+            if (canonicalize) {
+                path = realPath;
+            }
+            // Caveat emptor: don't assume |path| is not a symlink. realpath()
+            // resolves symlinks but another process can replace the file system
+            // entity with a different type of entity before we call lstat().
+            ({ isSymlink, isDirectory } = await lstat(realPath));
         }
-        continue;
-      }
-      const realPath = await realpath(path);
-      if (canonicalize) {
-        path = realPath;
-      }
-      // Caveat emptor: don't assume |path| is not a symlink. realpath()
-      // resolves symlinks but another process can replace the file system
-      // entity with a different type of entity before we call lstat().
-      ({ isSymlink, isDirectory } = await lstat(realPath));
-    }
 
-    if (isSymlink || isDirectory) {
-      const opts: WalkOptions = {
-        maxDepth: maxDepth - 1,
-        includeFiles,
-        includeDirs,
-        includeSymlinks,
-        followSymlinks,
-      };
-      if (exts !== undefined) {
-        opts.exts = exts;
-      }
-      if (match !== undefined) {
-        opts.match = match;
-      }
-      if (skip !== undefined) {
-        opts.skip = skip;
-      }
-      yield* walk(path, opts);
-    } else if (includeFiles && include(path, exts, match, skip)) {
-      yield { path, ...entry };
+        if (isSymlink || isDirectory) {
+            const opts: WalkOptions = {
+                maxDepth: maxDepth - 1,
+                includeFiles,
+                includeDirs,
+                includeSymlinks,
+                followSymlinks,
+            };
+            if (exts !== undefined) {
+                opts.exts = exts;
+            }
+            if (match !== undefined) {
+                opts.match = match;
+            }
+            if (skip !== undefined) {
+                opts.skip = skip;
+            }
+            yield* walk(path, opts);
+        } else if (includeFiles && include(path, exts, match, skip)) {
+            yield { path, ...entry };
+        }
     }
-  }
 }
 
 /**

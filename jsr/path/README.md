@@ -20,6 +20,19 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/path/doc)
 
 A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
 
+## Installation
+
+```bash
+# Deno
+deno add jsr:@frostyeti/path
+
+# npm from jsr
+npx jsr add @frostyeti/path
+
+# from npmjs.org
+npm install @frostyeti/path
+```
+
 ## Usage
 
 ```typescript

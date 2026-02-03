@@ -73,6 +73,15 @@ export class DefaultSecretGenerator {
    * Sets a custom validator function for generated secrets.
    * @param validator - The validator function that takes a Uint8Array value and returns a boolean.
    * @returns The current instance of DefaultSecretGenerator.
+   *
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.setValidator((value) => {
+   *     // Custom validation logic
+   *     return value.length >= 8; // Example: minimum length of 8
+   * });
+   * ```
    */
   setValidator(validator) {
     this.#validator = validator;
@@ -81,6 +90,11 @@ export class DefaultSecretGenerator {
   /**
    * Adds default characters to the secret generator.
    * @returns The current instance of DefaultSecretGenerator.
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addDefaults();
+   * ```
    */
   addDefaults() {
     this.add(
@@ -91,6 +105,11 @@ export class DefaultSecretGenerator {
   /**
    * Adds digits (0-9) to the secret generator.
    * @returns The current instance of DefaultSecretGenerator.
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addDigits();
+   * ```
    */
   addDigits() {
     this.add("0123456789");
@@ -99,6 +118,11 @@ export class DefaultSecretGenerator {
   /**
    * Adds lowercase letters (a-z) to the secret generator.
    * @returns The current instance of DefaultSecretGenerator.
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addLower();
+   * ```
    */
   addLower() {
     this.add("abcdefghijklmnopqrstuvwxyz");
@@ -107,6 +131,11 @@ export class DefaultSecretGenerator {
   /**
    * Adds uppercase letters (A-Z) to the secret generator.
    * @returns The current instance of DefaultSecretGenerator.
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addUpper();
+   * ```
    */
   addUpper() {
     this.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -116,6 +145,12 @@ export class DefaultSecretGenerator {
    * Adds special characters to the secret generator.
    * @description This includes characters like !@#$%^&*()_+-=[]{}|;':",.<>?/ and others.
    * @returns The current instance of DefaultSecretGenerator.
+   *
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addSpecial();
+   * ```
    */
   addSpecial() {
     this.add("!@#$%^&*()_+-=[]{}|;':\",.<>?/");
@@ -125,6 +160,12 @@ export class DefaultSecretGenerator {
    * Adds a set of special characters to the secret generator.
    * @description This includes characters like _-#@~*:;|/ and others.
    * @returns The current instance of DefaultSecretGenerator.
+   *
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.addSpecialSafe();
+   * ```
    */
   addSpecialSafe() {
     this.add("_-#@~*:{}|/;");
@@ -134,6 +175,12 @@ export class DefaultSecretGenerator {
    * Adds characters to the secret generator.
    * @param value - The characters to be added.
    * @returns The current instance of DefaultSecretGenerator.
+   *
+   * @example
+   * ```typescript
+   * const generator = new DefaultSecretGenerator();
+   * generator.add("abcXYZ123");
+   * ```
    */
   add(value) {
     for (let i = 0; i < value.length; i++) {
@@ -153,6 +200,16 @@ export class DefaultSecretGenerator {
    * @param length - The length of the secret to be generated.
    * @returns A Uint8Array representing the generated secret.
    * @throws InvalidOperationError if the secret generation fails.
+   *
+   * @example
+   * ```typescript
+   * import { DefaultSecretGenerator } from '@frostyeti/secrets/generator';
+   *
+   * const generator = new DefaultSecretGenerator();
+   * generator.addDefaults();
+   * const secretArray = generator.generateAsUint8Array(16);
+   * console.log(secretArray); // Example output: Uint8Array(16) [97, 66, 51, 35, 100, 69, 53, 38, 103, 72, 55, 42, 106, 75, 57, 64]
+   * ```
    */
   generateAsUint8Array(length) {
     // useful for generating a password that can be cleared from memory
@@ -181,6 +238,16 @@ export class DefaultSecretGenerator {
    * @param length - The length of the secret to be generated.
    * @returns A string representing the generated secret.
    * @throws InvalidOperationError if the secret generation fails.
+   *
+   * @example
+   * ```typescript
+   * import { DefaultSecretGenerator } from '@frostyeti/secrets/generator';
+   *
+   * const generator = new DefaultSecretGenerator();
+   * generator.addDefaults();
+   * const secret = generator.generate(16);
+   * console.log(secret); // Example output: "aB3#dE5&gH7*jK9@"
+   * ```
    */
   generate(length) {
     const chars = this.generateAsUint8Array(length);
@@ -194,6 +261,16 @@ export class DefaultSecretGenerator {
  * @param length - The length of the secret string to generate.
  * @param characters - Optional. The characters to use for generating the secret string.
  * @returns The generated secret string.
+ * @example
+ * ```typescript
+ * import { generateSecret } from '@frostyeti/secrets/generator';
+ *
+ * const secret = generateSecret(16);
+ * console.log(secret); // Example output: "aB3#dE5&gH7*jK9@"
+ *
+ * const customSecret = generateSecret(12, 'ABC123!@#');
+ * console.log(customSecret); // Example output: "3A1B@C2!A3"
+ * ```
  */
 export function generateSecret(length, characters) {
   const generator = new DefaultSecretGenerator();

@@ -3,10 +3,7 @@
 import { getNodeOs, getNodePath, isDeno, randomId } from "./_utils.ts";
 import { mapError } from "./_map_error.ts";
 import type { MakeTempOptions } from "./types.ts";
-import {
-  writeTextFile,
-  writeTextFileSync,
-} from "./write_text_file.ts";
+import { writeTextFile, writeTextFileSync } from "./write_text_file.ts";
 import { globals } from "./globals.ts";
 
 /**
@@ -37,49 +34,49 @@ import { globals } from "./globals.ts";
  * @returns A Promise that resolves to a file path to the temporary file.
  */
 export async function mktemp(options?: MakeTempOptions): Promise<string> {
-  if (isDeno) {
-    return globals.Deno.makeTempFile({ ...options });
-  } else {
-    const {
-      dir,
-      prefix,
-      suffix,
-    } = options ?? {};
-    try {
-      const { tmpdir } = getNodeOs();
-      const { join } = getNodePath();
+    if (isDeno) {
+        return globals.Deno.makeTempFile({ ...options });
+    } else {
+        const {
+            dir,
+            prefix,
+            suffix,
+        } = options ?? {};
+        try {
+            const { tmpdir } = getNodeOs();
+            const { join } = getNodePath();
 
-      let tempFilePath;
-      if (!options) {
-        tempFilePath = join(tmpdir(), randomId());
-        await writeTextFile(tempFilePath, "", { mode: 0o600 });
-        return tempFilePath;
-      }
+            let tempFilePath;
+            if (!options) {
+                tempFilePath = join(tmpdir(), randomId());
+                await writeTextFile(tempFilePath, "", { mode: 0o600 });
+                return tempFilePath;
+            }
 
-      tempFilePath = tmpdir();
-      if (dir != null) {
-        tempFilePath = typeof dir === "string" ? dir : ".";
-        if (tempFilePath === "") {
-          tempFilePath = ".";
+            tempFilePath = tmpdir();
+            if (dir != null) {
+                tempFilePath = typeof dir === "string" ? dir : ".";
+                if (tempFilePath === "") {
+                    tempFilePath = ".";
+                }
+            }
+
+            if (prefix != null && typeof prefix === "string") {
+                tempFilePath = join(tempFilePath, prefix + randomId());
+            } else {
+                tempFilePath = join(tempFilePath, randomId());
+            }
+
+            if (suffix != null && typeof suffix === "string") {
+                tempFilePath += suffix;
+            }
+
+            await writeTextFile(tempFilePath, "", { mode: 0o600 });
+            return tempFilePath;
+        } catch (error) {
+            throw mapError(error);
         }
-      }
-
-      if (prefix != null && typeof prefix === "string") {
-        tempFilePath = join(tempFilePath, prefix + randomId());
-      } else {
-        tempFilePath = join(tempFilePath, randomId());
-      }
-
-      if (suffix != null && typeof suffix === "string") {
-        tempFilePath += suffix;
-      }
-
-      await writeTextFile(tempFilePath, "", { mode: 0o600 });
-      return tempFilePath;
-    } catch (error) {
-      throw mapError(error);
     }
-  }
 }
 
 /**
@@ -110,48 +107,48 @@ export async function mktemp(options?: MakeTempOptions): Promise<string> {
  * @returns The file path to the temporary file.
  */
 export function mktempSync(options?: MakeTempOptions): string {
-  if (isDeno) {
-    return globals.Deno.makeTempFileSync({ ...options });
-  } else {
-    const {
-      dir,
-      prefix,
-      suffix,
-    } = options ?? {};
+    if (isDeno) {
+        return globals.Deno.makeTempFileSync({ ...options });
+    } else {
+        const {
+            dir,
+            prefix,
+            suffix,
+        } = options ?? {};
 
-    try {
-      const { tmpdir } = getNodeOs();
-      const { join } = getNodePath();
+        try {
+            const { tmpdir } = getNodeOs();
+            const { join } = getNodePath();
 
-      let tempFilePath;
-      if (!options) {
-        tempFilePath = join(tmpdir(), randomId());
-        writeTextFileSync(tempFilePath, "", { mode: 0o600 });
-        return tempFilePath;
-      }
+            let tempFilePath;
+            if (!options) {
+                tempFilePath = join(tmpdir(), randomId());
+                writeTextFileSync(tempFilePath, "", { mode: 0o600 });
+                return tempFilePath;
+            }
 
-      tempFilePath = tmpdir();
-      if (dir != null) {
-        tempFilePath = typeof dir === "string" ? dir : ".";
-        if (tempFilePath === "") {
-          tempFilePath = ".";
+            tempFilePath = tmpdir();
+            if (dir != null) {
+                tempFilePath = typeof dir === "string" ? dir : ".";
+                if (tempFilePath === "") {
+                    tempFilePath = ".";
+                }
+            }
+
+            if (prefix != null && typeof prefix === "string") {
+                tempFilePath = join(tempFilePath, prefix + randomId());
+            } else {
+                tempFilePath = join(tempFilePath, randomId());
+            }
+
+            if (suffix != null && typeof suffix === "string") {
+                tempFilePath += suffix;
+            }
+
+            writeTextFileSync(tempFilePath, "", { mode: 0o600 });
+            return tempFilePath;
+        } catch (error) {
+            throw mapError(error);
         }
-      }
-
-      if (prefix != null && typeof prefix === "string") {
-        tempFilePath = join(tempFilePath, prefix + randomId());
-      } else {
-        tempFilePath = join(tempFilePath, randomId());
-      }
-
-      if (suffix != null && typeof suffix === "string") {
-        tempFilePath += suffix;
-      }
-
-      writeTextFileSync(tempFilePath, "", { mode: 0o600 });
-      return tempFilePath;
-    } catch (error) {
-      throw mapError(error);
     }
-  }
 }

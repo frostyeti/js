@@ -4,15 +4,14 @@ import { getNodeFs } from "./globals.ts";
 import type { WriteFileOptions } from "./types.ts";
 import type { OpenOptions } from "./open.ts";
 
-
 type WriteBooleanOptions = Pick<
-  WriteFileOptions,
-  "append" | "create" | "createNew"
+    WriteFileOptions,
+    "append" | "create" | "createNew"
 >;
 
 type OpenBooleanOptions = Pick<
-  OpenOptions,
-  "read" | "write" | "append" | "truncate" | "create" | "createNew"
+    OpenOptions,
+    "read" | "write" | "append" | "truncate" | "create" | "createNew"
 >;
 
 /**
@@ -21,22 +20,21 @@ type OpenBooleanOptions = Pick<
  * Node.js `writeFile` function.
  */
 export function getWriteFsFlag(opt: WriteBooleanOptions): number {
-  const { O_APPEND, O_CREAT, O_EXCL, O_TRUNC, O_WRONLY } =
-    getNodeFs().constants;
+    const { O_APPEND, O_CREAT, O_EXCL, O_TRUNC, O_WRONLY } = getNodeFs().constants;
 
-  let flag = O_WRONLY;
-  if (opt.create) {
-    flag |= O_CREAT;
-  }
-  if (opt.createNew) {
-    flag |= O_EXCL;
-  }
-  if (opt.append) {
-    flag |= O_APPEND;
-  } else {
-    flag |= O_TRUNC;
-  }
-  return flag;
+    let flag = O_WRONLY;
+    if (opt.create) {
+        flag |= O_CREAT;
+    }
+    if (opt.createNew) {
+        flag |= O_EXCL;
+    }
+    if (opt.append) {
+        flag |= O_APPEND;
+    } else {
+        flag |= O_TRUNC;
+    }
+    return flag;
 }
 
 /**
@@ -45,67 +43,67 @@ export function getWriteFsFlag(opt: WriteBooleanOptions): number {
  * function.
  */
 export function getOpenFsFlag(opt: OpenBooleanOptions): number {
-  const { O_APPEND, O_CREAT, O_EXCL, O_WRONLY, O_RDONLY, O_RDWR, O_TRUNC } =
-    getNodeFs().constants;
+    const { O_APPEND, O_CREAT, O_EXCL, O_WRONLY, O_RDONLY, O_RDWR, O_TRUNC } =
+        getNodeFs().constants;
 
-  if (
-    !opt.read && !opt.write && !opt.append && !opt.truncate && !opt.create &&
-    !opt.createNew
-  ) {
-    throw new Error("'options' requires at least one option to be true");
-  }
-
-  if (!opt.write && opt.truncate) {
-    throw new Error("'truncate' option requires 'write' to be true");
-  }
-
-  if ((opt.create || opt.createNew) && !(opt.write || opt.append)) {
-    throw new Error(
-      "'create' or 'createNew' options require 'write' or 'append' to be true",
-    );
-  }
-
-  // This error is added to match the Deno runtime. Deno throws a `TypeError`
-  // (os error 22) for this OpenOption combo. Under Node.js, the bitmask
-  // combinations of (O_RDWR | O_TRUNC | O_APPEND) and
-  // (O_WRONLY | O_TRUNC | O_APPEND) to open files are valid.
-  if (opt.write && opt.append && opt.truncate) {
-    throw new TypeError("Invalid argument");
-  }
-
-  let flag = O_RDONLY;
-  if (opt.read && !opt.write) {
-    flag |= O_RDONLY;
-  }
-
-  if (opt.read && opt.write) {
-    flag |= O_RDWR;
-  }
-
-  if (!opt.read && opt.write) {
-    flag |= O_WRONLY;
-  }
-
-  if (opt.create || opt.createNew) {
-    flag |= O_CREAT;
-  }
-
-  if (opt.createNew) {
-    flag |= O_EXCL;
-  }
-
-  if (opt.append) {
-    flag |= O_APPEND;
-    if (!opt.read) {
-      flag |= O_WRONLY;
-    } else {
-      flag |= O_RDWR;
+    if (
+        !opt.read && !opt.write && !opt.append && !opt.truncate && !opt.create &&
+        !opt.createNew
+    ) {
+        throw new Error("'options' requires at least one option to be true");
     }
-  }
 
-  if (opt.truncate) {
-    flag |= O_TRUNC;
-  }
+    if (!opt.write && opt.truncate) {
+        throw new Error("'truncate' option requires 'write' to be true");
+    }
 
-  return flag;
+    if ((opt.create || opt.createNew) && !(opt.write || opt.append)) {
+        throw new Error(
+            "'create' or 'createNew' options require 'write' or 'append' to be true",
+        );
+    }
+
+    // This error is added to match the Deno runtime. Deno throws a `TypeError`
+    // (os error 22) for this OpenOption combo. Under Node.js, the bitmask
+    // combinations of (O_RDWR | O_TRUNC | O_APPEND) and
+    // (O_WRONLY | O_TRUNC | O_APPEND) to open files are valid.
+    if (opt.write && opt.append && opt.truncate) {
+        throw new TypeError("Invalid argument");
+    }
+
+    let flag = O_RDONLY;
+    if (opt.read && !opt.write) {
+        flag |= O_RDONLY;
+    }
+
+    if (opt.read && opt.write) {
+        flag |= O_RDWR;
+    }
+
+    if (!opt.read && opt.write) {
+        flag |= O_WRONLY;
+    }
+
+    if (opt.create || opt.createNew) {
+        flag |= O_CREAT;
+    }
+
+    if (opt.createNew) {
+        flag |= O_EXCL;
+    }
+
+    if (opt.append) {
+        flag |= O_APPEND;
+        if (!opt.read) {
+            flag |= O_WRONLY;
+        } else {
+            flag |= O_RDWR;
+        }
+    }
+
+    if (opt.truncate) {
+        flag |= O_TRUNC;
+    }
+
+    return flag;
 }

@@ -1,5 +1,5 @@
 import { test } from "node:test";
-import { equal, ok } from "@frostyeti/assert";
+import { ok } from "@frostyeti/assert";
 import { inspect } from "./inspect.ts";
 
 // =============================================================================
@@ -78,7 +78,7 @@ test("fmt::inspect respects depth option", () => {
     const deep = { a: { b: { c: { d: "deep" } } } };
     const shallow = inspect(deep, { depth: 1 });
     const deeper = inspect(deep, { depth: 4 });
-    
+
     // Both should produce strings
     ok(typeof shallow === "string");
     ok(typeof deeper === "string");
@@ -113,7 +113,9 @@ test("fmt::inspect handles RegExp", () => {
 });
 
 test("fmt::inspect handles functions", () => {
-    const fn = function testFunc() { return 42; };
+    const fn = function testFunc() {
+        return 42;
+    };
     const result = inspect(fn);
     ok(typeof result === "string");
 });
@@ -149,7 +151,7 @@ test("fmt::inspect handles Symbol", () => {
 test("fmt::inspect handles circular references gracefully", () => {
     const obj: Record<string, unknown> = { a: 1 };
     obj.self = obj;
-    
+
     // Should not throw
     const result = inspect(obj);
     ok(typeof result === "string");

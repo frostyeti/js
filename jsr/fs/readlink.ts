@@ -7,7 +7,6 @@
 import { mapError } from "./_map_error.ts";
 import { getNodeFs, globals } from "./globals.ts";
 
-
 /**
  * Resolves to the path destination of the named symbolic link.
  *
@@ -34,11 +33,10 @@ export async function readlink(path: string | URL): Promise<string> {
         return globals.Deno.readLink(path);
     }
 
-
-     try {
-      return await getNodeFs().promises.readlink(path);
+    try {
+        return await getNodeFs().promises.readlink(path);
     } catch (error) {
-      throw mapError(error);
+        throw mapError(error);
     }
 }
 

@@ -6,7 +6,7 @@
  */
 import { expand, get, getPath, splitPath } from "@frostyeti/env";
 import { basename, extname, isAbsolute, join, resolve } from "@frostyeti/path";
-import { isDir, isDirSync, isFile, isFileSync, readDir, readDirSync } from "@frostyeti/fs";
+import { isdir, isdirSync, isfile, isfileSync, readdir, readdirSync } from "@frostyeti/fs";
 import { WIN } from "./globals.js";
 import { isNullOrSpace } from "@frostyeti/strings/is-space";
 import { isNullOrEmpty } from "@frostyeti/strings/is-empty";
@@ -28,6 +28,20 @@ const executableCache = {};
  * @param {IEnvironment} env The environment class to use to lookup environment variables. Defaults to `envDefault`.
  * @param {boolean} useCache
  * @returns {string | undefined}
+ * @example
+ * ```ts
+ * import { whichSync } from "@frostyeti/exec";
+ *
+ * // Find an executable on the PATH
+ * const gitPath = whichSync("git");
+ * console.log(gitPath); // "/usr/bin/git" or undefined
+ *
+ * // Search with additional paths
+ * const customPath = whichSync("my-tool", ["/opt/tools/bin"]);
+ *
+ * // Disable caching for fresh lookup
+ * const freshPath = whichSync("node", undefined, false);
+ * ```
  */
 export function whichSync(
   fileName,
@@ -43,7 +57,7 @@ export function whichSync(
   if (useCache && location !== undefined) {
     return location;
   }
-  if (isAbsolute(fileName) && isFileSync(fileName)) {
+  if (isAbsolute(fileName) && isfileSync(fileName)) {
     location = fileName;
     if (useCache) {
       executableCache[rootName] = location;
@@ -73,7 +87,7 @@ export function whichSync(
       .filter((segment) => !isNullOrSpace(segment));
   }
   for (const pathSegment of pathSegments) {
-    if (isNullOrEmpty(pathSegment) || !isDirSync(pathSegment)) {
+    if (isNullOrEmpty(pathSegment) || !isdirSync(pathSegment)) {
       continue;
     }
     if (WIN) {
@@ -83,7 +97,7 @@ export function whichSync(
       if (!hasPathExt) {
         try {
           let first;
-          for (const entry of readDirSync(pathSegment)) {
+          for (const entry of readdirSync(pathSegment)) {
             if (entry.isFile) {
               for (const ext of pathExtSegments) {
                 if (entry.name?.toLowerCase() === baseNameLowered + ext) {
@@ -110,7 +124,7 @@ export function whichSync(
       } else {
         try {
           let first;
-          for (const entry of readDirSync(pathSegment)) {
+          for (const entry of readdirSync(pathSegment)) {
             if (entry.isFile && entry.name?.toLowerCase() === baseNameLowered) {
               first = entry;
               break;
@@ -131,7 +145,7 @@ export function whichSync(
     } else {
       try {
         let first;
-        for (const entry of readDirSync(pathSegment)) {
+        for (const entry of readdirSync(pathSegment)) {
           if (entry.isFile && entry.name?.toLowerCase() === baseNameLowered) {
             first = entry;
             break;
@@ -168,6 +182,21 @@ export function whichSync(
  * @param {IEnvironment} env The environment class to use to lookup environment variables. Defaults to `envDefault`.
  * @param {boolean} useCache
  * @returns {string | undefined}
+ * @example
+ * ```ts
+ * import { which } from "@frostyeti/exec";
+ *
+ * // Find an executable on the PATH
+ * const gitPath = await which("git");
+ * console.log(gitPath); // "/usr/bin/git" or undefined
+ *
+ * // Check if an executable exists
+ * const hasDocker = await which("docker") !== undefined;
+ * console.log("Docker installed:", hasDocker);
+ *
+ * // Search with additional paths
+ * const toolPath = await which("my-tool", ["/opt/custom/bin"]);
+ * ```
  */
 export async function which(
   fileName,
@@ -183,7 +212,7 @@ export async function which(
   if (useCache && location !== undefined) {
     return location;
   }
-  if (isAbsolute(fileName) && await isFile(fileName)) {
+  if (isAbsolute(fileName) && await isfile(fileName)) {
     location = fileName;
     if (useCache) {
       executableCache[rootName] = location;
@@ -216,7 +245,7 @@ export async function which(
     if (isNullOrEmpty(pathSegment)) {
       continue;
     }
-    const isDirectory = await isDir(pathSegment);
+    const isDirectory = await isdir(pathSegment);
     if (!isDirectory) {
       continue;
     }
@@ -227,7 +256,7 @@ export async function which(
       if (!hasPathExt) {
         try {
           let first;
-          for await (const entry of readDir(pathSegment)) {
+          for await (const entry of readdir(pathSegment)) {
             if (!entry.isDirectory) {
               for (const ext of pathExtSegments) {
                 if (entry.name?.toLowerCase() === baseNameLowered + ext) {
@@ -254,7 +283,7 @@ export async function which(
       } else {
         try {
           let first;
-          for await (const entry of readDir(pathSegment)) {
+          for await (const entry of readdir(pathSegment)) {
             if (
               !entry.isDirectory &&
               entry.name?.toLowerCase() === baseNameLowered
@@ -278,7 +307,7 @@ export async function which(
     } else {
       try {
         let first;
-        for await (const entry of readDir(pathSegment)) {
+        for await (const entry of readdir(pathSegment)) {
           if (
             !entry.isDirectory && entry.name?.toLowerCase() === baseNameLowered
           ) {

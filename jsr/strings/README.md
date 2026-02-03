@@ -25,7 +25,10 @@ A list of other modules can be found at [github.com/frostyeti/js](https://github
 # Deno
 deno add jsr:@frostyeti/strings
 
-# npm
+# npm from jsr
+npx jsr add @frostyeti/strings
+
+# from npmjs.org
 npm install @frostyeti/strings
 ```
 

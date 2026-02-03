@@ -52,7 +52,9 @@ test("fs::chmod() sets read only permission bits on a directory", {
 });
 test(
   "fs::chmod() sets write only permission bits of regular file via symlink",
-  { skip: platform() === "win32" },
+  {
+    skip: platform() === "win32",
+  },
   async () => {
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "chmod_"));
     const testFile = resolve(tempDirPath, "chmod_file.txt");
@@ -117,7 +119,9 @@ test("fs::chmodSync() sets read-only permissions bits on directories", {
 });
 test(
   "fs::chmodSync() sets write only permission on a regular file via symlink",
-  { skip: platform() === "win32" },
+  {
+    skip: platform() === "win32",
+  },
   () => {
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "chmodSync_"));
     const testFile = resolve(tempDirPath, "chmod_file.txt");

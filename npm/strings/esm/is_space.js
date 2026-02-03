@@ -13,6 +13,16 @@ import { isSpaceAt } from "@frostyeti/chars/is-space";
  * Determines whether the string only contains whitespace.
  * @param s The string to check.
  * @returns `true` if the string only contains whitespace; otherwise, `false`.
+ *
+ * @example
+ * ```typescript
+ * import { isSpace } from "@frostyeti/strings";
+ *
+ * isSpace("   ");      // true
+ * isSpace("\t\n");     // true
+ * isSpace("");         // true (empty is considered whitespace)
+ * isSpace(" hello ");  // false
+ * ```
  */
 export function isSpace(s) {
   for (let i = 0; i < s.length; i++) {

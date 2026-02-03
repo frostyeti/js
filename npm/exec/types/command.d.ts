@@ -20,10 +20,48 @@ export type { ChildProcess, CommandArgs, CommandOptions, Output, ShellCommandOpt
  * Converts the command arguments to an array of strings.
  * @param args Converts the command arguments to an array of strings.
  * @returns The array of strings.
+ * @example
+ * ```ts
+ * import { convertCommandArgs } from "@frostyeti/exec";
+ *
+ * // Convert a string with spaces
+ * const args1 = convertCommandArgs("git commit -m 'hello world'");
+ * console.log(args1); // ["git", "commit", "-m", "hello world"]
+ *
+ * // Convert an object with options
+ * const args2 = convertCommandArgs({ verbose: true, count: 5 });
+ * console.log(args2); // ["--verbose", "--count", "5"]
+ *
+ * // Convert an array (pass-through)
+ * const args3 = convertCommandArgs(["git", "status"]);
+ * console.log(args3); // ["git", "status"]
+ * ```
  */
 export declare function convertCommandArgs(args?: CommandArgs): string[];
 /**
  * Represents a command that can be executed.
+ *
+ * @example
+ * ```ts
+ * import { Command } from "@frostyeti/exec";
+ *
+ * // Create and execute a simple command
+ * const cmd = new Command(["echo", "hello world"]);
+ * const output = await cmd.output();
+ * console.log(output.text()); // "hello world\n"
+ *
+ * // Use with options
+ * const cmd2 = new Command(["ls", "-la"], {
+ *   cwd: "/tmp",
+ *   env: { MY_VAR: "value" }
+ * });
+ * const result = await cmd2.output();
+ * console.log(result.code); // 0
+ *
+ * // Commands can be awaited directly
+ * const output2 = await new Command(["cat", "file.txt"]);
+ * console.log(output2.text());
+ * ```
  */
 export declare class Command {
   #private;
@@ -45,12 +83,30 @@ export declare class Command {
    * Sets the current working directory for the command.
    * @param value The current working directory.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["ls", "-la"])
+   *   .withCwd("/tmp")
+   *   .output();
+   * console.log(output.text());
+   * ```
    */
   withCwd(value: string | URL): this;
   /**
    * Sets the environment variables for the command.
    * @param value The environment variables.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["printenv", "MY_VAR"])
+   *   .withEnv({ MY_VAR: "hello" })
+   *   .output();
+   * console.log(output.text()); // "hello\n"
+   * ```
    */
   withEnv(value: Record<string, string>): this;
   /**
@@ -81,6 +137,15 @@ export declare class Command {
    * Sets the stdin behavior for the command.
    * @param value The stdin behavior.
    * @returns The Command instance.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["cat"])
+   *   .withStdin("piped")
+   *   .withStdout("piped")
+   *   .output();
+   * ```
    */
   withStdin(value: "inherit" | "piped" | "null" | undefined): this;
   /**
@@ -124,12 +189,28 @@ export declare class Command {
    * Runs the command asynchronously and returns a promise that resolves to the output of the command.
    * The stdout and stderr are set to `inherit`.
    * @returns A promise that resolves to the output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * // Run command with inherited stdout/stderr (output shown in terminal)
+   * const output = await cmd(["npm", "install"]).run();
+   * console.log(output.code); // 0
+   * ```
    */
   run(): Promise<Output>;
   /**
    * Runs the command synchronously and returns the output of the command.
    * The stdout and stderr are set to `inherit`.
    * @returns The output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * // Run command synchronously with inherited stdout/stderr
+   * const output = cmd(["echo", "hello"]).runSync();
+   * console.log(output.code); // 0
+   * ```
    */
   runSync(): Output;
   /**
@@ -138,42 +219,125 @@ export declare class Command {
    * @param args The arguments for the command.
    * @param options The options for the command.
    * @returns A Pipe instance that represents the piped output.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * // Chain multiple commands together using pipe
+   * const result = await cmd(["echo", "hello world"])
+   *   .pipe(["grep", "hello"])
+   *   .pipe("cat")
+   *   .output();
+   * console.log(result.text()); // "hello world\n"
+   * ```
    */
   pipe(args?: CommandArgs, options?: CommandOptions): Pipe;
   pipe(command: Command | ChildProcess): Pipe;
   /**
    * Gets the output of the command as text.
    * @returns A promise that resolves to the output of the command as text.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const text = await cmd(["echo", "hello"]).text();
+   * console.log(text); // "hello\n"
+   * ```
    */
   text(): Promise<string>;
   /**
    * Gets the output of the command as an array of lines.
    * @returns A promise that resolves to the output of the command as an array of lines.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const lines = await cmd(["ls", "-la"]).lines();
+   * for (const line of lines) {
+   *   console.log(line);
+   * }
+   * ```
    */
   lines(): Promise<string[]>;
   /**
    * Gets the output of the command as JSON.
    * @returns A promise that resolves to the output of the command as JSON.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const data = await cmd(["echo", '{"name": "test"}']).json();
+   * console.log(data); // { name: "test" }
+   * ```
    */
   json(): Promise<unknown>;
   /**
    * Gets the output of the command.
    * @returns A promise that resolves to the output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = await cmd(["git", "status"]).output();
+   * console.log(output.code);    // Exit code (0 = success)
+   * console.log(output.success); // true if code === 0
+   * console.log(output.text());  // stdout as string
+   * ```
    */
   output(): Promise<Output>;
   /**
    * Gets the output of the command synchronously.
    * @returns The output of the command.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * const output = cmd(["echo", "hello"]).outputSync();
+   * console.log(output.text()); // "hello\n"
+   * ```
    */
   outputSync(): Output;
   /**
    * Spawns a child process for the command.
    * @returns The spawned child process.
+   * @example
+   * ```ts
+   * import { cmd } from "@frostyeti/exec";
+   *
+   * await using process = cmd(["node", "server.js"]).spawn();
+   * console.log(process.pid); // Process ID
+   * // ... later
+   * process.kill("SIGTERM");
+   * ```
    */
   spawn(): ChildProcess;
 }
 /**
  * Represents a shell command.
+ *
+ * @example
+ * ```ts
+ * import { ShellCommand, type ShellCommandOptions } from "@frostyeti/exec";
+ *
+ * // Extend ShellCommand for a specific shell
+ * class BashCommand extends ShellCommand {
+ *   constructor(script: string, options?: ShellCommandOptions) {
+ *     super("bash", script, options);
+ *   }
+ *
+ *   override get ext(): string {
+ *     return ".sh";
+ *   }
+ *
+ *   override getShellArgs(script: string, isFile: boolean): string[] {
+ *     return isFile ? [script] : ["-c", script];
+ *   }
+ * }
+ *
+ * const cmd = new BashCommand("echo 'Hello from bash'");
+ * const output = await cmd.output();
+ * console.log(output.text()); // "Hello from bash\n"
+ * ```
  */
 export declare class ShellCommand extends Command {
   protected shellArgs?: string[];
@@ -217,6 +381,19 @@ export declare class ShellCommand extends Command {
  * @param args - The arguments to pass to the executable.
  * @param options - The options for the command.
  * @returns A new `CommandType` instance.
+ * @example
+ * ```ts
+ * import { cmd } from "@frostyeti/exec";
+ *
+ * // Create a command with an array
+ * const output1 = await cmd(["git", "status"]).output();
+ *
+ * // Create a command with a string (auto-split)
+ * const output2 = await cmd("git status").output();
+ *
+ * // Create with options
+ * const output3 = await cmd(["ls", "-la"], { cwd: "/tmp" }).output();
+ * ```
  */
 export declare function cmd(
   args?: CommandArgs,
@@ -229,6 +406,18 @@ export declare function cmd(
  * @param args - The command arguments to execute.
  * @param options - The options for the command.
  * @returns A promise that resolves to the output of the command.
+ * @example
+ * ```ts
+ * import { exec } from "@frostyeti/exec";
+ *
+ * // Execute and get output directly
+ * const output = await exec(["echo", "hello"]);
+ * console.log(output.text()); // "hello\n"
+ *
+ * // Execute with a string command
+ * const output2 = await exec("git config --list");
+ * console.log(output2.lines());
+ * ```
  */
 export declare function exec(
   args: CommandArgs,
@@ -239,6 +428,14 @@ export declare function exec(
  * @param args - The command arguments to execute.
  * @param options - The options for the command.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { execSync } from "@frostyeti/exec";
+ *
+ * const output = execSync(["echo", "hello"]);
+ * console.log(output.text()); // "hello\n"
+ * console.log(output.code);   // 0
+ * ```
  */
 export declare function execSync(
   args: CommandArgs,
@@ -296,6 +493,14 @@ declare class Pipe {
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { run } from "@frostyeti/exec";
+ *
+ * // Run a command with inherited stdout/stderr (visible in terminal)
+ * const output = await run(["npm", "install"]);
+ * console.log(output.code); // 0 if successful
+ * ```
  */
 export declare function run(
   args?: CommandArgs,
@@ -309,6 +514,14 @@ export declare function run(
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The output of the command.
+ * @example
+ * ```ts
+ * import { runSync } from "@frostyeti/exec";
+ *
+ * // Run synchronously with inherited stdout/stderr
+ * const output = runSync(["echo", "hello"]);
+ * console.log(output.code); // 0
+ * ```
  */
 export declare function runSync(
   args?: CommandArgs,
@@ -322,6 +535,18 @@ export declare function runSync(
  * @param args The arguments to pass to the executable.
  * @param options The options to run the command with.
  * @returns The process of the command.
+ * @example
+ * ```ts
+ * import { spawn } from "@frostyeti/exec";
+ *
+ * // Spawn a long-running process
+ * await using process = spawn(["node", "server.js"]);
+ * console.log("Server started with PID:", process.pid);
+ *
+ * // Wait for process to complete
+ * const output = await process.output();
+ * console.log(output.code);
+ * ```
  */
 export declare function spawn(
   args?: CommandArgs,

@@ -1,6 +1,6 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
 
-import { getNodeFs, getNodeUtil, isDeno } from "./_utils.ts";
+import { getNodeFs, getNodeUtil } from "./_utils.ts";
 import { getOpenFsFlag } from "./_get_fs_flag.ts";
 import { mapError } from "./_map_error.ts";
 import type { FsFile } from "./types.ts";
@@ -12,62 +12,62 @@ import { globals } from "./globals.ts";
  * {@linkcode openSync}.
  */
 export interface OpenOptions {
-  /**
-   * Sets the option for read access. This option, when `true`, means that the
-   * file should be read-able if opened.
-   *
-   * @default {true}
-   */
-  read?: boolean;
-  /**
-   * Sets the option for write access. This option, when `true`, means that the
-   * file should be write-able if opened. If the file already exists, any write
-   * calls on it will overwrite its contents, by default without truncating it.
-   *
-   * @default {false}
-   */
-  write?: boolean;
-  /**
-   * Sets the option for the append mode. This option, when `true`, means that
-   * writes will append to a file instead of overwriting previous contents.
-   *
-   * Note that setting `{ write: true, append: true }` has the same effect as
-   * setting only `{ append: true }`.
-   *
-   * @default {false}
-   */
-  append?: boolean;
-  /**
-   * Sets the option for truncating a previous file. If a file is successfully
-   * opened with this option set it will truncate the file to `0` size if it
-   * already exists. The file must be opened with write access for truncate to
-   * work.
-   *
-   * @default {false}
-   */
-  truncate?: boolean;
-  /**
-   * Sets the option to allow creating a new file, if one doesn't already exist
-   * at the specified path. Requires write or append access to be used.
-   *
-   * @default {false}
-   */
-  create?: boolean;
-  /**
-   * If set to `true`, no file, directory, or symlink is allowed to exist at
-   * the target location. Requires write or append access to be used. When
-   * createNew is set to `true`, create and truncate are ignored.
-   *
-   * @default {false}
-   */
-  createNew?: boolean;
-  /**
-   * Permissions to use if creating the file (defaults to `0o666`, before the
-   * process's umask).
-   *
-   * Ignored on Windows.
-   */
-  mode?: number;
+    /**
+     * Sets the option for read access. This option, when `true`, means that the
+     * file should be read-able if opened.
+     *
+     * @default {true}
+     */
+    read?: boolean;
+    /**
+     * Sets the option for write access. This option, when `true`, means that the
+     * file should be write-able if opened. If the file already exists, any write
+     * calls on it will overwrite its contents, by default without truncating it.
+     *
+     * @default {false}
+     */
+    write?: boolean;
+    /**
+     * Sets the option for the append mode. This option, when `true`, means that
+     * writes will append to a file instead of overwriting previous contents.
+     *
+     * Note that setting `{ write: true, append: true }` has the same effect as
+     * setting only `{ append: true }`.
+     *
+     * @default {false}
+     */
+    append?: boolean;
+    /**
+     * Sets the option for truncating a previous file. If a file is successfully
+     * opened with this option set it will truncate the file to `0` size if it
+     * already exists. The file must be opened with write access for truncate to
+     * work.
+     *
+     * @default {false}
+     */
+    truncate?: boolean;
+    /**
+     * Sets the option to allow creating a new file, if one doesn't already exist
+     * at the specified path. Requires write or append access to be used.
+     *
+     * @default {false}
+     */
+    create?: boolean;
+    /**
+     * If set to `true`, no file, directory, or symlink is allowed to exist at
+     * the target location. Requires write or append access to be used. When
+     * createNew is set to `true`, create and truncate are ignored.
+     *
+     * @default {false}
+     */
+    createNew?: boolean;
+    /**
+     * Permissions to use if creating the file (defaults to `0o666`, before the
+     * process's umask).
+     *
+     * Ignored on Windows.
+     */
+    mode?: number;
 }
 
 /**
@@ -102,41 +102,41 @@ export interface OpenOptions {
  * @returns A Promise that resolves to a {@linkcode FsFile} instance.
  */
 export async function open(
-  path: string | URL,
-  options?: OpenOptions,
+    path: string | URL,
+    options?: OpenOptions,
 ): Promise<FsFile> {
-  if (globals.isDeno) {
-    return globals.Deno.open(path, options);
-  } else {
-    const {
-      read = true,
-      write = false,
-      append = false,
-      truncate = false,
-      create = false,
-      createNew = false,
-      mode = 0o666,
-    } = options ?? {};
+    if (globals.isDeno) {
+        return globals.Deno.open(path, options);
+    } else {
+        const {
+            read = true,
+            write = false,
+            append = false,
+            truncate = false,
+            create = false,
+            createNew = false,
+            mode = 0o666,
+        } = options ?? {};
 
-    try {
-      const flag = getOpenFsFlag({
-        read,
-        write,
-        append,
-        truncate,
-        create,
-        createNew,
-      });
-      const { open } = getNodeFs();
-      const { promisify } = getNodeUtil();
-      const nodeOpenFd = promisify(open);
+        try {
+            const flag = getOpenFsFlag({
+                read,
+                write,
+                append,
+                truncate,
+                create,
+                createNew,
+            });
+            const { open } = getNodeFs();
+            const { promisify } = getNodeUtil();
+            const nodeOpenFd = promisify(open);
 
-      const fd = await nodeOpenFd(path, flag, mode);
-      return new NodeFsFile(fd) as FsFile;
-    } catch (error) {
-      throw mapError(error);
+            const fd = await nodeOpenFd(path, flag, mode);
+            return new NodeFsFile(fd) as FsFile;
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -171,33 +171,33 @@ export async function open(
  * @returns A {@linkcode FsFile} instance.
  */
 export function openSync(path: string | URL, options?: OpenOptions): FsFile {
-  if (globals.isDeno) {
-    return globals.Deno.openSync(path, options);
-  } else {
-    const {
-      read = true,
-      write = false,
-      append = false,
-      truncate = false,
-      create = false,
-      createNew = false,
-      mode = 0o666,
-    } = options ?? {};
+    if (globals.isDeno) {
+        return globals.Deno.openSync(path, options);
+    } else {
+        const {
+            read = true,
+            write = false,
+            append = false,
+            truncate = false,
+            create = false,
+            createNew = false,
+            mode = 0o666,
+        } = options ?? {};
 
-    try {
-      const flag = getOpenFsFlag({
-        read,
-        write,
-        append,
-        truncate,
-        create,
-        createNew,
-      });
+        try {
+            const flag = getOpenFsFlag({
+                read,
+                write,
+                append,
+                truncate,
+                create,
+                createNew,
+            });
 
-      const fd = getNodeFs().openSync(path, flag, mode);
-      return new NodeFsFile(fd) as FsFile;
-    } catch (error) {
-      throw mapError(error);
+            const fd = getNodeFs().openSync(path, flag, mode);
+            return new NodeFsFile(fd) as FsFile;
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

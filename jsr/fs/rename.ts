@@ -7,7 +7,6 @@
 import { mapError } from "./_map_error.ts";
 import { getNodeFs, globals } from "./globals.ts";
 
-
 /**
  * Renames a file or directory.
  * @param oldPath The path to the existing file or directory.

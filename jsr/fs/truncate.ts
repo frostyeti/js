@@ -36,17 +36,18 @@ import { globals } from "./globals.ts";
  * @param len An optional value that sets the new size of the file. Omitting this argument sets the file size to 0 bytes.
  */
 export async function truncate(name: string, len?: number): Promise<void> {
-  if (isDeno) {
-    await globals.Deno.truncate(name, len);
-  } else {
-    try {
-      if (globals.Bun && len === undefined)
-        len = 0;
-      await getNodeFs().promises.truncate(name, len);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        await globals.Deno.truncate(name, len);
+    } else {
+        try {
+            if (globals.Bun && len === undefined) {
+                len = 0;
+            }
+            await getNodeFs().promises.truncate(name, len);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }
 
 /**
@@ -82,16 +83,17 @@ export async function truncate(name: string, len?: number): Promise<void> {
  * @param len An optional value that sets the new size of the file. Omitting this argument sets the file size to 0 bytes.
  */
 export function truncateSync(name: string, len?: number): void {
-  if (isDeno) {
-    globals.Deno.truncateSync(name, len);
-  } else {
-    try {
-      if (globals.Bun && len === undefined)
-        len = 0;
-       
-      getNodeFs().truncateSync(name, len);
-    } catch (error) {
-      throw mapError(error);
+    if (isDeno) {
+        globals.Deno.truncateSync(name, len);
+    } else {
+        try {
+            if (globals.Bun && len === undefined) {
+                len = 0;
+            }
+
+            getNodeFs().truncateSync(name, len);
+        } catch (error) {
+            throw mapError(error);
+        }
     }
-  }
 }

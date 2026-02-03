@@ -20,9 +20,12 @@ Documentation is available on [jsr.io](https://jsr.io/@frostyeti/assert/doc)
 
 ```bash
 # Deno
-deno add @frostyeti/assert
+deno add jsr:@frostyeti/assert
 
-# npm
+# npm from jsr
+npx jsr add @frostyeti/assert
+
+# from npmjs.org
 npm install @frostyeti/assert
 ```
 

@@ -188,9 +188,7 @@ export function splat(object, options) {
     extraArgs = object[SplatSymbols.extraArgs];
   }
   const makeArguments = (key, value) => {
-    const prefix = options?.shortFlag && key.length === 1
-      ? "-"
-      : options?.prefix;
+    const prefix = options?.shortFlag && key.length === 1 ? "-" : options?.prefix;
     const theKey = options?.preserveCase ? key : dasherize(key);
     key = prefix + theKey;
     if (options?.assign) {

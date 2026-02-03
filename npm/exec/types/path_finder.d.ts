@@ -112,18 +112,47 @@ export declare class PathFinder {
    * Sets the path finder options for a given name.
    * @param name - The name of the path finder.
    * @param options - The path finder options.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * pathFinder.set("my-tool", {
+   *   name: "my-tool",
+   *   envVariable: "MY_TOOL_PATH",
+   *   windows: ["C:\\Program Files\\MyTool\\my-tool.exe"],
+   *   linux: ["/opt/my-tool/bin/my-tool"],
+   *   darwin: ["/Applications/MyTool.app/Contents/MacOS/my-tool"],
+   * });
+   * ```
    */
   set(name: string, options: PathFinderOptions): void;
   /**
    * Retrieves the path finder options for a given name.
    * @param name - The name of the path finder.
    * @returns The path finder options, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const options = pathFinder.get("deno");
+   * if (options) {
+   *   console.log("Deno options:", options);
+   * }
+   * ```
    */
   get(name: string): PathFinderOptions | undefined;
   /**
    * Checks if a path finder with the given name exists.
    * @param name - The name of the path finder.
    * @returns True if the path finder exists, false otherwise.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * if (pathFinder.has("deno")) {
+   *   console.log("Deno is registered");
+   * }
+   * ```
    */
   has(name: string): boolean;
   /**
@@ -146,12 +175,28 @@ export declare class PathFinder {
    * Finds the executable path for a given name.
    * @param name - The name of the executable.
    * @returns The executable path, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const gitPath = await pathFinder.findExe("git");
+   * if (gitPath) {
+   *   console.log("Git found at:", gitPath);
+   * }
+   * ```
    */
   findExe(name: string): Promise<string | undefined>;
   /**
    * Synchronously finds the executable path for a given name.
    * @param name - The name of the executable.
    * @returns The executable path, or undefined if not found.
+   * @example
+   * ```ts
+   * import { pathFinder } from "@frostyeti/exec";
+   *
+   * const nodePath = pathFinder.findExeSync("node");
+   * console.log("Node.js path:", nodePath);
+   * ```
    */
   findExeSync(name: string): string | undefined;
 }

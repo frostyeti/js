@@ -9,6 +9,15 @@ import { type CapitalizeOptions } from "@frostyeti/slices/capitalize";
  * @param value The string to capitalize.
  * @param options The options for capitalizing the string.
  * @returns The capitalized string.
+ *
+ * @example
+ * ```typescript
+ * import { capitalize } from "@frostyeti/strings";
+ *
+ * capitalize("hello");         // "Hello"
+ * capitalize("hello world");   // "Hello world"
+ * capitalize("HELLO");         // "HELLO" (only first char affected)
+ * ```
  */
 export declare function capitalize(
   value: string,
