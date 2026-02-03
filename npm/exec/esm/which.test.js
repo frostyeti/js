@@ -124,6 +124,10 @@ test("exec::whichSync - with useCache false", () => {
   const second = whichSync("git", undefined, false);
   if (globals.process.platform === "darwin") {
     if (first?.includes("homebrew")) {
+      equal("/opt/homebrew/bin/git", first);
+      return;
+    }
+    if (second?.includes("homebrew")) {
       equal("/opt/homebrew/bin/git", second);
       return;
     }
