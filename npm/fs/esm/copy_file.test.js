@@ -2,7 +2,13 @@
 import { test } from "node:test";
 import { ok, rejects, throws } from "@frostyeti/assert";
 import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { copyFile, copyFileSync } from "./copy_file.js";

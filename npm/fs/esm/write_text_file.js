@@ -29,7 +29,8 @@ export async function writeTextFile(path, data, options) {
   if (globals.Deno) {
     return await globals.Deno.writeTextFile(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode, signal } = options ?? {};
+    const { append = false, create = true, createNew = false, mode, signal } =
+      options ?? {};
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       await getNodeFs().promises.writeFile(path, data, {
@@ -68,7 +69,8 @@ export function writeTextFileSync(path, data, options) {
   if (globals.Deno) {
     return globals.Deno.writeTextFileSync(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode } = options ?? {};
+    const { append = false, create = true, createNew = false, mode } =
+      options ?? {};
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       getNodeFs().writeFileSync(path, data, { encoding: "utf-8", flag });

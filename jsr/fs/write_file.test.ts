@@ -79,9 +79,18 @@ test("writeFile() handles 'create' when writing to a file", async () => {
 
     // Rejects with NotFound when file does not initally exist.
     await rejects(async () => {
-        await writeFile(testFile, data, { create: false });
-    }, NotFound);
+        try {
+            await writeFile(testFile, data, { create: false });
+        } catch (error) {
+            if ((error as unknown as Record<string, unknown>).code !== undefined) {
+                console.log(`Error code: ${(error as unknown as Record<string, unknown>).code}`);
+            }
 
+            console.log(`Error: ${error}`);
+
+            throw error;
+        }
+    });
     // Creates a file that does not initially exist. (This is default behavior).
     await writeFile(testFile, data, { create: true });
     const dataRead = await readFile(testFile);

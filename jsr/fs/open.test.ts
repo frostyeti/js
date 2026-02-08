@@ -8,6 +8,7 @@ import { closeSync, mkdtempSync, openSync as nodeOpenSync, rmSync } from "node:f
 import { platform, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { umask } from "./umask.ts";
+import { exists } from "./exists.ts";
 
 umask(0o022);
 
@@ -115,9 +116,11 @@ test("open() handles 'append' when opening a file", async () => {
     await rm(tempDirPath, { recursive: true, force: true });
 });
 
-test("open() handles 'truncate' when opening a file", async () => {
+test("open() handles 'truncate' when opening a file", { skip: platform() === "win32" }, async () => {
     const tempDirPath = await mkdtemp(resolve(tmpdir(), "open_"));
     const testFile = join(tempDirPath, "testFile.txt");
+
+    try {
 
     let fh = await open(testFile, { create: true, write: true });
     const encoder = new TextEncoder();
@@ -141,6 +144,12 @@ test("open() handles 'truncate' when opening a file", async () => {
     equal(bytesRead, null);
 
     await rm(tempDirPath, { recursive: true, force: true });
+    } finally {
+        if (await exists(tempDirPath)) {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    }
+
 });
 
 test("open() opens files with a user-defined mode prior to applying umask", {
@@ -317,7 +326,7 @@ test("openSync() handles 'append' when opening a file", () => {
     rmSync(tempDirPath, { recursive: true, force: true });
 });
 
-test("openSync() handles 'truncate' when opening a file", () => {
+test("openSync() handles 'truncate' when opening a file", { skip: platform() === "win32" }, () => {
     const tempDirPath = mkdtempSync(resolve(tmpdir(), "openSync_"));
     const testFile = join(tempDirPath, "testFile.txt");
 

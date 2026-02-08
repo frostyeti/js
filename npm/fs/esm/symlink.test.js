@@ -4,7 +4,15 @@ import { ok, rejects, throws } from "@frostyeti/assert";
 import { symlink, symlinkSync } from "./symlink.js";
 import { AlreadyExists } from "./unstable_errors.js";
 import { lstat, mkdir, mkdtemp, open, rm, stat } from "node:fs/promises";
-import { closeSync, lstatSync, mkdirSync, mkdtempSync, openSync, rmSync, statSync } from "node:fs";
+import {
+  closeSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  openSync,
+  rmSync,
+  statSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";

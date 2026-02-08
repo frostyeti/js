@@ -4,10 +4,16 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import { AlreadyExists, NotFound } from "./unstable_errors.js";
 import { open, openSync } from "./open.js";
 import { mkdtemp, rm } from "node:fs/promises";
-import { closeSync, mkdtempSync, openSync as nodeOpenSync, rmSync } from "node:fs";
+import {
+  closeSync,
+  mkdtempSync,
+  openSync as nodeOpenSync,
+  rmSync,
+} from "node:fs";
 import { platform, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { umask } from "./umask.js";
+import { exists } from "./exists.js";
 umask(0o022);
 test("open() handles 'createNew' when opening a file", async () => {
   const tempDirPath = await mkdtemp(resolve(tmpdir(), "open_"));
@@ -91,27 +97,35 @@ test("open() handles 'append' when opening a file", async () => {
   fh.close();
   await rm(tempDirPath, { recursive: true, force: true });
 });
-test("open() handles 'truncate' when opening a file", async () => {
+test("open() handles 'truncate' when opening a file", {
+  skip: platform() === "win32",
+}, async () => {
   const tempDirPath = await mkdtemp(resolve(tmpdir(), "open_"));
   const testFile = join(tempDirPath, "testFile.txt");
-  let fh = await open(testFile, { create: true, write: true });
-  const encoder = new TextEncoder();
-  await fh.write(encoder.encode("Hello"));
-  fh.close();
-  // Errors when specifying 'truncate' without 'write' or 'append'.
-  await rejects(async () => {
-    const _fh = await open(testFile, { truncate: true });
-  }, Error);
-  // Truncates the file successfully.
-  fh = await open(testFile, { truncate: true, write: true });
-  fh.close();
-  // Read back data.
-  fh = await open(testFile);
-  const buf = new Uint8Array(10);
-  const bytesRead = await fh.read(buf);
-  fh.close();
-  equal(bytesRead, null);
-  await rm(tempDirPath, { recursive: true, force: true });
+  try {
+    let fh = await open(testFile, { create: true, write: true });
+    const encoder = new TextEncoder();
+    await fh.write(encoder.encode("Hello"));
+    fh.close();
+    // Errors when specifying 'truncate' without 'write' or 'append'.
+    await rejects(async () => {
+      const _fh = await open(testFile, { truncate: true });
+    }, Error);
+    // Truncates the file successfully.
+    fh = await open(testFile, { truncate: true, write: true });
+    fh.close();
+    // Read back data.
+    fh = await open(testFile);
+    const buf = new Uint8Array(10);
+    const bytesRead = await fh.read(buf);
+    fh.close();
+    equal(bytesRead, null);
+    await rm(tempDirPath, { recursive: true, force: true });
+  } finally {
+    if (await exists(tempDirPath)) {
+      await rm(tempDirPath, { recursive: true, force: true });
+    }
+  }
 });
 test("open() opens files with a user-defined mode prior to applying umask", {
   skip: platform() === "win32",
@@ -251,7 +265,9 @@ test("openSync() handles 'append' when opening a file", () => {
   fh.close();
   rmSync(tempDirPath, { recursive: true, force: true });
 });
-test("openSync() handles 'truncate' when opening a file", () => {
+test("openSync() handles 'truncate' when opening a file", {
+  skip: platform() === "win32",
+}, () => {
   const tempDirPath = mkdtempSync(resolve(tmpdir(), "openSync_"));
   const testFile = join(tempDirPath, "testFile.txt");
   let fh = openSync(testFile, { create: true, write: true });

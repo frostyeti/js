@@ -4,7 +4,13 @@ import { equal, exists, ok, rejects, throws } from "@frostyeti/assert";
 import { AlreadyExists } from "./unstable_errors.js";
 import { mkdir, mkdirSync } from "./mkdir.js";
 import { mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
-import { lstatSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  lstatSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { platform, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { umask } from "./umask.js";

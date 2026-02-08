@@ -8,7 +8,9 @@ import { globals } from "./globals.js";
 const __dirname = import.meta.dirname ?? dirname(fromFileUrl(import.meta.url));
 const isDeno = globals.Deno !== undefined;
 test("stat() and statSync() return FileInfo for a file", async () => {
-  const file = isDeno ? join(__dirname, "README.md") : join(__dirname, "..", "README.md");
+  const file = isDeno
+    ? join(__dirname, "README.md")
+    : join(__dirname, "..", "README.md");
   {
     const fileInfo = await stat(file);
     ok(fileInfo.isFile);

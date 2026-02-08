@@ -3,7 +3,13 @@ import { test } from "node:test";
 import { equal, rejects, throws } from "@frostyeti/assert";
 import { readlink, readlinkSync } from "./readlink.js";
 import { NotFound } from "./unstable_errors.js";
-import { linkSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  linkSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { link, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";

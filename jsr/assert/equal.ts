@@ -22,19 +22,19 @@ import { deepEqual } from "./deep-equal.ts";
  *
  * @example Usage
  * ```ts ignore
- * import { assertEquals } from "@std/assert";
+ * import { equal } from "@frostyeti/assert";
  *
- * assertEquals("world", "world"); // Doesn't throw
- * assertEquals("hello", "world"); // Throws
+ * equal("world", "world"); // Doesn't throw
+ * equal("hello", "world"); // Throws
  * ```
  * @example Compare `Blob` objects
  * ```ts ignore
- * import { assertEquals } from "@std/assert";
+ * import { equal } from "@frostyeti/assert";
  *
  * const bytes1 = await new Blob(["foo"]).bytes();
  * const bytes2 = await new Blob(["foo"]).bytes();
  *
- * assertEquals(bytes1, bytes2);
+ * equal(bytes1, bytes2);
  * ```
  *
  * @typeParam T The type of the values to compare. This is usually inferred.
