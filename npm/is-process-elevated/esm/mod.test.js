@@ -2,7 +2,10 @@ import { test } from "node:test";
 import { equal, ok } from "@frostyeti/assert";
 import { isProcessElevated } from "./mod.js";
 import process from "node:process";
-const CI = !!process.env.CI;
+import { WINDOWS } from "@frostyeti/globals/os";
+const CI = process.env.CI === "true" || process.env.CI === "1" ||
+  process.env.GITHUB_ACTIONS === "true" || process.env.GITHUB_ACTIONS === "1" ||
+  process.env.TF_BUILD === "true" || process.env.TF_BUILD === "1";
 const uid = process.getuid?.();
 const unixIsRoot = uid === 0;
 test("isProcessElevated returns a boolean", () => {
@@ -32,9 +35,9 @@ test("isProcessElevated returns false for non-elevated process", {
   ok(!result, "Expected non-elevated process to return false");
 });
 test("isProcessElevated returns true for elevated process", {
-  skip: !unixIsRoot,
+  skip: !unixIsRoot && !(WINDOWS && CI),
 }, () => {
-  if (!unixIsRoot) {
+  if (!unixIsRoot && !(WINDOWS && CI)) {
     return;
   }
   // Skip this test if NOT running as root

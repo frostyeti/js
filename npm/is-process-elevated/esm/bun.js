@@ -1,4 +1,4 @@
-// @deno-types="npm:@types/bun"
+// @deno-types="npm:@types/bun@^1.3.8"
 import { dlopen, FFIType, ptr } from "bun:ffi";
 import { WINDOWS } from "@frostyeti/globals";
 import process from "node:process";
