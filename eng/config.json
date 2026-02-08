@@ -46,7 +46,7 @@
     {
       "name": "assert",
       "id": "@frostyeti/assert",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/assert",
       "denoConfig": "jsr/assert/deno.json",
       "packageJson": "npm/assert/package.json",
@@ -55,7 +55,7 @@
     {
       "name": "globals",
       "id": "@frostyeti/globals",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/globals",
       "denoConfig": "jsr/globals/deno.json",
       "packageJson": "npm/globals/package.json",
@@ -64,7 +64,7 @@
     {
       "name": "chars",
       "id": "@frostyeti/chars",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/chars",
       "denoConfig": "jsr/chars/deno.json",
       "packageJson": "npm/chars/package.json",
@@ -73,7 +73,7 @@
     {
       "name": "slices",
       "id": "@frostyeti/slices",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/slices",
       "denoConfig": "jsr/slices/deno.json",
       "packageJson": "npm/slices/package.json",
@@ -82,7 +82,7 @@
     {
       "name": "strings",
       "id": "@frostyeti/strings",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/strings",
       "denoConfig": "jsr/strings/deno.json",
       "packageJson": "npm/strings/package.json",
@@ -91,7 +91,7 @@
     {
       "name": "process",
       "id": "@frostyeti/process",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/process",
       "denoConfig": "jsr/process/deno.json",
       "packageJson": "npm/process/package.json",
@@ -100,7 +100,7 @@
     {
       "name": "path",
       "id": "@frostyeti/path",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/path",
       "denoConfig": "jsr/path/deno.json",
       "packageJson": "npm/path/package.json",
@@ -109,7 +109,7 @@
     {
       "name": "fs",
       "id": "@frostyeti/fs",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/fs",
       "denoConfig": "jsr/fs/deno.json",
       "packageJson": "npm/fs/package.json",
@@ -118,7 +118,7 @@
     {
       "name": "args",
       "id": "@frostyeti/args",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/args",
       "denoConfig": "jsr/args/deno.json",
       "packageJson": "npm/args/package.json",
@@ -127,7 +127,7 @@
     {
       "name": "env",
       "id": "@frostyeti/env",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/env",
       "denoConfig": "jsr/env/deno.json",
       "packageJson": "npm/env/package.json",
@@ -136,7 +136,7 @@
     {
       "name": "dotenv",
       "id": "@frostyeti/dotenv",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/dotenv",
       "denoConfig": "jsr/dotenv/deno.json",
       "packageJson": "npm/dotenv/package.json",
@@ -145,7 +145,7 @@
     {
       "name": "exec",
       "id": "@frostyeti/exec",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/exec",
       "denoConfig": "jsr/exec/deno.json",
       "packageJson": "npm/exec/package.json",
@@ -154,7 +154,7 @@
     {
       "name": "ansi",
       "id": "@frostyeti/ansi",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/ansi",
       "denoConfig": "jsr/ansi/deno.json",
       "packageJson": "npm/ansi/package.json",
@@ -163,7 +163,7 @@
     {
       "name": "secrets",
       "id": "@frostyeti/secrets",
-      "version": "0.0.0-alpha.1",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/secrets",
       "denoConfig": "jsr/secrets/deno.json",
       "packageJson": "npm/secrets/package.json",
@@ -172,7 +172,7 @@
     {
       "name": "fmt",
       "id": "@frostyeti/fmt",
-      "version": "0.0.0-alpha.0",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/fmt",
       "denoConfig": "jsr/fmt/deno.json",
       "packageJson": "npm/fmt/package.json",
@@ -181,11 +181,20 @@
     {
       "name": "ci-env",
       "id": "@frostyeti/ci-env",
-      "version": "0.0.0-alpha.3",
+      "version": "0.0.0-alpha.0.1.0",
       "dir": "jsr/ci-env",
       "denoConfig": "jsr/ci-env/deno.json",
       "packageJson": "npm/ci-env/package.json",
       "dntConfig": "jsr/ci-env/dnt.json"
+    },
+    {
+      "name": "is-process-elevated",
+      "id": "@frostyeti/is-process-elevated",
+      "version": "0.0.0-alpha.0.0.0",
+      "dir": "jsr/is-process-elevated",
+      "denoConfig": "jsr/is-process-elevated/deno.json",
+      "packageJson": "npm/is-process-elevated/package.json",
+      "dntConfig": "jsr/is-process-elevated/dnt.json"
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+    "name": "@frostyeti/is-process-elevated",
+    "version": "0.0.0-alpha.0.0.0",
+    "license": "MIT",
+    "exports": {
+        ".": "./mod.ts"
+    }
+}

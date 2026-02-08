@@ -22,6 +22,7 @@
     "./ansi",
     "./secrets",
     "./fmt",
-    "./ci-env"
+    "./ci-env",
+    "./is-process-elevated"
   ]
 }

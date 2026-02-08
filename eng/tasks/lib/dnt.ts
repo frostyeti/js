@@ -165,6 +165,8 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
            const npmProjectDir = project.packageJson !== undefined ? resolve(dirname(project.packageJson)) : (join(npmDir, project.name));
            console.log(`empty dir ${npmProjectDir}`);
            await emptyDir(npmProjectDir); 
+
+           const privateLib = dntConfig.private === false || undefined;
             
            Deno.chdir(resolve(projectRootDir, project.dir));
            console.log(Deno.cwd());
@@ -190,6 +192,7 @@ export async function runDnt(projectNames?: string[]) : Promise<void> {
                 version: dntConfig.version ?? denoConfig.version ?? baseVersion,
                 type: "module",
                 icon: dntConfig.icon ?? undefined,
+                private: privateLib,
                 description: dntConfig.description,
                 keywords: dntConfig.keywords,
                 license: dntConfig.license,
