@@ -1,5 +1,5 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
-import { getNodeFs } from "./globals.js";
+import { getNodeFs, WIN } from "./globals.js";
 /**
  * Uses the boolean options specified in {@linkcode WriteFileOptions} to
  * construct the composite flag value to pass to the `flag` option in the
@@ -19,6 +19,11 @@ export function getWriteFsFlag(opt) {
     flag |= O_APPEND;
   } else {
     flag |= O_TRUNC;
+    if (WIN && !opt.create && !opt.createNew) {
+      // On Windows, opening a file with O_TRUNC and O_CREAT will create the file if it does not exist.
+      // To match Deno's behavior, we need to throw an error if the file does not exist and create is false.
+      flag |= O_CREAT;
+    }
   }
   return flag;
 }
