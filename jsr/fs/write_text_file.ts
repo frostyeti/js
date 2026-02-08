@@ -36,13 +36,15 @@ export async function writeTextFile(
     if (globals.Deno) {
         return await globals.Deno.writeTextFile(path, data, options);
     } else {
-        const {
-            append = false,
-            create = true,
-            createNew = false,
+        options = options ?? {};
+        options.append ??= false;
+        options.create ??= true;
+        options.createNew ??= false;
+
+        const { append, create, createNew,
             mode,
             signal,
-        } = options ?? {};
+        } = options;
 
         const flag = getWriteFsFlag({ append, create, createNew });
         try {
@@ -87,16 +89,19 @@ export function writeTextFileSync(
     if (globals.Deno) {
         return globals.Deno.writeTextFileSync(path, data, options);
     } else {
-        const {
-            append = false,
-            create = true,
-            createNew = false,
+        options = options ?? {};
+        options.append ??= false;
+        options.create ??= true;
+        options.createNew ??= false;
+
+        const { append, create, createNew,
             mode,
-        } = options ?? {};
+            signal,
+        } = options;
 
         const flag = getWriteFsFlag({ append, create, createNew });
         try {
-            getNodeFs().writeFileSync(path, data, { encoding: "utf-8", flag });
+            getNodeFs().writeFileSync(path, data, { encoding: "utf-8", flag, signal });
             if (mode != null) {
                 getNodeFs().chmodSync(path, mode);
             }
