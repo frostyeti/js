@@ -1,6 +1,7 @@
 {
     "name": "@frostyeti/dotenv",
     "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
     "exports": {
         ".": "./mod.ts",
         "./document": "./document.ts",

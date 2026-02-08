@@ -1,6 +1,7 @@
 {
     "name": "@frostyeti/fmt",
     "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
     "keywords": [
         "fmt",
         "format",

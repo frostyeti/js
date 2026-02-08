@@ -1,6 +1,7 @@
 {
     "name": "@frostyeti/exec",
     "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
     "exports": {
         ".": "./mod.ts",
         "./command": "./command.ts",
