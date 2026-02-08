@@ -53,21 +53,34 @@ export async function writeFile(
                 // Check if the file exists before trying to write to it, since Node's writeFile will create the file if it does not exist, even with O_TRUNC.
                 getNodeFs().accessSync(path);
             } catch (error) {
-                if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "ENOENT") {
-                    throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
+                if (
+                    error instanceof Error &&
+                    (error as unknown as Record<string, unknown>).code === "ENOENT"
+                ) {
+                    throw new NotFound(`File not found: ${path} and create is false`, {
+                        cause: error,
+                    });
                 }
                 throw mapError(error);
             }
         }
 
-        const flag = getWriteFsFlag({ append: options.append, create: options.create, createNew: options.createNew });
+        const flag = getWriteFsFlag({
+            append: options.append,
+            create: options.create,
+            createNew: options.createNew,
+        });
         try {
             await getNodeFs().promises.writeFile(path, data, { flag, signal: options.signal });
             if (options.mode != null) {
                 await getNodeFs().promises.chmod(path, options.mode);
             }
         } catch (error) {
-            if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "EINVAL" && options.create === false) {
+            if (
+                error instanceof Error &&
+                (error as unknown as Record<string, unknown>).code === "EINVAL" &&
+                options.create === false
+            ) {
                 throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
             }
 
@@ -112,18 +125,20 @@ export function writeFileSync(
         options.append ??= false;
         options.create ??= true;
         options.createNew ??= false;
-        const { append, create, createNew,
-            mode,
-            signal,
-        } = options;
+        const { append, create, createNew, mode, signal } = options;
 
         if (!create && !createNew) {
             try {
                 // Check if the file exists before trying to write to it, since Node's writeFileSync will create the file if it does not exist, even with O_TRUNC.
                 getNodeFs().accessSync(path);
             } catch (error) {
-                if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "ENOENT") {
-                    throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
+                if (
+                    error instanceof Error &&
+                    (error as unknown as Record<string, unknown>).code === "ENOENT"
+                ) {
+                    throw new NotFound(`File not found: ${path} and create is false`, {
+                        cause: error,
+                    });
                 }
                 throw mapError(error);
             }
@@ -136,7 +151,11 @@ export function writeFileSync(
                 getNodeFs().chmodSync(path, mode);
             }
         } catch (error) {
-            if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "EINVAL" && options.create === false) {
+            if (
+                error instanceof Error &&
+                (error as unknown as Record<string, unknown>).code === "EINVAL" &&
+                options.create === false
+            ) {
                 throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
             }
             throw mapError(error);

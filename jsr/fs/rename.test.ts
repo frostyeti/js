@@ -22,10 +22,11 @@ import { globals } from "./globals.ts";
 const version = typeof globals.Deno !== "undefined" ? globals.Deno.version.deno : "0.0.0";
 
 // In Deno 2.2.2 or earlier, the `rename` function has an issue on Windows.
-const RENAME_HAS_ISSUE = (typeof globals.Deno === "undefined" && platform() === "win32") ||  (typeof globals.Deno !== "undefined" && globals.Deno.version &&
-    parseSemver(version)!.build?.length === 0 && // not canary
-    lessOrEqual(parseSemver(version)!, parseSemver("2.2.2")!) &&
-    platform() === "win32");
+const RENAME_HAS_ISSUE = (typeof globals.Deno === "undefined" && platform() === "win32") ||
+    (typeof globals.Deno !== "undefined" && globals.Deno.version &&
+        parseSemver(version)!.build?.length === 0 && // not canary
+        lessOrEqual(parseSemver(version)!, parseSemver("2.2.2")!) &&
+        platform() === "win32");
 
 /** Tests if the original file/directory is missing since the file is renamed.
  * Uses Node.js Error instances to check because the `lstatSync` function is

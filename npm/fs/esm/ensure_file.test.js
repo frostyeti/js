@@ -115,8 +115,7 @@ if (globals.Deno && globals.Deno.permissions) {
     },
   });
   globals.Deno.test({
-    name:
-      "fs::ensureFile() can write file without write permissions on parent directory",
+    name: "fs::ensureFile() can write file without write permissions on parent directory",
     permissions: {
       read: true,
       write: [
@@ -148,8 +147,7 @@ if (globals.Deno && globals.Deno.permissions) {
     },
   });
   globals.Deno.test({
-    name:
-      "fs::ensureFileSync() can write file without write permissions on parent directory",
+    name: "fs::ensureFileSync() can write file without write permissions on parent directory",
     permissions: {
       read: true,
       write: [

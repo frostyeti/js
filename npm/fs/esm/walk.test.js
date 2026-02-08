@@ -82,10 +82,7 @@ var __disposeResources = (this && this.__disposeResources) ||
       ? SuppressedError
       : function (error, suppressed, message) {
         var e = new Error(message);
-        return e.name = "SuppressedError",
-          e.error = error,
-          e.suppressed = suppressed,
-          e;
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
       },
   );
 // Copyright 2018-2026 the Deno authors. MIT license.

@@ -1,10 +1,4 @@
-import {
-  basename,
-  fromFileUrl,
-  normalize,
-  resolve,
-  SEPARATOR,
-} from "@frostyeti/path";
+import { basename, fromFileUrl, normalize, resolve, SEPARATOR } from "@frostyeti/path";
 import { stat, statSync } from "./stat.js";
 export function toPathString(pathUrl) {
   return pathUrl instanceof URL ? fromFileUrl(pathUrl) : pathUrl;

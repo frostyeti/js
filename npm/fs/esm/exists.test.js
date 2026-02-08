@@ -21,9 +21,7 @@ test("fs::existsSync() returns false for a non-existent path", function () {
   const tempDirPath = mkdtempSync();
   try {
     const p = path.join(tempDirPath, "not_exists");
-    console.log(p);
     const v = existsSync(p);
-    console.log("existsSync", v);
     equal(v, false);
   } finally {
     rmSync(tempDirPath, { recursive: true });

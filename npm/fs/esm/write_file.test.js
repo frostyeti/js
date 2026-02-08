@@ -1,13 +1,6 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import {
-  equal,
-  exists,
-  ok,
-  rejects,
-  throws,
-  unreachable,
-} from "@frostyeti/assert";
+import { equal, exists, ok, rejects, throws, unreachable } from "@frostyeti/assert";
 import { isDeno } from "./_utils.js";
 import { writeFile, writeFileSync } from "./write_file.js";
 import { readFile, readFileSync } from "./read_file.js";
@@ -70,15 +63,7 @@ test("writeFile() handles 'create' when writing to a file", async () => {
   const data = encoder.encode("Hello");
   // Rejects with NotFound when file does not initally exist.
   await rejects(async () => {
-    try {
-      await writeFile(testFile, data, { create: false });
-    } catch (error) {
-      if (error.code !== undefined) {
-        console.log(`Error code: ${error.code}`);
-      }
-      console.log(`Error: ${error}`);
-      throw error;
-    }
+    await writeFile(testFile, data, { create: false });
   });
   // Creates a file that does not initially exist. (This is default behavior).
   await writeFile(testFile, data, { create: true });
@@ -264,15 +249,7 @@ test("writeFileSync() handles 'create' when writing to a file", () => {
   const data = encoder.encode("Hello");
   // Throws with NotFound when file does not initally exist.
   throws(() => {
-    try {
-      writeFileSync(testFile, data, { create: false });
-    } catch (error) {
-      if (error.code !== undefined) {
-        console.log(`Error code: ${error.code}`);
-      }
-      console.log(`Error: ${error}`);
-      throw error;
-    }
+    writeFileSync(testFile, data, { create: false });
   }, NotFound);
   // Creates a file that does not initially exist. (This is default behavior).
   writeFileSync(testFile, data, { create: true });

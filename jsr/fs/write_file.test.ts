@@ -79,17 +79,7 @@ test("writeFile() handles 'create' when writing to a file", async () => {
 
     // Rejects with NotFound when file does not initally exist.
     await rejects(async () => {
-        try {
-            await writeFile(testFile, data, { create: false });
-        } catch (error) {
-            if ((error as unknown as Record<string, unknown>).code !== undefined) {
-                console.log(`Error code: ${(error as unknown as Record<string, unknown>).code}`);
-            }
-
-            console.log(`Error: ${error}`);
-
-            throw error;
-        }
+        await writeFile(testFile, data, { create: false });
     });
     // Creates a file that does not initially exist. (This is default behavior).
     await writeFile(testFile, data, { create: true });
@@ -329,19 +319,7 @@ test("writeFileSync() handles 'create' when writing to a file", () => {
 
     // Throws with NotFound when file does not initally exist.
     throws(() => {
-        try {
-               writeFileSync(testFile, data, { create: false });
-        } catch (error) {
-
-            if ((error as unknown as Record<string, unknown>).code !== undefined) {
-                console.log(`Error code: ${(error as unknown as Record<string, unknown>).code}`);
-            }
-
-            console.log(`Error: ${error}`);
-
-            throw error;
-        }
-     
+        writeFileSync(testFile, data, { create: false });
     }, NotFound);
 
     // Creates a file that does not initially exist. (This is default behavior).

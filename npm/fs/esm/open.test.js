@@ -4,12 +4,7 @@ import { equal, rejects, throws } from "@frostyeti/assert";
 import { AlreadyExists, NotFound } from "./unstable_errors.js";
 import { open, openSync } from "./open.js";
 import { mkdtemp, rm } from "node:fs/promises";
-import {
-  closeSync,
-  mkdtempSync,
-  openSync as nodeOpenSync,
-  rmSync,
-} from "node:fs";
+import { closeSync, mkdtempSync, openSync as nodeOpenSync, rmSync } from "node:fs";
 import { platform, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { umask } from "./umask.js";

@@ -1,13 +1,6 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
 import { test } from "node:test";
-import {
-  equal,
-  exists,
-  ok,
-  rejects,
-  throws,
-  unreachable,
-} from "@frostyeti/assert";
+import { equal, exists, ok, rejects, throws, unreachable } from "@frostyeti/assert";
 import { isDeno } from "./_utils.js";
 import { writeTextFile, writeTextFileSync } from "./write_text_file.js";
 import { AlreadyExists, NotFound } from "./unstable_errors.js";
@@ -107,9 +100,7 @@ test("writeTextFile() can change the mode of a file", {
   equal(
     getOctMode(fileStatBefore.mode & 0o777),
     getOctMode(defaultFileMode),
-    `Unexpected file mode: ${
-      getOctMode(fileStatBefore.mode)
-    } (${fileStatBefore.mode}) masked ${
+    `Unexpected file mode: ${getOctMode(fileStatBefore.mode)} (${fileStatBefore.mode}) masked ${
       getOctMode(fileStatBefore.mode & 0o777)
     } vs 0o644 ${0o644}`,
   );
@@ -119,9 +110,7 @@ test("writeTextFile() can change the mode of a file", {
   equal(
     getOctMode(fileStatAfter.mode & 0o777),
     getOctMode(0o222),
-    `Unexpected file mode: ${
-      getOctMode(fileStatAfter.mode)
-    } (${fileStatAfter.mode}) masked ${
+    `Unexpected file mode: ${getOctMode(fileStatAfter.mode)} (${fileStatAfter.mode}) masked ${
       getOctMode(fileStatAfter.mode & 0o777)
     } vs 0o222 ${0o222}`,
   );
@@ -231,9 +220,7 @@ test("writeTextFileSync() can change the mode of a file", {
   equal(
     fileStatBefore.mode & 0o777,
     defaultFileMode,
-    `Unexpected file mode: ${
-      getOctMode(fileStatBefore.mode)
-    } (${fileStatBefore.mode}) masked ${
+    `Unexpected file mode: ${getOctMode(fileStatBefore.mode)} (${fileStatBefore.mode}) masked ${
       getOctMode(fileStatBefore.mode & 0o777)
     } vs 0o644 ${0o644}`,
   );
@@ -243,9 +230,7 @@ test("writeTextFileSync() can change the mode of a file", {
   equal(
     fileStatAfter.mode & 0o777,
     0o222,
-    `Unexpected file mode: ${
-      getOctMode(fileStatAfter.mode)
-    } (${fileStatAfter.mode}) masked ${
+    `Unexpected file mode: ${getOctMode(fileStatAfter.mode)} (${fileStatAfter.mode}) masked ${
       getOctMode(fileStatAfter.mode & 0o777)
     } vs 0o222 ${0o222}`,
   );

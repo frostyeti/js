@@ -116,41 +116,43 @@ test("open() handles 'append' when opening a file", async () => {
     await rm(tempDirPath, { recursive: true, force: true });
 });
 
-test("open() handles 'truncate' when opening a file", { skip: platform() === "win32" }, async () => {
-    const tempDirPath = await mkdtemp(resolve(tmpdir(), "open_"));
-    const testFile = join(tempDirPath, "testFile.txt");
+test(
+    "open() handles 'truncate' when opening a file",
+    { skip: platform() === "win32" },
+    async () => {
+        const tempDirPath = await mkdtemp(resolve(tmpdir(), "open_"));
+        const testFile = join(tempDirPath, "testFile.txt");
 
-    try {
+        try {
+            let fh = await open(testFile, { create: true, write: true });
+            const encoder = new TextEncoder();
+            await fh.write(encoder.encode("Hello"));
+            fh.close();
 
-    let fh = await open(testFile, { create: true, write: true });
-    const encoder = new TextEncoder();
-    await fh.write(encoder.encode("Hello"));
-    fh.close();
+            // Errors when specifying 'truncate' without 'write' or 'append'.
+            await rejects(async () => {
+                const _fh = await open(testFile, { truncate: true });
+            }, Error);
 
-    // Errors when specifying 'truncate' without 'write' or 'append'.
-    await rejects(async () => {
-        const _fh = await open(testFile, { truncate: true });
-    }, Error);
+            // Truncates the file successfully.
+            fh = await open(testFile, { truncate: true, write: true });
+            fh.close();
 
-    // Truncates the file successfully.
-    fh = await open(testFile, { truncate: true, write: true });
-    fh.close();
+            // Read back data.
+            fh = await open(testFile);
+            const buf = new Uint8Array(10);
+            const bytesRead = await fh.read(buf);
+            fh.close();
+            equal(bytesRead, null);
 
-    // Read back data.
-    fh = await open(testFile);
-    const buf = new Uint8Array(10);
-    const bytesRead = await fh.read(buf);
-    fh.close();
-    equal(bytesRead, null);
-
-    await rm(tempDirPath, { recursive: true, force: true });
-    } finally {
-        if (await exists(tempDirPath)) {
             await rm(tempDirPath, { recursive: true, force: true });
+        } finally {
+            if (await exists(tempDirPath)) {
+                await rm(tempDirPath, { recursive: true, force: true });
+            }
         }
-    }
-
-});
+    },
+);
 
 test("open() opens files with a user-defined mode prior to applying umask", {
     skip: platform() === "win32",
