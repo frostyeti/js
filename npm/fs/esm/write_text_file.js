@@ -35,6 +35,19 @@ export async function writeTextFile(path, data, options) {
     options.create ??= true;
     options.createNew ??= false;
     const { append, create, createNew, mode, signal } = options;
+    if (!options.create && !options.createNew) {
+      try {
+        // Check if the file exists before trying to write to it, since Node's writeFile will create the file if it does not exist, even with O_TRUNC.
+        getNodeFs().accessSync(path);
+      } catch (error) {
+        if (error instanceof Error && error.code === "ENOENT") {
+          throw new NotFound(`File not found: ${path} and create is false`, {
+            cause: error,
+          });
+        }
+        throw mapError(error);
+      }
+    }
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       await getNodeFs().promises.writeFile(path, data, {
@@ -86,6 +99,19 @@ export function writeTextFileSync(path, data, options) {
     options.create ??= true;
     options.createNew ??= false;
     const { append, create, createNew, mode, signal } = options;
+    if (!options.create && !options.createNew) {
+      try {
+        // Check if the file exists before trying to write to it, since Node's writeFile will create the file if it does not exist, even with O_TRUNC.
+        getNodeFs().accessSync(path);
+      } catch (error) {
+        if (error instanceof Error && error.code === "ENOENT") {
+          throw new NotFound(`File not found: ${path} and create is false`, {
+            cause: error,
+          });
+        }
+        throw mapError(error);
+      }
+    }
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       getNodeFs().writeFileSync(path, data, {
