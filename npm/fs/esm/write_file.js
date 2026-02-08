@@ -35,13 +35,25 @@ export async function writeFile(path, data, options) {
   if (globals.Deno) {
     return await globals.Deno.writeFile(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode, signal } =
-      options ?? {};
-    const flag = getWriteFsFlag({ append, create, createNew });
+    options = options ?? {};
+    options.append ??= false;
+    options.create ??= true;
+    options.createNew ??= false;
+    const flag = getWriteFsFlag({
+      append: options.append,
+      create: options.create,
+      createNew: options.createNew,
+    });
+    console.log(
+      `writeFile options: append=${options.append}, create=${options.create}, createNew=${options.createNew}, flag=${flag}`,
+    );
     try {
-      await getNodeFs().promises.writeFile(path, data, { flag, signal });
-      if (mode != null) {
-        await getNodeFs().promises.chmod(path, mode);
+      await getNodeFs().promises.writeFile(path, data, {
+        flag,
+        signal: options.signal,
+      });
+      if (options.mode != null) {
+        await getNodeFs().promises.chmod(path, options.mode);
       }
     } catch (error) {
       throw mapError(error);
@@ -76,8 +88,11 @@ export function writeFileSync(path, data, options) {
   if (globals.Deno) {
     return globals.Deno.writeFileSync(path, data, options);
   } else {
-    const { append = false, create = true, createNew = false, mode, signal } =
-      options ?? {};
+    options = options ?? {};
+    options.append ??= false;
+    options.create ??= true;
+    options.createNew ??= false;
+    const { append, create, createNew, mode, signal } = options;
     const flag = getWriteFsFlag({ append, create, createNew });
     try {
       getNodeFs().writeFileSync(path, data, { flag, signal });

@@ -264,7 +264,15 @@ test("writeFileSync() handles 'create' when writing to a file", () => {
   const data = encoder.encode("Hello");
   // Throws with NotFound when file does not initally exist.
   throws(() => {
-    writeFileSync(testFile, data, { create: false });
+    try {
+      writeFileSync(testFile, data, { create: false });
+    } catch (error) {
+      if (error.code !== undefined) {
+        console.log(`Error code: ${error.code}`);
+      }
+      console.log(`Error: ${error}`);
+      throw error;
+    }
   }, NotFound);
   // Creates a file that does not initially exist. (This is default behavior).
   writeFileSync(testFile, data, { create: true });

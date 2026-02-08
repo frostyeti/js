@@ -329,7 +329,19 @@ test("writeFileSync() handles 'create' when writing to a file", () => {
 
     // Throws with NotFound when file does not initally exist.
     throws(() => {
-        writeFileSync(testFile, data, { create: false });
+        try {
+               writeFileSync(testFile, data, { create: false });
+        } catch (error) {
+
+            if ((error as unknown as Record<string, unknown>).code !== undefined) {
+                console.log(`Error code: ${(error as unknown as Record<string, unknown>).code}`);
+            }
+
+            console.log(`Error: ${error}`);
+
+            throw error;
+        }
+     
     }, NotFound);
 
     // Creates a file that does not initially exist. (This is default behavior).
