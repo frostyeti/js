@@ -16,12 +16,12 @@ if (WINDOWS) {
       return elevated;
     }
     try {
-      spawnSync("fltmc", [], {
+      const res = spawnSync("fltmc", [], {
         stdio: "ignore",
         shell: true,
         windowsHide: true,
       });
-      elevated = process.exitCode === 0;
+      elevated = res.status === 0;
     } catch (error) {
       console.error("Error checking for elevated privileges:", error);
       // If an error occurs, we can assume the process is not elevated
