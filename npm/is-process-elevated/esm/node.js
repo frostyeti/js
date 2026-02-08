@@ -16,7 +16,7 @@ if (WINDOWS) {
       return elevated;
     }
     try {
-      spawnSync("net", ["session"], {
+      spawnSync("fsutil", ["dirty", "query", process.env.systemdrive ?? "C:"], {
         stdio: "ignore",
         shell: true,
         windowsHide: true,

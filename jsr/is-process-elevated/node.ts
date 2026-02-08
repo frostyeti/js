@@ -18,7 +18,11 @@ if (WINDOWS) {
             return elevated;
         }
         try {
-            spawnSync("net", ["session"], { stdio: "ignore", shell: true, windowsHide: true });
+            spawnSync("fsutil", ['dirty', 'query', process.env.systemdrive ?? "C:"], {
+        stdio: "ignore",
+        shell: true,
+        windowsHide: true,
+      });
             elevated = process.exitCode === 0;
         } catch (_) {
             // If an error occurs, we can assume the process is not elevated
