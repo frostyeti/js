@@ -2,7 +2,7 @@
 
 import { mapError } from "./_map_error.ts";
 import { getNodeProcess, isDeno } from "./_utils.ts";
-import { globals } from "./globals.ts";
+import { globals, WIN } from "./globals.ts";
 
 /** Retrieve the process umask.  If `mask` is provided, sets the process umask.
  * This call always returns what the umask was before the call.
@@ -28,6 +28,9 @@ import { globals } from "./globals.ts";
  */
 export function umask(mask?: number): number {
     if (isDeno) {
+        if (WIN) {
+            return mask ?? 0o022;
+        }
         return globals.Deno.umask(mask);
     } else {
         try {

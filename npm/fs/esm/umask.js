@@ -1,7 +1,7 @@
 // Copyright 2018-2026 the Deno authors. MIT license.
 import { mapError } from "./_map_error.js";
 import { getNodeProcess, isDeno } from "./_utils.js";
-import { globals } from "./globals.js";
+import { globals, WIN } from "./globals.js";
 /** Retrieve the process umask.  If `mask` is provided, sets the process umask.
  * This call always returns what the umask was before the call.
  * @example Usage
@@ -26,6 +26,9 @@ import { globals } from "./globals.js";
  */
 export function umask(mask) {
   if (isDeno) {
+    if (WIN) {
+      return mask ?? 0o022;
+    }
     return globals.Deno.umask(mask);
   } else {
     try {
