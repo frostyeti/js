@@ -16,13 +16,14 @@ if (WINDOWS) {
       return elevated;
     }
     try {
-      spawnSync("fsutil", ["dirty", "query", process.env.systemdrive ?? "C:"], {
+      spawnSync("fltmc", [], {
         stdio: "ignore",
         shell: true,
         windowsHide: true,
       });
       elevated = process.exitCode === 0;
-    } catch (_) {
+    } catch (error) {
+      console.error("Error checking for elevated privileges:", error);
       // If an error occurs, we can assume the process is not elevated
       return false;
     }
