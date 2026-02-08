@@ -1,7 +1,7 @@
 /**
  * ## Overview
  *
- * Split, join, splat commandline arguments/args for the current runtime.
+ * Split, join, splat command line arguments.
  *
  * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
@@ -15,12 +15,25 @@
  *
  * A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
  *
+ * ## Installation
+ *
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/args
+ *
+ * # npm from jsr
+ * npx jsr add @frostyeti/args
+ *
+ * # from npmjs.org
+ * npm install @frostyeti/args
+ * ```
+ *
  * ## Usage
  *
  * ```typescript
  * import {split, join, splat} from "@frostyeti/args";
  *
- * console.log(split("echo hello world")); // ["echo", "hello", "world"]
+ * console.log(split("echo hello world --test")); // ["echo", "hello", "world", "--test"]
  *
  * console.log(join(["echo", "hello", "world"])); // "echo hello world"
  *

@@ -6,7 +6,7 @@
  *
  * @example Usage
  * ```ts no-eval
- * import { isError } from "@frostyetiassert";
+ * import { isError } from "@frostyeti/assert";
  *
  * isError(null); // Throws
  * isError(new RangeError("Out of range")); // Doesn't throw

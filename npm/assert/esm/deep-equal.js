@@ -88,7 +88,7 @@ const setHasSymmetricDifference = Set.prototype.symmetricDifference != undefined
  *
  * @example Usage
  * ```ts
- * import { equal } from "@std/assert/equal";
+ * import { equal } from "@frostyeti/assert/equal";
  *
  * equal({ foo: "bar" }, { foo: "bar" }); // Returns `true`
  * equal({ foo: "bar" }, { foo: "baz" }); // Returns `false`

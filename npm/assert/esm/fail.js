@@ -4,7 +4,7 @@ import { AssertionError } from "./assertion-error.js";
  *
  * @example Usage
  * ```ts no-eval
- * import { unreachable } from "@frostyetiassert";
+ * import { unreachable } from "@frostyeti/assert";
  *
  * unreachable(); // Throws
  * ```

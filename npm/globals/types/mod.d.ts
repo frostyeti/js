@@ -19,6 +19,19 @@
  *
  * A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
  *
+ * ## Installation
+ *
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/globals
+ *
+ * # npm from jsr
+ * npx jsr add @frostyeti/globals
+ *
+ * # from npmjs.org
+ * npm install @frostyeti/globals
+ * ```
+ *
  * ## Usage
  *
  * ```typescript

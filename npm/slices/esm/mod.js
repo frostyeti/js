@@ -8,7 +8,9 @@
  *
  * They are not as effecient as go's `slice` or .NET's `Span<T>`, but
  * they do provide some benefits for dealing with smaller segments
- * of arrays or character slices.
+ * of arrays or character slices and helpful with dealing with chars
+ * and strings.  Slices can convert a string into Uint8array and perform
+ * multiple transforms before being converted back into a string.
  *
  * The CharSlice and ReadOnlyCharSlice are specialized slice types
  * for working with string characters in their uint32 codepoint format
@@ -39,6 +41,19 @@
  *
  * A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
  *
+ * ## Installation
+ *
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/slices
+ *
+ * # npm from jsr
+ * npx jsr add @frostyeti/slices
+ *
+ * # from npmjs.org
+ * npm install @frostyeti/slices
+ * ```
+ *
  * ## Usage
  *
  * ```typescript
@@ -62,6 +77,11 @@
  * console.log(slice.at(0)); // 3
  * console.log(slice.length); // 2
  *
+ * const slice2 = slices.slice([0, 1, 2])
+ * const slice3 = slice2.slice(1)
+ * console.log(slice2).at(0); // 0
+ * console.log(slice3.at(0)); // 1
+ *
  * ```
  *
  * ## Classes
@@ -77,6 +97,8 @@
  *
  * - `camelize` - converts a word to camel case.
  * - `capitalize` - capitalizes a word.
+ * - `charSlice` - creates a slice of characters from a string or Uint32Array.
+ * - `readonlyCharSlice` - creates a readonly slice of characters from a string or Uint32Array.
  * - `dasherize` - converts a word to hyphen/dash case.
  * - `endsWith` - determines if a string or char array ends with characters.
  * - `endsWithFold` - determines if a string or char array ends with characters using case insensitivity.
@@ -88,6 +110,8 @@
  * - `lastIndex` - determines the last index of a character or char array.
  * - `ordinalize` - converts word/number to the ordinal case.
  * - `pascalize` - converts a word to pascal case.
+ * - `slice` - creates a slice from an array
+ * - `readonlySlice` - creates a readonly slice from an array
  * - `startsWith` - determines if a string or char array starts with another char array.
  * - `startsWithFold` - determines if a string or char array starts with another char array using case insensitivity.
  * - `titleize` - converts characters into title case.

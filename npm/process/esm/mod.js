@@ -1,8 +1,9 @@
 /**
  * ## Overview
  *
- * Functionality and primitives related to the current process such as the pid, args, execPath, cwd, chdir
- * and standard streams for Deno, Node, and Bun.
+ * Cross-runtime process utilities providing access to process ID, command-line arguments,
+ * executable path, current working directory, directory navigation, and standard I/O streams.
+ * Works seamlessly with Deno, Node.js, Bun, and has experimental browser support.
  *
  * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
@@ -16,50 +17,177 @@
  *
  * A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
  *
- * ## Usage
+ * ## Installation
  *
- * ```typescript
- * import { args, execPath, cwd, chdir, stdout, stdin } from "@frostyeti/process";
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/process
  *
- * console.log(args); // the args passed to current process.
- * console.log(execPath()); // path to executable for the current process.
- * console.log(cwd()); // the current working directory.
+ * # npm from jsr
+ * npx jsr add @frostyeti/process
  *
- * chdir(".."); // changes the current working directory.
- *
- * console.log(cwd()); // updated current working directory.
- *
- * stdout.writeSync(new TextEncoder().encode("hello world\n"));
- *
- * // read stdin
- * const buffer = new Uint8Array(1024);
- * const bytesRead = stdin.readSync(buffer);
- *
- * if (bytesRead && bytesRead.length > 0) {
- *     // write it back out
- *     stdout.writeSync(buffer.subarray(0, bytesRead))
- * }
- *
+ * # from npmjs.org
+ * npm install @frostyeti/process
  * ```
  *
- * ## Constants
+ * ## Quick Start
  *
- * ### Runtime
+ * ```typescript
+ * import { args, pid, execPath, cwd, chdir, exit, stdout } from "@frostyeti/process";
  *
- * - **args** - Array of arguments passed to the current process.
- * - **pid** - The id of the current process.
- * - **stdin** - The standard input stream which is a stream reader that uses Uint8Array.
- * - **stdout** - The standard output stream which is a stream writer that uses Uint8Array.
- * - **stderr** - The standard error stream which is a stream writer that uses Uint8Array.
+ * // Access process info
+ * console.log("PID:", pid);
+ * console.log("Args:", args);
+ * console.log("Executable:", execPath());
+ * console.log("Working directory:", cwd());
  *
- * ### Functions
+ * // Change directory
+ * chdir("../other-project");
+ * console.log("New directory:", cwd());
  *
- * - **cwd** - Gets the current working directory.
- * - **chdir** - Changes the current working directory.
- * - **execPath** - Gets the path of the executable that spawned the current process.
- * - **exit** - Exits the current process with the exit code provided. If the exit code is not set, its zero.
- * - **popd** - Pops the last directory and returns it while changing the current directory to the last one from history.
- * - **pushd** - Pushs a path to chdir and records the path in history.
+ * // Write to stdout
+ * const encoder = new TextEncoder();
+ * stdout.writeSync(encoder.encode("Hello from stdout\n"));
+ *
+ * // Exit with code
+ * exit(0);
+ * ```
+ *
+ * ## API Reference
+ *
+ * ### Constants
+ *
+ * | Constant | Type | Description |
+ * |----------|------|-------------|
+ * | `pid` | `number` | The process ID of the current process (0 in browser) |
+ * | `args` | `ReadonlyArray<string>` | Command-line arguments (excludes executable and script path) |
+ * | `stdin` | `StdReader` | Standard input stream reader |
+ * | `stdout` | `StdWriter` | Standard output stream writer |
+ * | `stderr` | `StdWriter` | Standard error stream writer |
+ *
+ * ```typescript
+ * import { pid, args } from "@frostyeti/process";
+ *
+ * // Process ID
+ * console.log(`Running as PID: ${pid}`);
+ *
+ * // Command-line arguments (e.g., `deno run script.ts --flag value`)
+ * // args = ["--flag", "value"]
+ * for (const arg of args) {
+ *     console.log(`Arg: ${arg}`);
+ * }
+ * ```
+ *
+ * ### Directory Functions
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `cwd()` | Returns the current working directory |
+ * | `chdir(directory)` | Changes the current working directory |
+ * | `pushd(directory)` | Push directory to stack and change to it |
+ * | `popd()` | Pop directory from stack and change to it |
+ * | `execPath()` | Returns the path to the current executable |
+ *
+ * ```typescript
+ * import { cwd, chdir, pushd, popd, execPath } from "@frostyeti/process";
+ *
+ * // Get current directory
+ * console.log(cwd()); // "/home/user/project"
+ *
+ * // Change directory
+ * chdir("../other");
+ * console.log(cwd()); // "/home/user/other"
+ *
+ * // Use pushd/popd for temporary directory changes
+ * pushd("/tmp");
+ * console.log(cwd()); // "/tmp"
+ * const prevDir = popd();
+ * console.log(prevDir); // "/tmp"
+ *
+ * // Get executable path
+ * console.log(execPath()); // "/usr/bin/deno" or similar
+ * ```
+ *
+ * ### Process Control
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `exit(code?)` | Exits the process with optional exit code (default: 0) |
+ *
+ * ```typescript
+ * import { exit } from "@frostyeti/process";
+ *
+ * // Exit successfully
+ * exit(0);
+ *
+ * // Exit with error
+ * exit(1);
+ * ```
+ *
+ * ### Standard Streams
+ *
+ * | Interface | Methods |
+ * |-----------|---------|
+ * | `StdWriter` | `write(chunk)`, `writeSync(chunk)`, `isTerm()`, `close()` |
+ * | `StdReader` | `read(data)`, `readSync(data)`, `isTerm()`, `close()` |
+ *
+ * ```typescript
+ * import { stdout, stderr, stdin } from "@frostyeti/process";
+ *
+ * const encoder = new TextEncoder();
+ * const decoder = new TextDecoder();
+ *
+ * // Write to stdout
+ * stdout.writeSync(encoder.encode("Output message\n"));
+ * await stdout.write(encoder.encode("Async output\n"));
+ *
+ * // Write to stderr
+ * stderr.writeSync(encoder.encode("Error message\n"));
+ *
+ * // Check if stream is a terminal
+ * if (stdout.isTerm()) {
+ *     console.log("Running in interactive terminal");
+ * }
+ *
+ * // Read from stdin
+ * const buffer = new Uint8Array(1024);
+ * const bytesRead = stdin.readSync(buffer);
+ * if (bytesRead !== null && bytesRead > 0) {
+ *     console.log("Input:", decoder.decode(buffer.subarray(0, bytesRead)));
+ * }
+ * ```
+ *
+ * ### Error Classes
+ *
+ * | Class | Description |
+ * |-------|-------------|
+ * | `ChangeDirectoryError` | Thrown when `chdir()` fails (e.g., directory not found) |
+ *
+ * ```typescript
+ * import { chdir, ChangeDirectoryError } from "@frostyeti/process";
+ *
+ * try {
+ *     chdir("/nonexistent/path");
+ * } catch (error) {
+ *     if (error instanceof ChangeDirectoryError) {
+ *         console.error("Failed to change directory:", error.message);
+ *     }
+ * }
+ * ```
+ *
+ * ## Browser Support (Experimental)
+ *
+ * The browser polyfill provides limited functionality:
+ *
+ * | Feature | Browser Behavior |
+ * |---------|------------------|
+ * | `pid` | Always returns 0 |
+ * | `args` | Returns empty array |
+ * | `cwd()` | Returns `location.pathname` |
+ * | `chdir(path)` | Calls `history.pushState()` |
+ * | `exit()` | Calls `window.close()` |
+ * | `stdout/stderr` | Write to console |
+ * | `stdin` | Returns null for reads |
  *
  * ## License
  *

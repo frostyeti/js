@@ -59,6 +59,12 @@
         "types": "./types/copy.d.ts"
       }
     },
+    "./create": {
+      "import": {
+        "default": "./esm/create.js",
+        "types": "./types/create.d.ts"
+      }
+    },
     "./cwd": {
       "import": {
         "default": "./esm/cwd.js",
@@ -157,8 +163,8 @@
     },
     "./mktemp": {
       "import": {
-        "default": "./esm/mkdtemp.js",
-        "types": "./types/mkdtemp.d.ts"
+        "default": "./esm/mktemp.js",
+        "types": "./types/mktemp.d.ts"
       }
     },
     "./move": {
@@ -227,6 +233,12 @@
         "types": "./types/symlink.d.ts"
       }
     },
+    "./truncate": {
+      "import": {
+        "default": "./esm/truncate.js",
+        "types": "./types/truncate.d.ts"
+      }
+    },
     "./uid": {
       "import": {
         "default": "./esm/uid.js",
@@ -237,6 +249,12 @@
       "import": {
         "default": "./esm/utime.js",
         "types": "./types/utime.d.ts"
+      }
+    },
+    "./umask": {
+      "import": {
+        "default": "./esm/umask.js",
+        "types": "./types/umask.d.ts"
       }
     },
     "./walk": {

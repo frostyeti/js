@@ -1,9 +1,8 @@
 /**
  * ## Overview
  *
- * The fs module provides a modern file system API that works in Deno,
- * Bun, and NodeJs to promote creating cross-runtime packages/modules
- * for TypeScript/JavaScript.
+ * A cross runtime file system module for Bun, Deno, and Nodejs. The API is heavily influenced
+ * by deno's @std/fs and modern features.
  *
  * ![logo](https://raw.githubusercontent.com/frostyeti/js/refs/heads/master/eng/assets/logo.png)
  *
@@ -17,68 +16,255 @@
  *
  * A list of other modules can be found at [github.com/frostyeti/js](https://github.com/frostyeti/js)
  *
+ * ## Installation
+ *
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/fs
+ *
+ * # npm from jsr
+ * npx jsr add @frostyeti/fs
+ *
+ * # from npmjs.org
+ * npm install @frostyeti/fs
+ * ```
+ *
  * ## Usage
  *
  * ```typescript
- * import { makeDir, writeTextFile, remove } from "@frostyeti/fs"
+ * import { mkdir, writeTextFile, rm } from "@frostyeti/fs"
  *
- * await makeDir("/home/my_user/test");
+ * await mkdir("/home/my_user/test");
  * await writeTextFile("/home/my_user/test/log.txt",  "ello");
- * await remove("/home/my_user/test", { recursive: true });
+ * await rm("/home/my_user/test", { recursive: true });
  * ```
  *
- * ## Classes
+ * ## API Reference
  *
- * - `AlreadyExistsError` - An error thrown when a file already exists.
- * - `FsFile` - The type returned by `open` and `openSync`.
- * - `NotFoundError` - An error thrown when a file or directory is not found.
+ * ### Classes
  *
- * ## Functions
+ * | Class | Description |
+ * |-------|-------------|
+ * | `AlreadyExistsError` | An error thrown when a file already exists |
+ * | `FsFile` | The file handle type returned by `open` and `openSync` |
+ * | `NotFoundError` | An error thrown when a file or directory is not found |
  *
- * - `chmod` &amp; `chmodSync` - Changes the mode for the given file or directory on a posix system.
- * - `chown` &amp; `chownSync` - Changes the owner for the given file or directory on a posix system.
- * - `copyFile` &amp; `copyFileSync` - Copies a file from the current path to the desintation.
- * - `copy` &amp; `copySync` - Copies a file, directory, or symlink to the destination.
- * - `cwd` - Gets the current working directory.
- * - `emptyDir` &amp; `emptyDirSync` - Clears all the child items in a directory.
- * - `ensureDir` &amp; `ensureDirSync` - Ensure that a directory exists or is created if needed.
- * - `ensureFile` &amp; `ensureFileSync` - Ensure that a file exits or is created if needed.
- * - `ensureSymlink` &amp; `ensureSymlinkSync` - Ensures that a symlink exists or is created if needed.
- * - `exists` &amp; `existsSync` - Determines if a file or directory exists.
- * - `isNotFoundError` - Determines if an error is NotFoundError, NotFound, or node error with a code of `ENOENT`.
- * - `isAlreadyExistsError` - Determines if an error is an AlreadyExistsError,
- *     AlreadyExists, or node error with a code of `EEXIST`.
- * - `expandGlob` &amp; `expandGlobSync` -  Gets files and/or directories that
- *    matches the glob against the root direcory provided. root directory defaults to the
- *    current working directory.
- * - `gid` - Gets the group id for the current user for the process (posix only).
- * - `isDir` &amp; `isDirSync` - Determines if a path exists and is a directory.
- * - `isFile` &amp; `isFile` - Determines if a path exists and is a file.
- * - `link` &amp; `linkSync` - Creates a hard link.
- * - `lstat` &amp; `lstatSync` - Invokes link stat on path to get system system information.
- * - `makeDir` &amp; `mkdirSync` - Creates a new directory.
- * - `makeTempDir` &amp; `makeTempDirSync` - Creates a new temporary directory.
- * - `makeTempFile` &amp; `makeTempFileSync` - Creates a new temporary file.
- * - `move` &amp; `moveSync` - Moves a file, directory, or symlink to the destination.
- * - `open` &amp; `openSync` - Opens a file and returns an instance of `FsFile` which
- *    includes multiple methods of working with a file such as seek, lock, read, write,
- *    stat, etc. Reand and write only reads/writes a chunk of data is more akin to
- *    to a stream.
- * - `readDir` &amp; `readDirSync` - Reads a directory and returns an iterator of
- *    DirectoryInfo. This is not recursive.
- * - `readFile` &amp; `readFileSync` - Reads the data of a file as `Uint8Array` (binary).
- * - `readLink` &amp; `readLinkSync` - Reads the link and gets source path.
- * - `readTextFile` &amp; `readTextFile` - Reads a file that is utf-8 and returns the contents
- *    as a string.
- * - `remove` &amp; `removeSync` - Deletes a directory, file, or symlink from the file system.
- * - `rename` &amp; `renameSync` - Renames a directory, file, or symlink.
- * - `stat` &amp; `statSync` - Gets a file or directories file system information.
- * - `symlink` &amp; `symlinkSync` - Creates a new symlink (soft) link.
- * - `uid` - Gets the user id for the current user of the process. (posix only).
- * - `utime` &amp; `utimeSync` - Changes the creation and modfication dates for a file or directory.
- * - `walk` &amp; `walkSync` - Iterates over a directory structure recursively.
- * - `writeFile` &amp; `writeFileSync` - Writes Uint8Array (binary) to a given file path.
- * - `writeTextFile` &amp; `writeTextFileSync` - Writes a string to a given file path as utf-8 encoded data.
+ * ### File Operations
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `open(path, options?)` | Opens a file and returns an `FsFile` for streaming operations |
+ * | `openSync(path, options?)` | Synchronous version of `open` |
+ * | `readFile(path)` | Reads file contents as `Uint8Array` (binary) |
+ * | `readFileSync(path)` | Synchronous version of `readFile` |
+ * | `readTextFile(path)` | Reads file contents as UTF-8 string |
+ * | `readTextFileSync(path)` | Synchronous version of `readTextFile` |
+ * | `writeFile(path, data, options?)` | Writes `Uint8Array` (binary) to a file |
+ * | `writeFileSync(path, data, options?)` | Synchronous version of `writeFile` |
+ * | `writeTextFile(path, data, options?)` | Writes string to a file as UTF-8 |
+ * | `writeTextFileSync(path, data, options?)` | Synchronous version of `writeTextFile` |
+ * | `copyFile(src, dest)` | Copies a file from source to destination |
+ * | `copyFileSync(src, dest)` | Synchronous version of `copyFile` |
+ * | `copy(src, dest, options?)` | Copies a file, directory, or symlink |
+ * | `copySync(src, dest, options?)` | Synchronous version of `copy` |
+ * | `move(src, dest, options?)` | Moves a file, directory, or symlink |
+ * | `moveSync(src, dest, options?)` | Synchronous version of `move` |
+ * | `rename(oldPath, newPath)` | Renames a file, directory, or symlink |
+ * | `renameSync(oldPath, newPath)` | Synchronous version of `rename` |
+ * | `rm(path, options?)` | Deletes a file, directory, or symlink |
+ * | `rmSync(path, options?)` | Synchronous version of `rm` |
+ *
+ * ```typescript
+ * import { readTextFile, writeTextFile, copy, rm } from "@frostyeti/fs";
+ *
+ * // Read and write text files
+ * const content = await readTextFile("./config.json");
+ * await writeTextFile("./backup.json", content);
+ *
+ * // Copy files or directories
+ * await copy("./src", "./dist", { overwrite: true });
+ *
+ * // rm with recursive option for directories
+ * await rm("./temp", { recursive: true });
+ * ```
+ *
+ * ### Directory Operations
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `mkdir(path, options?)` | Creates a new directory |
+ * | `mkdirSync(path, options?)` | Synchronous version of `mkdir` |
+ * | `mkdtemp(options?)` | Creates a temporary directory |
+ * | `mkdtempSync(options?)` | Synchronous version of `mkdtemp` |
+ * | `mktemp(options?)` | Creates a temporary file |
+ * | `mktempSync(options?)` | Synchronous version of `mktemp` |
+ * | `readdir(path)` | Returns an async iterator of directory entries |
+ * | `readdirSync(path)` | Returns a sync iterator of directory entries |
+ * | `emptyDir(path)` | rms all contents of a directory |
+ * | `emptyDirSync(path)` | Synchronous version of `emptyDir` |
+ * | `cwd()` | Gets the current working directory |
+ *
+ * ```typescript
+ * import { mkdir, readdir, mkdtemp, emptyDir } from "@frostyeti/fs";
+ *
+ * // Create directories
+ * await mkdir("./data/logs", { recursive: true });
+ *
+ * // Iterate directory contents
+ * for await (const entry of readdir("./src")) {
+ *   console.log(entry.name, entry.isDirectory ? "📁" : "📄");
+ * }
+ *
+ * // Create and clean temp directories
+ * const tmpDir = await mkdtemp({ prefix: "my-app-" });
+ * await emptyDir(tmpDir);
+ * ```
+ *
+ * ### Ensure Operations
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `ensureDir(path)` | Ensures a directory exists, creating it if needed |
+ * | `ensureDirSync(path)` | Synchronous version of `ensureDir` |
+ * | `ensureFile(path)` | Ensures a file exists, creating it if needed |
+ * | `ensureFileSync(path)` | Synchronous version of `ensureFile` |
+ * | `ensureSymlink(src, dest)` | Ensures a symlink exists, creating it if needed |
+ * | `ensureSymlinkSync(src, dest)` | Synchronous version of `ensureSymlink` |
+ *
+ * ```typescript
+ * import { ensureDir, ensureFile } from "@frostyeti/fs";
+ *
+ * // Create directory and all parents if they don't exist
+ * await ensureDir("./data/cache/images");
+ *
+ * // Create file and parent directories if needed
+ * await ensureFile("./logs/app.log");
+ * ```
+ *
+ * ### Existence & Type Checks
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `exists(path)` | Checks if a file or directory exists |
+ * | `existsSync(path)` | Synchronous version of `exists` |
+ * | `isDir(path)` | Checks if path exists and is a directory |
+ * | `isDirSync(path)` | Synchronous version of `isDir` |
+ * | `isFile(path)` | Checks if path exists and is a file |
+ * | `isFileSync(path)` | Synchronous version of `isFile` |
+ *
+ * ```typescript
+ * import { exists, isDir, isFile } from "@frostyeti/fs";
+ *
+ * if (await exists("./config.json")) {
+ *   console.log("Config found");
+ * }
+ *
+ * if (await isDir("./src")) {
+ *   console.log("Source directory exists");
+ * }
+ * ```
+ *
+ * ### File System Info
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `stat(path)` | Gets file system information for a path |
+ * | `statSync(path)` | Synchronous version of `stat` |
+ * | `lstat(path)` | Gets file info without following symlinks |
+ * | `lstatSync(path)` | Synchronous version of `lstat` |
+ *
+ * ```typescript
+ * import { stat } from "@frostyeti/fs";
+ *
+ * const info = await stat("./package.json");
+ * console.log(`Size: ${info.size} bytes`);
+ * console.log(`Modified: ${info.mtime}`);
+ * console.log(`Is file: ${info.isFile}`);
+ * ```
+ *
+ * ### Links
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `link(src, dest)` | Creates a hard link |
+ * | `linkSync(src, dest)` | Synchronous version of `link` |
+ * | `symlink(src, dest)` | Creates a symbolic (soft) link |
+ * | `symlinkSync(src, dest)` | Synchronous version of `symlink` |
+ * | `readlink(path)` | Reads the target path of a symlink |
+ * | `readlinkSync(path)` | Synchronous version of `readlink` |
+ *
+ * ```typescript
+ * import { symlink, readlink } from "@frostyeti/fs";
+ *
+ * await symlink("./config.json", "./config-link.json");
+ * const target = await readlink("./config-link.json");
+ * console.log(`Links to: ${target}`);
+ * ```
+ *
+ * ### Permissions & Ownership (POSIX)
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `chmod(path, mode)` | Changes file/directory permissions |
+ * | `chmodSync(path, mode)` | Synchronous version of `chmod` |
+ * | `chown(path, uid, gid)` | Changes file/directory owner |
+ * | `chownSync(path, uid, gid)` | Synchronous version of `chown` |
+ * | `utime(path, atime, mtime)` | Changes access and modification times |
+ * | `utimeSync(path, atime, mtime)` | Synchronous version of `utime` |
+ * | `uid()` | Gets the current user's user ID |
+ * | `gid()` | Gets the current user's group ID |
+ *
+ * ```typescript
+ * import { chmod, chown, uid, gid } from "@frostyeti/fs";
+ *
+ * // Change permissions (owner: rwx, group: rx, others: rx)
+ * await chmod("./script.sh", 0o755);
+ *
+ * // Change ownership to current user
+ * await chown("./data", uid(), gid());
+ * ```
+ *
+ * ### Glob & Walking
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `expandGlob(glob, options?)` | Async iterator for files matching glob pattern |
+ * | `expandGlobSync(glob, options?)` | Synchronous version of `expandGlob` |
+ * | `walk(path, options?)` | Recursively walks a directory tree |
+ * | `walkSync(path, options?)` | Synchronous version of `walk` |
+ *
+ * ```typescript
+ * import { expandGlob, walk } from "@frostyeti/fs";
+ *
+ * // Find all TypeScript files
+ * for await (const file of expandGlob("**\/*.ts")) {
+ *   console.log(file.path);
+ * }
+ *
+ * // Walk directory with filters
+ * for await (const entry of walk("./src", { exts: [".ts"], skip: [/node_modules/] })) {
+ *   console.log(entry.path);
+ * }
+ * ```
+ *
+ * ### Error Handling
+ *
+ * | Function | Description |
+ * |----------|-------------|
+ * | `isNotFoundError(error)` | Checks if error is a "not found" error |
+ * | `isAlreadyExistsError(error)` | Checks if error is an "already exists" error |
+ *
+ * ```typescript
+ * import { readFile, isNotFoundError, isAlreadyExistsError } from "@frostyeti/fs";
+ *
+ * try {
+ *   await readFile("./missing.txt");
+ * } catch (error) {
+ *   if (isNotFoundError(error)) {
+ *     console.log("File does not exist");
+ *   }
+ * }
+ * ```
  *
  * ## Notes
  *
@@ -91,17 +277,6 @@
  * The module will still load functions if called from the browser
  * or runtimes outside of node, bun, and deno.  However, the functions
  * will throw errors when called.
- *
- * To use the lock and seek methods on the File object returned from
- * the `open` method in runtimes outside of Deno, you'll need to implement
- * the methods by importing `@frostyeti/fs/ext` and setting the methods.
- *
- * This was done to avoid a hard dependency on npm's fs-extra module.
- * An additional frostyeti module may be created at a later date to handle that.
- *
- * The module includes the same functions found in deno's `@std/fs` module
- * but instead of only supporting deno file system calls, it uses the
- * this module's abstraction layer which supports deno, bun, and node.
  *
  * ## License
  *
@@ -117,6 +292,8 @@ export * from "./chmod.ts";
 export * from "./chown.ts";
 export * from "./copy_file.ts";
 export * from "./copy.ts";
+export * from "./create.ts";
+export * from "./cwd.ts";
 export * from "./empty_dir.ts";
 export * from "./ensure_dir.ts";
 export * from "./ensure_file.ts";
@@ -144,6 +321,8 @@ export * from "./rename.ts";
 export * from "./stat.ts";
 export * from "./symlink.ts";
 export * from "./utime.ts";
+export * from "./truncate.ts";
+export * from "./umask.ts";
 export * from "./walk.ts";
 export * from "./write_file.ts";
 export * from "./write_text_file.ts";

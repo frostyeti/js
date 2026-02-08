@@ -6,7 +6,7 @@ import { AssertionError } from "./assertion-error.js";
  *
  * @example Usage
  * ```ts ignore
- * import { falsy } from "@frostyetiassert";
+ * import { falsy } from "@frostyeti/assert";
  *
  * falsy(false); // Doesn't throw
  * falsy(true); // Throws

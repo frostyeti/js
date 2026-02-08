@@ -40,7 +40,10 @@ export async function writeTextFile(path, data, options) {
         // Check if the file exists before trying to write to it, since Node's writeFile will create the file if it does not exist, even with O_TRUNC.
         getNodeFs().accessSync(path);
       } catch (error) {
-        if (error instanceof Error && error.code === "ENOENT") {
+        if (
+          error instanceof Error &&
+          error.code === "ENOENT"
+        ) {
           throw new NotFound(`File not found: ${path} and create is false`, {
             cause: error,
           });
@@ -60,7 +63,8 @@ export async function writeTextFile(path, data, options) {
       }
     } catch (error) {
       if (
-        error instanceof Error && error.code === "EINVAL" &&
+        error instanceof Error &&
+        error.code === "EINVAL" &&
         options.create === false
       ) {
         throw new NotFound(`File not found: ${path} and create is false`, {
@@ -104,7 +108,10 @@ export function writeTextFileSync(path, data, options) {
         // Check if the file exists before trying to write to it, since Node's writeFile will create the file if it does not exist, even with O_TRUNC.
         getNodeFs().accessSync(path);
       } catch (error) {
-        if (error instanceof Error && error.code === "ENOENT") {
+        if (
+          error instanceof Error &&
+          error.code === "ENOENT"
+        ) {
           throw new NotFound(`File not found: ${path} and create is false`, {
             cause: error,
           });
@@ -124,7 +131,8 @@ export function writeTextFileSync(path, data, options) {
       }
     } catch (error) {
       if (
-        error instanceof Error && error.code === "EINVAL" &&
+        error instanceof Error &&
+        error.code === "EINVAL" &&
         options.create === false
       ) {
         throw new NotFound(`File not found: ${path} and create is false`, {

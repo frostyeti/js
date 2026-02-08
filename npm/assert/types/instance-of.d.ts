@@ -8,10 +8,10 @@ export type GetConstructorType<T extends AnyConstructor> = InstanceType<T>;
  *
  * @example Usage
  * ```ts ignore
- * import { assertInstanceOf } from "@std/assert";
+ * import { instanceOf } from "@frostyeti/assert";
  *
- * assertInstanceOf(new Date(), Date); // Doesn't throw
- * assertInstanceOf(new Date(), Number); // Throws
+ * instanceOf(new Date(), Date); // Doesn't throw
+ * instanceOf(new Date(), Number); // Throws
  * ```
  *
  * @typeParam T The expected type of the object.

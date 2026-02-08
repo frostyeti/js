@@ -26,6 +26,19 @@
  *
  * A list of other modules can be found at [github.com/frostyetis/js](https://github.com/frostyetis/js)
  *
+ * ## Installation
+ *
+ * ```bash
+ * # Deno
+ * deno add jsr:@frostyeti/dotenv
+ *
+ * # npm from jsr
+ * npx jsr add @frostyeti/dotenv
+ *
+ * # from npmjs.org
+ * npm install @frostyeti/dotenv
+ * ```
+ *
  * ## Usage
  *
  * ```typescript
