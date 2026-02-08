@@ -6,6 +6,7 @@
 import { getNodeFs, globals } from "./globals.js";
 import { getWriteFsFlag } from "./_get_fs_flag.js";
 import { mapError } from "./_map_error.js";
+import { NotFound } from "./unstable_errors.js";
 /**
  * Write string `data` to the given `path`, by default creating a new file if
  * needed, else overwriting.
@@ -45,6 +46,14 @@ export async function writeTextFile(path, data, options) {
         await getNodeFs().promises.chmod(path, mode);
       }
     } catch (error) {
+      if (
+        error instanceof Error && error.code === "EINVAL" &&
+        options.create === false
+      ) {
+        throw new NotFound(`File not found: ${path} and create is false`, {
+          cause: error,
+        });
+      }
       throw mapError(error);
     }
   }
@@ -88,6 +97,14 @@ export function writeTextFileSync(path, data, options) {
         getNodeFs().chmodSync(path, mode);
       }
     } catch (error) {
+      if (
+        error instanceof Error && error.code === "EINVAL" &&
+        options.create === false
+      ) {
+        throw new NotFound(`File not found: ${path} and create is false`, {
+          cause: error,
+        });
+      }
       throw mapError(error);
     }
   }

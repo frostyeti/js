@@ -8,6 +8,7 @@ import type { WriteFileOptions } from "./types.ts";
 import { getNodeFs, globals } from "./globals.ts";
 import { getWriteFsFlag } from "./_get_fs_flag.ts";
 import { mapError } from "./_map_error.ts";
+import { NotFound } from "./unstable_errors.ts";
 
 /**
  * Write string `data` to the given `path`, by default creating a new file if
@@ -57,6 +58,9 @@ export async function writeTextFile(
                 await getNodeFs().promises.chmod(path, mode);
             }
         } catch (error) {
+            if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "EINVAL" && options.create === false) {
+                throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
+            }
             throw mapError(error);
         }
     }
@@ -106,6 +110,9 @@ export function writeTextFileSync(
                 getNodeFs().chmodSync(path, mode);
             }
         } catch (error) {
+            if (error instanceof Error && (error as unknown as Record<string, unknown>).code === "EINVAL" && options.create === false) {
+                throw new NotFound(`File not found: ${path} and create is false`, { cause: error });
+            }
             throw mapError(error);
         }
     }
