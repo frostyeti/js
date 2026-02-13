@@ -1,0 +1,21 @@
+{
+    "name": "@frostyeti/win-cred",
+    "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
+    "keywords": [
+        "windows",
+        "credentials",
+        "credential-manager",
+        "win32",
+        "ffi",
+        "advapi32",
+        "cross-runtime",
+        "wincred"
+    ],
+    "description": "Cross-runtime Windows Credential Manager API using FFI for Deno, Bun, and Node.js (via koffi).",
+    "exports": {
+        ".": "./mod.ts",
+        "./types": "./types.ts",
+        "./credential": "./credential.ts"
+    }
+}

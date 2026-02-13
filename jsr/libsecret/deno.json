@@ -1,0 +1,24 @@
+{
+    "name": "@frostyeti/libsecret",
+    "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
+    "keywords": [
+        "linux",
+        "credentials",
+        "credential-manager",
+        "libsecret",
+        "secret-service",
+        "gnome-keyring",
+        "ffi",
+        "cross-runtime",
+        "deno",
+        "bun",
+        "node"
+    ],
+    "description": "Cross-runtime Linux libsecret API using FFI for Deno, Bun, and Node.js (via koffi).",
+    "exports": {
+        ".": "./mod.ts",
+        "./types": "./types.ts",
+        "./libsecret": "./libsecret.ts"
+    }
+}

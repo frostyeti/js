@@ -1,0 +1,22 @@
+{
+    "name": "@frostyeti/win-os-release",
+    "version": "0.0.0-alpha.0.1.0",
+    "license": "MIT",
+    "keywords": [
+        "windows",
+        "os-release",
+        "version",
+        "server",
+        "domain-controller",
+        "workstation",
+        "win32",
+        "ffi",
+        "cross-runtime"
+    ],
+    "description": "Cross-runtime Windows OS release detection using FFI for Deno, Bun, and Node.js (via koffi). Detects server, domain controller, and workstation editions.",
+    "exports": {
+        ".": "./mod.ts",
+        "./types": "./types.ts",
+        "./os-release": "./os_release.ts"
+    }
+}

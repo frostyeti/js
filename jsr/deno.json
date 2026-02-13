@@ -64,6 +64,11 @@
         "./secrets",
         "./fmt",
         "./ci-env",
-        "./is-process-elevated"
+        "./is-elevated",
+        "./exec-scripts",
+        "./windows-registry",
+        "./win-cred",
+        "./win-os-release",
+        "./libsecret"
     ]
 }
