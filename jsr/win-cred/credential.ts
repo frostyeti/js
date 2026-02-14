@@ -32,7 +32,6 @@ if (globals.Bun !== undefined) {
     const { backend } = require(file);
     _backend = backend;
 } else if (globals.Deno !== undefined) {
-    // For Deno, we can also load the backend immediately since it supports top-level await and dynamic imports.
     const { backend } = require("./ffi_deno.ts");
     _backend = backend;
 } else {
