@@ -2,9 +2,7 @@
  * High-level, runtime-agnostic credential management facade.
  *
  * The `WinCred` class provides static methods for reading, writing,
- * deleting and enumerating Windows credentials. It delegates to the
- * active {@link CredentialBackend} which is injected via
- * {@link setBackend}.
+ * deleting and enumerating Windows credentials.
  *
  * @module
  */
@@ -19,30 +17,29 @@ import {
     CredType,
     CredWriteFlags,
 } from "./types.ts";
+import { globals } from "@frostyeti/globals/globals";
+import process from "node:process";
 
-let _backend: CredentialBackend | null = null;
+const { createRequire } = process.getBuiltinModule("node:module");
+const require = createRequire(import.meta.url);
 
-/**
- * Set the FFI backend used by `WinCred`.
- * Called automatically by `mod.ts` after runtime detection.
- * @internal
- */
-export function setBackend(b: CredentialBackend): void {
-    _backend = b;
+
+let _backend : CredentialBackend;
+
+if (globals.Bun !== undefined) {
+    // For Bun, we can load the backend immediately since it doesn't require dynamic imports or async initialization.
+    const file = "./ffi_bun.js";
+    const { backend } = require(file);
+    _backend = backend;
+} else if (globals.Deno !== undefined) {
+    // For Deno, we can also load the backend immediately since it supports top-level await and dynamic imports.
+    const { backend } = require("./ffi_deno.ts");
+    _backend = backend;
+} else {
+    const file = "./ffi_node.js";
+    const { backend } = require(file);
+    _backend = backend;
 }
-
-function getBackend(): CredentialBackend {
-    if (!_backend) {
-        throw new Error(
-            "WinCred backend not initialised. Import from " +
-                "'@frostyeti/win-cred' (mod.ts) which auto-detects the runtime, " +
-                "or call setBackend() manually.",
-        );
-    }
-    return _backend;
-}
-
-// ── Internal conversion ─────────────────────────────────────────────────────
 
 function rawToCredential(raw: RawCredential): Credential {
     return {
@@ -80,6 +77,7 @@ export function encodeSecret(secret: string): Uint8Array {
  * Decode a `credentialBlob` that was stored as a UTF-16 LE string.
  */
 export function decodeSecret(blob: Uint8Array): string {
+    // @ts-ignore - utf-16le is valid but not in older TypeScript lib definitions
     const decoder = new TextDecoder("utf-16le");
     return decoder.decode(blob);
 }
@@ -142,7 +140,7 @@ export class WinCred {
             userName: options.userName ?? "",
         };
 
-        getBackend().write(raw, options.flags ?? CredWriteFlags.NONE);
+        _backend.write(raw, options.flags ?? CredWriteFlags.NONE);
     }
 
     /**
@@ -164,7 +162,7 @@ export class WinCred {
         targetName: string,
         type: CredType = CredType.GENERIC,
     ): Credential | null {
-        const raw = getBackend().read(targetName, type);
+        const raw = _backend.read(targetName, type);
         return raw ? rawToCredential(raw) : null;
     }
 
@@ -196,7 +194,7 @@ export class WinCred {
         targetName: string,
         type: CredType = CredType.GENERIC,
     ): boolean {
-        return getBackend().delete(targetName, type);
+        return _backend.delete(targetName, type);
     }
 
     /**
@@ -219,7 +217,7 @@ export class WinCred {
         filter?: string | null,
         flags: CredEnumerateFlags = CredEnumerateFlags.NONE,
     ): Credential[] {
-        const rawList = getBackend().enumerate(filter ?? null, flags);
+        const rawList = _backend.enumerate(filter ?? null, flags);
         return rawList.map(rawToCredential);
     }
 }

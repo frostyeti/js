@@ -82,7 +82,6 @@
 export {
     decodeSecret,
     encodeSecret,
-    setBackend,
     WinCred,
     type WriteOptions,
 } from "./credential.ts";
@@ -95,51 +94,3 @@ export {
     CredWriteFlags,
     type RawCredential,
 } from "./types.ts";
-
-import { setBackend } from "./credential.ts";
-import type { CredentialBackend } from "./types.ts";
-
-// ── Runtime detection & backend auto-loading ────────────────────────────────
-
-// deno-lint-ignore no-explicit-any
-const g = globalThis as any;
-
-async function loadBackend(): Promise<CredentialBackend> {
-    if (g.Deno !== undefined) {
-        const mod = await import("./ffi_deno.ts");
-        return mod.backend;
-    }
-
-    if (g.Bun !== undefined) {
-        const mod = await import("./ffi_bun.ts");
-        return mod.backend;
-    }
-
-    // Node.js (or compatible) -- use koffi
-    const mod = await import("./ffi_node.ts");
-    return mod.backend;
-}
-
-const _backendReady = loadBackend().then((b) => setBackend(b)).catch((err) => {
-    if (typeof console !== "undefined") {
-        console.warn(
-            `[win-cred] Failed to load FFI backend: ${err?.message ?? err}`,
-        );
-    }
-});
-
-/**
- * Returns a promise that resolves when the FFI backend has finished loading.
- * You normally don't need to await this unless you are importing this module
- * and immediately calling `WinCred` methods in the same microtask.
- *
- * ```typescript
- * import { ready, WinCred } from "@frostyeti/win-cred";
- *
- * await ready();
- * WinCred.write({ targetName: "test", secret: "hello" });
- * ```
- */
-export function ready(): Promise<void> {
-    return _backendReady;
-}

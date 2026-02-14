@@ -1,0 +1,71 @@
+{
+  "name": "@frostyeti/win-os-release",
+  "version": "0.0.0-alpha.0.1.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "Cross-runtime Windows OS release detection using FFI for Deno, Bun, and Node.js (via koffi). Detects server, domain controller, and workstation editions.",
+  "keywords": [
+    "windows",
+    "os-release",
+    "version",
+    "server",
+    "domain-controller",
+    "workstation",
+    "win32",
+    "ffi",
+    "cross-runtime",
+    "deno",
+    "bun",
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./types": {
+      "import": {
+        "default": "./esm/types.js",
+        "types": "./types/types.d.ts"
+      }
+    },
+    "./os-release": {
+      "import": {
+        "default": "./esm/os_release.js",
+        "types": "./types/os_release.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/globals": "^0.0.0-alpha.0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@types/bun": "^1.3.8",
+    "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "koffi": "^2.9.0"
+  }
+}

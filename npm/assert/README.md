@@ -32,7 +32,7 @@ npm install @frostyeti/assert
 ## Quick Start
 
 ```typescript
-import { equal, match, ok, throws } from "@frostyeti/assert";
+import { equal, ok, throws, match } from "@frostyeti/assert";
 
 // Deep equality
 equal({ a: 1, b: [2, 3] }, { a: 1, b: [2, 3] });
@@ -42,13 +42,7 @@ ok(true);
 ok("non-empty string");
 
 // Exception testing
-throws(
-  () => {
-    throw new Error("boom");
-  },
-  Error,
-  "boom",
-);
+throws(() => { throw new Error("boom"); }, Error, "boom");
 
 // Pattern matching
 match("hello@example.com", /^[\w.]+@[\w.]+$/);
@@ -58,183 +52,163 @@ match("hello@example.com", /^[\w.]+@[\w.]+$/);
 
 ### Classes
 
-| Class            | Description                                                |
-| ---------------- | ---------------------------------------------------------- |
+| Class | Description |
+|-------|-------------|
 | `AssertionError` | The core assertion error thrown by all assertion functions |
 
 ### Equality Assertions
 
-| Function                                  | Description                                        |
-| ----------------------------------------- | -------------------------------------------------- |
-| `equal(actual, expected, msg?)`           | Deep equality comparison using structural equality |
-| `notEqual(actual, expected, msg?)`        | Asserts values are not deeply equal                |
-| `strictEquals(actual, expected, msg?)`    | Reference equality using `Object.is()`             |
-| `notStrictEquals(actual, expected, msg?)` | Asserts values are not reference-equal             |
+| Function | Description |
+|----------|-------------|
+| `equal(actual, expected, msg?)` | Deep equality comparison using structural equality |
+| `notEqual(actual, expected, msg?)` | Asserts values are not deeply equal |
+| `strictEquals(actual, expected, msg?)` | Reference equality using `Object.is()` |
+| `notStrictEquals(actual, expected, msg?)` | Asserts values are not reference-equal |
 
 ```typescript
 import { equal, strictEquals } from "@frostyeti/assert";
 
 // Deep equality - compares structure
 equal([1, 2, 3], [1, 2, 3]); // ✓ passes
-equal({ a: 1 }, { a: 1 }); // ✓ passes
+equal({ a: 1 }, { a: 1 });   // ✓ passes
 
 // Strict equality - compares reference
 const arr = [1, 2, 3];
-strictEquals(arr, arr); // ✓ passes (same reference)
-strictEquals([1], [1]); // ✗ throws (different references)
+strictEquals(arr, arr);      // ✓ passes (same reference)
+strictEquals([1], [1]);      // ✗ throws (different references)
 ```
 
 ### Numeric Comparisons
 
-| Function                                             | Description                                                |
-| ---------------------------------------------------- | ---------------------------------------------------------- |
-| `greater(actual, expected, msg?)`                    | Asserts `actual > expected`                                |
-| `greaterOrEqual(actual, expected, msg?)`             | Asserts `actual >= expected`                               |
-| `less(actual, expected, msg?)`                       | Asserts `actual < expected`                                |
-| `lessOrEqual(actual, expected, msg?)`                | Asserts `actual <= expected`                               |
-| `almostEqual(actual, expected, tolerance?, msg?)`    | Floating-point comparison within tolerance (default: 1e-7) |
-| `notAlmostEqual(actual, expected, tolerance?, msg?)` | Asserts values differ by more than tolerance               |
+| Function | Description |
+|----------|-------------|
+| `greater(actual, expected, msg?)` | Asserts `actual > expected` |
+| `greaterOrEqual(actual, expected, msg?)` | Asserts `actual >= expected` |
+| `less(actual, expected, msg?)` | Asserts `actual < expected` |
+| `lessOrEqual(actual, expected, msg?)` | Asserts `actual <= expected` |
+| `almostEqual(actual, expected, tolerance?, msg?)` | Floating-point comparison within tolerance (default: 1e-7) |
+| `notAlmostEqual(actual, expected, tolerance?, msg?)` | Asserts values differ by more than tolerance |
 
 ```typescript
-import { almostEqual, greater } from "@frostyeti/assert";
+import { greater, almostEqual } from "@frostyeti/assert";
 
-greater(5, 3); // ✓ passes
-greater(10n, 5n); // ✓ works with bigints
-almostEqual(0.1 + 0.2, 0.3); // ✓ handles floating-point precision
-almostEqual(1.0, 1.001, 0.01); // ✓ custom tolerance
+greater(5, 3);                    // ✓ passes
+greater(10n, 5n);                 // ✓ works with bigints
+almostEqual(0.1 + 0.2, 0.3);      // ✓ handles floating-point precision
+almostEqual(1.0, 1.001, 0.01);    // ✓ custom tolerance
 ```
 
 ### Truthiness Assertions
 
-| Function              | Description             |
-| --------------------- | ----------------------- |
+| Function | Description |
+|----------|-------------|
 | `truthy(value, msg?)` | Asserts value is truthy |
-| `ok(value, msg?)`     | Alias for `truthy`      |
-| `falsy(value, msg?)`  | Asserts value is falsy  |
-| `nope(value, msg?)`   | Alias for `falsy`       |
-| `notOk(value, msg?)`  | Alias for `falsy`       |
+| `ok(value, msg?)` | Alias for `truthy` |
+| `falsy(value, msg?)` | Asserts value is falsy |
+| `nope(value, msg?)` | Alias for `falsy` |
+| `notOk(value, msg?)` | Alias for `falsy` |
 
 ```typescript
-import { falsy, ok } from "@frostyeti/assert";
+import { ok, falsy } from "@frostyeti/assert";
 
-ok(1); // ✓ passes
-ok("hello"); // ✓ passes
-ok([]); // ✓ passes (empty array is truthy)
-falsy(0); // ✓ passes
-falsy(""); // ✓ passes
-falsy(null); // ✓ passes
+ok(1);              // ✓ passes
+ok("hello");        // ✓ passes
+ok([]);             // ✓ passes (empty array is truthy)
+falsy(0);           // ✓ passes
+falsy("");          // ✓ passes
+falsy(null);        // ✓ passes
 ```
 
 ### Type Assertions
 
-| Function                                          | Description                            |
-| ------------------------------------------------- | -------------------------------------- |
-| `instanceOf(actual, expectedType, msg?)`          | Asserts value is instance of type      |
-| `notInstanceOf(actual, expectedType, msg?)`       | Asserts value is not instance of type  |
-| `exists<T>(actual, msg?)`                         | Asserts value is not null or undefined |
-| `isError(error, ErrorClass?, msgIncludes?, msg?)` | Validates error type and message       |
+| Function | Description |
+|----------|-------------|
+| `instanceOf(actual, expectedType, msg?)` | Asserts value is instance of type |
+| `notInstanceOf(actual, expectedType, msg?)` | Asserts value is not instance of type |
+| `exists<T>(actual, msg?)` | Asserts value is not null or undefined |
+| `isError(error, ErrorClass?, msgIncludes?, msg?)` | Validates error type and message |
 
 ```typescript
-import { exists, instanceOf, isError } from "@frostyeti/assert";
+import { instanceOf, exists, isError } from "@frostyeti/assert";
 
-instanceOf(new Date(), Date); // ✓ passes
-instanceOf([], Array); // ✓ passes
-exists("value"); // ✓ passes
-exists(0); // ✓ passes (0 exists, just falsy)
+instanceOf(new Date(), Date);     // ✓ passes
+instanceOf([], Array);            // ✓ passes
+exists("value");                  // ✓ passes
+exists(0);                        // ✓ passes (0 exists, just falsy)
 
 try {
   throw new TypeError("bad input");
 } catch (e) {
-  isError(e, TypeError, "bad"); // ✓ passes
+  isError(e, TypeError, "bad");   // ✓ passes
 }
 ```
 
 ### String & Array Assertions
 
-| Function                                 | Description                                |
-| ---------------------------------------- | ------------------------------------------ |
-| `stringIncludes(actual, expected, msg?)` | Asserts string contains substring          |
-| `arrayIncludes(actual, expected, msg?)`  | Asserts array contains all expected values |
-| `match(actual, expected, msg?)`          | Asserts string matches regex pattern       |
-| `notMatch(actual, expected, msg?)`       | Asserts string does not match regex        |
-| `objectMatch(actual, expected, msg?)`    | Asserts object contains expected subset    |
+| Function | Description |
+|----------|-------------|
+| `stringIncludes(actual, expected, msg?)` | Asserts string contains substring |
+| `arrayIncludes(actual, expected, msg?)` | Asserts array contains all expected values |
+| `match(actual, expected, msg?)` | Asserts string matches regex pattern |
+| `notMatch(actual, expected, msg?)` | Asserts string does not match regex |
+| `objectMatch(actual, expected, msg?)` | Asserts object contains expected subset |
 
 ```typescript
-import {
-  arrayIncludes,
-  match,
-  objectMatch,
-  stringIncludes,
-} from "@frostyeti/assert";
+import { stringIncludes, arrayIncludes, match, objectMatch } from "@frostyeti/assert";
 
-stringIncludes("hello world", "world"); // ✓ passes
-arrayIncludes([1, 2, 3], [1, 3]); // ✓ passes
-match("test@email.com", /^\w+@\w+\.\w+$/); // ✓ passes
+stringIncludes("hello world", "world");           // ✓ passes
+arrayIncludes([1, 2, 3], [1, 3]);                 // ✓ passes
+match("test@email.com", /^\w+@\w+\.\w+$/);        // ✓ passes
 
 // Object subset matching
 objectMatch(
   { id: 1, name: "Alice", age: 30, city: "NYC" },
-  { name: "Alice", age: 30 }, // ✓ passes (subset)
+  { name: "Alice", age: 30 }                      // ✓ passes (subset)
 );
 ```
 
 ### Exception Assertions
 
-| Function                                       | Description             |
-| ---------------------------------------------- | ----------------------- |
-| `throws(fn, ErrorClass?, msgIncludes?, msg?)`  | Asserts function throws |
+| Function | Description |
+|----------|-------------|
+| `throws(fn, ErrorClass?, msgIncludes?, msg?)` | Asserts function throws |
 | `rejects(fn, ErrorClass?, msgIncludes?, msg?)` | Asserts promise rejects |
 
 ```typescript
-import { rejects, throws } from "@frostyeti/assert";
+import { throws, rejects } from "@frostyeti/assert";
 
 // Synchronous throws
-throws(() => {
-  throw new Error("fail");
-});
-throws(() => {
-  throw new TypeError("bad");
-}, TypeError);
-throws(
-  () => {
-    throw new Error("validation failed");
-  },
-  Error,
-  "validation",
-);
+throws(() => { throw new Error("fail"); });
+throws(() => { throw new TypeError("bad"); }, TypeError);
+throws(() => { throw new Error("validation failed"); }, Error, "validation");
 
 // Async rejects
-await rejects(async () => {
-  throw new Error("async fail");
-});
+await rejects(async () => { throw new Error("async fail"); });
 await rejects(
   () => Promise.reject(new TypeError("async type error")),
   TypeError,
-  "type error",
+  "type error"
 );
 ```
 
 ### Utility Functions
 
-| Function                 | Description                                     |
-| ------------------------ | ----------------------------------------------- |
-| `fail(msg?)`             | Unconditionally fails with message              |
-| `unreachable(msg?)`      | Marks code that should never execute            |
-| `unimplemented(msg?)`    | Marks unimplemented code paths                  |
-| `debug(...data)`         | Debug logging (only outputs when debug enabled) |
-| `setDebugTests(enabled)` | Enable/disable debug output                     |
+| Function | Description |
+|----------|-------------|
+| `fail(msg?)` | Unconditionally fails with message |
+| `unreachable(msg?)` | Marks code that should never execute |
+| `unimplemented(msg?)` | Marks unimplemented code paths |
+| `debug(...data)` | Debug logging (only outputs when debug enabled) |
+| `setDebugTests(enabled)` | Enable/disable debug output |
 
 ```typescript
-import { fail, unimplemented, unreachable } from "@frostyeti/assert";
+import { unreachable, unimplemented, fail } from "@frostyeti/assert";
 
 function processValue(value: "a" | "b") {
   switch (value) {
-    case "a":
-      return 1;
-    case "b":
-      return 2;
-    default:
-      unreachable("Unexpected value");
+    case "a": return 1;
+    case "b": return 2;
+    default: unreachable("Unexpected value");
   }
 }
 
@@ -258,25 +232,23 @@ import * as assert from "@frostyeti/assert";
 
 assert.ok(true);
 assert.equal(1, 1);
-assert.throws(() => {
-  throw new Error();
-});
+assert.throws(() => { throw new Error(); });
 ```
 
-| Deno std/assert      | @frostyeti/assert |
-| -------------------- | ----------------- |
-| `assertEquals`       | `equal`           |
-| `assertNotEquals`    | `notEqual`        |
-| `assertStrictEquals` | `strictEquals`    |
-| `assertThrows`       | `throws`          |
-| `assertRejects`      | `rejects`         |
-| `assertMatch`        | `match`           |
-| `assertGreater`      | `greater`         |
-| `assertInstanceOf`   | `instanceOf`      |
+| Deno std/assert | @frostyeti/assert |
+|-----------------|-------------------|
+| `assertEquals` | `equal` |
+| `assertNotEquals` | `notEqual` |
+| `assertStrictEquals` | `strictEquals` |
+| `assertThrows` | `throws` |
+| `assertRejects` | `rejects` |
+| `assertMatch` | `match` |
+| `assertGreater` | `greater` |
+| `assertInstanceOf` | `instanceOf` |
 
 ## License
 
 [MIT License](./LICENSE.md)
 
-Based on [std/assert](https://jsr.io/@std/assert) from Deno which is under the
-[MIT license](https://github.com/denoland/std/blob/main/LICENSE).
+Based on [std/assert](https://jsr.io/@std/assert) from Deno
+which is under the [MIT license](https://github.com/denoland/std/blob/main/LICENSE).

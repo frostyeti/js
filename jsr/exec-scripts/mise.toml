@@ -3,4 +3,4 @@
 "python" = "latest"
 "go" = "latest"
 "dotnet" = "latest"
-"pwsh" = "latest"
+"powershell" = "latest"

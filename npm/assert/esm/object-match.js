@@ -3,129 +3,115 @@
 import { deepEqual } from "./deep-equal.js";
 import { AssertionError } from "./assertion-error.js";
 function isObject(val) {
-  return typeof val === "object" && val !== null;
+    return typeof val === "object" && val !== null;
 }
 function defineProperty(target, key, value) {
-  return Object.defineProperty(target, key, {
-    value,
-    configurable: true,
-    enumerable: true,
-    writable: true,
-  });
+    return Object.defineProperty(target, key, {
+        value,
+        configurable: true,
+        enumerable: true,
+        writable: true,
+    });
 }
 function filter(a, b) {
-  const seen = new WeakMap();
-  return filterObject(a, b);
-  function filterObject(a, b) {
-    // Prevent infinite loop with circular references with same filter
-    const memo = seen.get(a);
-    if (memo && memo === b) {
-      return a;
+    const seen = new WeakMap();
+    return filterObject(a, b);
+    function filterObject(a, b) {
+        // Prevent infinite loop with circular references with same filter
+        const memo = seen.get(a);
+        if (memo && memo === b)
+            return a;
+        try {
+            seen.set(a, b);
+        }
+        catch (err) {
+            if (err instanceof TypeError) {
+                throw new TypeError(`Cannot objectMatch ${a === null ? null : `type ${typeof a}`}`);
+            }
+        }
+        // Filter keys and symbols which are present in both actual and expected
+        const filtered = {};
+        const keysA = Reflect.ownKeys(a);
+        const keysB = Reflect.ownKeys(b);
+        const entries = keysA
+            .filter((key) => keysB.includes(key))
+            .map((key) => [key, a[key]]);
+        if (keysA.length && keysB.length && !entries.length) {
+            // If both objects are not empty but don't have the same keys or symbols,
+            // returns the entries in object a.
+            for (const key of keysA)
+                defineProperty(filtered, key, a[key]);
+            return filtered;
+        }
+        for (const [key, value] of entries) {
+            // On regexp references, keep value as it to avoid losing pattern and flags
+            if (value instanceof RegExp) {
+                defineProperty(filtered, key, value);
+                continue;
+            }
+            const subset = b[key];
+            // On array references, build a filtered array and filter nested objects inside
+            if (Array.isArray(value) && Array.isArray(subset)) {
+                defineProperty(filtered, key, filterArray(value, subset));
+                continue;
+            }
+            // When both operands are maps, build a filtered map with common keys and filter nested objects inside
+            if (value instanceof Map && subset instanceof Map) {
+                defineProperty(filtered, key, new Map([...value]
+                    .filter(([k]) => subset.has(k))
+                    .map(([k, v]) => {
+                    const v2 = subset.get(k);
+                    if (isObject(v) && isObject(v2)) {
+                        return [k, filterObject(v, v2)];
+                    }
+                    return [k, v];
+                })));
+                continue;
+            }
+            // When both operands are set, build a filtered set with common values
+            if (value instanceof Set && subset instanceof Set) {
+                defineProperty(filtered, key, new Set([...value].filter((v) => subset.has(v))));
+                continue;
+            }
+            // On nested objects references, build a filtered object recursively
+            if (isObject(value) && isObject(subset)) {
+                defineProperty(filtered, key, filterObject(value, subset));
+                continue;
+            }
+            defineProperty(filtered, key, value);
+        }
+        return filtered;
     }
-    try {
-      seen.set(a, b);
-    } catch (err) {
-      if (err instanceof TypeError) {
-        throw new TypeError(
-          `Cannot objectMatch ${a === null ? null : `type ${typeof a}`}`,
-        );
-      }
+    function filterArray(a, b) {
+        // Prevent infinite loop with circular references with same filter
+        const memo = seen.get(a);
+        if (memo && memo === b)
+            return a;
+        seen.set(a, b);
+        const filtered = [];
+        const count = Math.min(a.length, b.length);
+        for (let i = 0; i < count; ++i) {
+            const value = a[i];
+            const subset = b[i];
+            // On regexp references, keep value as it to avoid losing pattern and flags
+            if (value instanceof RegExp) {
+                filtered.push(value);
+                continue;
+            }
+            // On array references, build a filtered array and filter nested objects inside
+            if (Array.isArray(value) && Array.isArray(subset)) {
+                filtered.push(filterArray(value, subset));
+                continue;
+            }
+            // On nested objects references, build a filtered object recursively
+            if (isObject(value) && isObject(subset)) {
+                filtered.push(filterObject(value, subset));
+                continue;
+            }
+            filtered.push(value);
+        }
+        return filtered;
     }
-    // Filter keys and symbols which are present in both actual and expected
-    const filtered = {};
-    const keysA = Reflect.ownKeys(a);
-    const keysB = Reflect.ownKeys(b);
-    const entries = keysA
-      .filter((key) => keysB.includes(key))
-      .map((key) => [key, a[key]]);
-    if (keysA.length && keysB.length && !entries.length) {
-      // If both objects are not empty but don't have the same keys or symbols,
-      // returns the entries in object a.
-      for (const key of keysA) {
-        defineProperty(filtered, key, a[key]);
-      }
-      return filtered;
-    }
-    for (const [key, value] of entries) {
-      // On regexp references, keep value as it to avoid losing pattern and flags
-      if (value instanceof RegExp) {
-        defineProperty(filtered, key, value);
-        continue;
-      }
-      const subset = b[key];
-      // On array references, build a filtered array and filter nested objects inside
-      if (Array.isArray(value) && Array.isArray(subset)) {
-        defineProperty(filtered, key, filterArray(value, subset));
-        continue;
-      }
-      // When both operands are maps, build a filtered map with common keys and filter nested objects inside
-      if (value instanceof Map && subset instanceof Map) {
-        defineProperty(
-          filtered,
-          key,
-          new Map(
-            [...value]
-              .filter(([k]) => subset.has(k))
-              .map(([k, v]) => {
-                const v2 = subset.get(k);
-                if (isObject(v) && isObject(v2)) {
-                  return [k, filterObject(v, v2)];
-                }
-                return [k, v];
-              }),
-          ),
-        );
-        continue;
-      }
-      // When both operands are set, build a filtered set with common values
-      if (value instanceof Set && subset instanceof Set) {
-        defineProperty(
-          filtered,
-          key,
-          new Set([...value].filter((v) => subset.has(v))),
-        );
-        continue;
-      }
-      // On nested objects references, build a filtered object recursively
-      if (isObject(value) && isObject(subset)) {
-        defineProperty(filtered, key, filterObject(value, subset));
-        continue;
-      }
-      defineProperty(filtered, key, value);
-    }
-    return filtered;
-  }
-  function filterArray(a, b) {
-    // Prevent infinite loop with circular references with same filter
-    const memo = seen.get(a);
-    if (memo && memo === b) {
-      return a;
-    }
-    seen.set(a, b);
-    const filtered = [];
-    const count = Math.min(a.length, b.length);
-    for (let i = 0; i < count; ++i) {
-      const value = a[i];
-      const subset = b[i];
-      // On regexp references, keep value as it to avoid losing pattern and flags
-      if (value instanceof RegExp) {
-        filtered.push(value);
-        continue;
-      }
-      // On array references, build a filtered array and filter nested objects inside
-      if (Array.isArray(value) && Array.isArray(subset)) {
-        filtered.push(filterArray(value, subset));
-        continue;
-      }
-      // On nested objects references, build a filtered object recursively
-      if (isObject(value) && isObject(subset)) {
-        filtered.push(filterObject(value, subset));
-        continue;
-      }
-      filtered.push(value);
-    }
-    return filtered;
-  }
 }
 /**
  * Make an assertion that `expected` object is a subset of `actual` object,
@@ -154,19 +140,12 @@ function filter(a, b) {
  * @param msg The optional message to display if the assertion fails.
  */
 export function objectMatch(
-  // deno-lint-ignore no-explicit-any
-  actual,
-  expected,
-  msg,
-) {
-  const filteredActual = filter(actual, expected);
-  const filteredExpected = filter(expected, expected);
-  if (!deepEqual(filteredActual, filteredExpected)) {
-    const msgSuffix = msg ? `: ${msg}` : ".";
-    throw new AssertionError(
-      `Expected object to match${msgSuffix}\nActual: ${JSON.stringify(filteredActual)}\nExpected: ${
-        JSON.stringify(filteredExpected)
-      }`,
-    );
-  }
+// deno-lint-ignore no-explicit-any
+actual, expected, msg) {
+    const filteredActual = filter(actual, expected);
+    const filteredExpected = filter(expected, expected);
+    if (!deepEqual(filteredActual, filteredExpected)) {
+        const msgSuffix = msg ? `: ${msg}` : ".";
+        throw new AssertionError(`Expected object to match${msgSuffix}\nActual: ${JSON.stringify(filteredActual)}\nExpected: ${JSON.stringify(filteredExpected)}`);
+    }
 }

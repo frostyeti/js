@@ -11,6 +11,8 @@ import { isAbsolute } from "@frostyeti/path/is-absolute";
 import { resolve } from "@frostyeti/path/resolve";
 import { isfile as isFile } from "@frostyeti/fs/isfile";
 import { WINDOWS } from "@frostyeti/globals/os";
+import { endsWithFold } from "@frostyeti/slices/ends-with";
+import { prependPath } from "@frostyeti/env";
 
 pathFinder.set("bash", {
     name: "bash",
@@ -29,12 +31,19 @@ let wslEnabled = false;
 
 wslEnabled = WINDOWS && await isFile("C:\\Windows\\System32\\bash.exe");
 
+if (wslEnabled) {
+    if (await isFile("C:\\Program Files\\Git\\bin\\bash.exe")) {
+        prependPath("C:\\Program Files\\Git\\bin");
+    }
+}
+
+
 /**
  * Default file extension used to identify Bash script files.
  */
 export const BASH_EXT = ".sh";
 
-let wslCheck = false;
+let wslCheck = true;
 
 export const BASH_SHELL_ARGS = ["-noprofile", "-norc", "-e", "-o", "pipefail"];
 
@@ -54,7 +63,7 @@ function getShellArgs(script: string, isFile: boolean, shellArgsOverride?: strin
     if (isFile) {
         if (wslCheck && wslEnabled) {
             const exe = pathFinder.findExeSync("bash");
-            if (exe && exe.endsWith("System32\\bash.exe")) {
+            if (exe && endsWithFold(exe, "System32\\bash.exe")) {
                 if (!isAbsolute(script)) {
                     script = resolve(script);
                 }

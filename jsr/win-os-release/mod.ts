@@ -83,6 +83,7 @@ export {
     type DomainInfo,
     MachineRole,
     type OsRelease,
+    type OsReleaseLike,
     type OsReleaseBackend,
     type OsVersionInfo,
     ProductEdition,

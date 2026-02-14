@@ -75,13 +75,13 @@
       "name": "@frostyeti/dotenv",
       "version": "0.0.0-alpha.0.1.0",
       "dependencies": {
-        "@frostyeti/chars": "0.0.0-alpha.0",
-        "@frostyeti/env": "0.0.0-alpha.0",
-        "@frostyeti/globals": "0.0.0-alpha.0",
-        "@frostyeti/strings": "0.0.0-alpha.0",
+        "@frostyeti/chars": "^0.0.0-alpha.0",
+        "@frostyeti/env": "^0.0.0-alpha.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0",
+        "@frostyeti/strings": "^0.0.0-alpha.0",
       },
       "devDependencies": {
-        "@frostyeti/assert": "0.0.0-alpha.0",
+        "@frostyeti/assert": "^0.0.0-alpha.0",
         "@types/node": "^22.14.1",
         "typescript": "^5.9.3",
       },
@@ -115,6 +115,23 @@
       },
       "devDependencies": {
         "@frostyeti/assert": "^0.0.0-alpha.0",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+    },
+    "exec-scripts": {
+      "name": "@frostyeti/exec-scripts",
+      "version": "0.0.0-alpha.0.1.0",
+      "dependencies": {
+        "@frostyeti/env": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/exec": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/fs": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/path": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/strings": "^0.0.0-alpha.0.1.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
         "@types/node": "^22.17.0",
         "typescript": "^5.9.3",
       },
@@ -156,7 +173,7 @@
         "typescript": "^5.9.3",
       },
     },
-    "is-process-elevated": {
+    "is-elevated": {
       "name": "@frostyeti/is-process-elevated",
       "version": "0.0.0-alpha.0.0.0",
       "dependencies": {
@@ -235,6 +252,36 @@
         "typescript": "^5.9.3",
       },
     },
+    "win-cred": {
+      "name": "@frostyeti/win-cred",
+      "version": "0.0.0-alpha.0.1.0",
+      "devDependencies": {
+        "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/globals": "^0.0.0-alpha.0.1.0",
+        "@types/bun": "^1.3.8",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+      "peerDependencies": {
+        "koffi": "^2.9.0",
+      },
+    },
+    "win-os-release": {
+      "name": "@frostyeti/win-os-release",
+      "version": "0.0.0-alpha.0.1.0",
+      "dependencies": {
+        "@frostyeti/globals": "^0.0.0-alpha.0.1.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
+        "@types/bun": "^1.3.8",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+      "peerDependencies": {
+        "koffi": "^2.9.0",
+      },
+    },
   },
   "packages": {
     "@frostyeti/ansi": ["@frostyeti/ansi@workspace:ansi"],
@@ -253,13 +300,15 @@
 
     "@frostyeti/exec": ["@frostyeti/exec@workspace:exec"],
 
+    "@frostyeti/exec-scripts": ["@frostyeti/exec-scripts@workspace:exec-scripts"],
+
     "@frostyeti/fmt": ["@frostyeti/fmt@workspace:fmt"],
 
     "@frostyeti/fs": ["@frostyeti/fs@workspace:fs"],
 
     "@frostyeti/globals": ["@frostyeti/globals@workspace:globals"],
 
-    "@frostyeti/is-process-elevated": ["@frostyeti/is-process-elevated@workspace:is-process-elevated"],
+    "@frostyeti/is-process-elevated": ["@frostyeti/is-process-elevated@workspace:is-elevated"],
 
     "@frostyeti/path": ["@frostyeti/path@workspace:path"],
 
@@ -271,15 +320,21 @@
 
     "@frostyeti/strings": ["@frostyeti/strings@workspace:strings"],
 
-    "@types/bun": ["@types/bun@1.3.8", "", { "dependencies": { "bun-types": "1.3.8" } }, "sha512-3LvWJ2q5GerAXYxO2mffLTqOzEu5qnhEAlh48Vnu8WQfnmSwbgagjGZV6BoHKJztENYEDn6QmVd949W4uESRJA=="],
+    "@frostyeti/win-cred": ["@frostyeti/win-cred@workspace:win-cred"],
 
-    "@types/node": ["@types/node@22.19.1", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-LCCV0HdSZZZb34qifBsyWlUmok6W7ouER+oQIGBScS8EsZsQbrtFTUrDX4hOl+CS6p7cnNC4td+qrSVGSCTUfQ=="],
+    "@frostyeti/win-os-release": ["@frostyeti/win-os-release@workspace:win-os-release"],
+
+    "@types/bun": ["@types/bun@1.3.9", "", { "dependencies": { "bun-types": "1.3.9" } }, "sha512-KQ571yULOdWJiMH+RIWIOZ7B2RXQGpL1YQrBtLIV3FqDcCu6FsbFUBwhdKUlCKUpS3PJDsHlJ1QKlpxoVR+xtw=="],
+
+    "@types/node": ["@types/node@22.19.11", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-BH7YwL6rA93ReqeQS1c4bsPpcfOmJasG+Fkr6Y59q83f9M1WcBRHR2vM+P9eOisYRcN3ujQoiZY8uk5W+1WL8w=="],
 
     "@types/semver": ["@types/semver@7.7.1", "", {}, "sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA=="],
 
-    "bun-types": ["bun-types@1.3.8", "", { "dependencies": { "@types/node": "*" } }, "sha512-fL99nxdOWvV4LqjmC+8Q9kW3M4QTtTR1eePs94v5ctGqU8OeceWrSUaRw3JYb7tU3FkMIAjkueehrHPPPGKi5Q=="],
+    "bun-types": ["bun-types@1.3.9", "", { "dependencies": { "@types/node": "*" } }, "sha512-+UBWWOakIP4Tswh0Bt0QD0alpTY8cb5hvgiYeWCMet9YukHbzuruIEeXC2D7nMJPB12kbh8C7XJykSexEqGKJg=="],
 
-    "semver": ["semver@7.7.3", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q=="],
+    "koffi": ["koffi@2.15.1", "", {}, "sha512-mnc0C0crx/xMSljb5s9QbnLrlFHprioFO1hkXyuSuO/QtbpLDa0l/uM21944UfQunMKmp3/r789DTDxVyyH6aA=="],
+
+    "semver": ["semver@7.7.4", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 

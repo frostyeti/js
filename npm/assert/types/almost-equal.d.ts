@@ -20,12 +20,7 @@
  *                  Defaults to 1e-7.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function almostEqual(
-  actual: number,
-  expected: number,
-  tolerance?: number,
-  msg?: string,
-): void;
+export declare function almostEqual(actual: number, expected: number, tolerance?: number, msg?: string): void;
 /**
  * Make an assertion that `actual` is not almost equal to `expected`,
  * according to a given `tolerance`. It will throw if the assertion fails.
@@ -47,9 +42,4 @@ export declare function almostEqual(
  *                  Defaults to 1e-7.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function notAlmostEqual(
-  actual: number,
-  expected: number,
-  tolerance?: number,
-  msg?: string,
-): void;
+export declare function notAlmostEqual(actual: number, expected: number, tolerance?: number, msg?: string): void;

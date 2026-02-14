@@ -3,4 +3,10 @@
     "deno.disablePaths": [
         "./npm"
     ],
+    "chat.tools.terminal.autoApprove": {
+        "/^deno task dnt win-os-release$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    },
 }

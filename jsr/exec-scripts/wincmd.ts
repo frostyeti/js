@@ -100,7 +100,7 @@ ${script}
      * @returns The cmd arguments for executing the script.
      */
     override getShellArgs(script: string, isFile: boolean): string[] {
-        const params = this.shellArgs ?? [...WINCMD_SHELL_ARGS];
+        const params = [...(this.shellArgs ?? WINCMD_SHELL_ARGS)];
         if (isFile) {
             params.push("/C", `CALL`, script);
         } else {

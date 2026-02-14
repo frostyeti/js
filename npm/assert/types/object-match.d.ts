@@ -24,8 +24,4 @@
  * @param expected The expected value to match.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function objectMatch(
-  actual: Record<PropertyKey, any>,
-  expected: Record<PropertyKey, unknown>,
-  msg?: string,
-): void;
+export declare function objectMatch(actual: Record<PropertyKey, any>, expected: Record<PropertyKey, unknown>, msg?: string): void;

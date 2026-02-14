@@ -1,0 +1,45 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "@frostyeti/exec-scripts",
+      "dependencies": {
+        "@frostyeti/exec": "^0.0.0-alpha.0.1.0",
+        "@frostyeti/strings": "^0.0.0-alpha.0.1.0",
+      },
+      "devDependencies": {
+        "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
+        "@types/node": "^22.17.0",
+        "typescript": "^5.9.3",
+      },
+    },
+  },
+  "packages": {
+    "@frostyeti/args": ["@frostyeti/args@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/slices": "^0.0.0-alpha.0", "@frostyeti/strings": "^0.0.0-alpha.0" } }, "sha512-uiWh9f9vpnUKY2ym2wpzB4Mmfj9ng0xhm3aNsU0VhzDJLIIVOc+qLFwxrV3kJDu0i3Pd6A7Yzx/UnoCFe2p5pw=="],
+
+    "@frostyeti/assert": ["@frostyeti/assert@0.0.0-alpha.0.1.0", "", {}, "sha512-lKQKIHHziK5SmKQHa7KmHP753R1/C2EABUZsTkbv+KfdPXiTDTtnY46xNlCmv+7KMzkmNnLOIlGG9Iafsvq5Sw=="],
+
+    "@frostyeti/chars": ["@frostyeti/chars@0.0.0-alpha.0.1.0", "", {}, "sha512-dFUp6sjDi5tgtXu1UuGbZ80CbX6KMcpo+Z0DihArvXr0Koq6EANPwK889GsW4rzPtynJ1YOfjSW1fbMe+DlE3A=="],
+
+    "@frostyeti/env": ["@frostyeti/env@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/args": "^0.0.0-alpha.0", "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/globals": "^0.0.0-alpha.0", "@frostyeti/strings": "^0.0.0-alpha.0" } }, "sha512-Yxbwx0/B6SwPC47HM67rzhrdoGEHX/m2FlAvS/+2rFOdHJifgQlqVzPQh1XPdmAfLRnDELwcGmUREsehRqLn0Q=="],
+
+    "@frostyeti/exec": ["@frostyeti/exec@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/args": "^0.0.0-alpha.0", "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/env": "^0.0.0-alpha.0", "@frostyeti/fs": "^0.0.0-alpha.0", "@frostyeti/globals": "^0.0.0-alpha.0", "@frostyeti/path": "^0.0.0-alpha.0", "@frostyeti/strings": "^0.0.0-alpha.0" } }, "sha512-tUaKwYP9CD1dANDSvthlrDikKmxjB2ysCZDIXTtP8XHtBmJxbyyU76iE8Uq0N3E4LVucRWRBbTKfISH1s9aPXA=="],
+
+    "@frostyeti/fs": ["@frostyeti/fs@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/globals": "^0.0.0-alpha.0", "@frostyeti/path": "^0.0.0-alpha.0" } }, "sha512-9pxAa15/SeQA1324AfTY30iPj6ftYi6Czjim7u1OYdEBzY44Ivvzde4SecXWBmz8fAK1CwcvXWqnpAG7Yt94GQ=="],
+
+    "@frostyeti/globals": ["@frostyeti/globals@0.0.0-alpha.0.1.0", "", {}, "sha512-PONp/TL89bs8qsLEBHFRmYgLKfUkMuWSqYuEYkzp9iJK9b97OE4UuuGGgWe8E/9Dkexb8DnsU6B0wmMYJM07mw=="],
+
+    "@frostyeti/path": ["@frostyeti/path@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/globals": "^0.0.0-alpha.0" } }, "sha512-ZQ1HY8J7pY4EeFib8pPXN+aHbN4QLDHXtsovvEX9elAzRaBsxBx+yio4KTj5SoDkkh5uryUyAqJRL3mNNPqtAg=="],
+
+    "@frostyeti/slices": ["@frostyeti/slices@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/globals": "^0.0.0-alpha.0" } }, "sha512-j94otuJB7Mnyl83f88XwK4SaAvtKOxBla3PBpoyigy4ncieR3vp9DbI531Oda4iYTp+I+QQGmUqa1n+8/QHg/A=="],
+
+    "@frostyeti/strings": ["@frostyeti/strings@0.0.0-alpha.0.1.0", "", { "dependencies": { "@frostyeti/chars": "^0.0.0-alpha.0", "@frostyeti/slices": "^0.0.0-alpha.0" } }, "sha512-mZ8ql8fyaHfHXxeIW2qTB3Sa2WXZkUbVidJsxt3nUasZ6FpKej7IF6tFwyOEjiRpnaPF+Ije+1hy0pOfXcwqxQ=="],
+
+    "@types/node": ["@types/node@22.19.11", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-BH7YwL6rA93ReqeQS1c4bsPpcfOmJasG+Fkr6Y59q83f9M1WcBRHR2vM+P9eOisYRcN3ujQoiZY8uk5W+1WL8w=="],
+
+    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+
+    "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
+  }
+}

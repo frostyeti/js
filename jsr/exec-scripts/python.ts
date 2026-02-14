@@ -47,7 +47,7 @@ function getShellArgs(
   if (isFile) {
     params.push(script);
   } else {
-    params = shellArgsOverride || PYTHON_EVAL_ARGS;
+    params = [...(shellArgsOverride || PYTHON_EVAL_ARGS)];
     params.push(script);
   }
 

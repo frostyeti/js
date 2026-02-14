@@ -14,6 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "@frostyeti/path/join";
 import { isfileSync } from "@frostyeti/fs/isfile";
 import { writeTextFileSync } from "@frostyeti/fs/write-text-file";
+import { mkdirSync } from "@frostyeti/fs/mkdir";
  
 
 pathFinder.set("go", {
@@ -78,13 +79,16 @@ export class GoScriptCommand extends ShellCommand {
 
         const hash = createHash("sha256").update(this.script).digest("hex");
         const tempDir = tmpdir();
-        const file = join(tempDir, "go-script-" + hash + GO_EXT);
+        const file = join(tempDir, "go-script", hash, "script" + GO_EXT);
         if (isfileSync(file)) {
             return { file, generated: false };
         }
 
+        const dir = join(tempDir, "go-script", hash);
+        mkdirSync(dir, { recursive: true });
+
         writeTextFileSync(file, this.script);
-        return { file, generated: true };
+        return { file, generated: false };
     }
 
     /**

@@ -58,7 +58,7 @@ function getShellArgs(
   if (isFile) {
     params.push(script);
   } else {
-    params = shellArgsOverride || BUN_EVAL_ARGS;
+    params = [...(shellArgsOverride || BUN_EVAL_ARGS)];
     params.push(script);
   }
 

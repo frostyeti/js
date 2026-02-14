@@ -16,8 +16,4 @@
  * @param expected The expected value to compare.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function greaterOrEqual<T>(
-  actual: T,
-  expected: T,
-  msg?: string,
-): void;
+export declare function greaterOrEqual<T>(actual: T, expected: T, msg?: string): void;

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import { equal, ok } from "@frostyeti/assert";
-import { isProcessElevated } from "./mod.ts";
+import { isElevated } from "./mod.ts";
 import process from "node:process";
 import { WINDOWS } from "@frostyeti/globals/os";
 
@@ -8,50 +8,50 @@ const CI = process.env.CI === "true" || process.env.CI === "1" || process.env.GI
 const uid = process.getuid?.();
 const unixIsRoot = uid === 0;
 
-test("isProcessElevated returns a boolean", () => {
-    const result = isProcessElevated();
+test("isElevated returns a boolean", () => {
+    const result = isElevated();
     equal(typeof result, "boolean");
 });
 
-test("isProcessElevated with cache=true returns consistent results", () => {
-    const first = isProcessElevated(true);
-    const second = isProcessElevated(true);
+test("isElevated with cache=true returns consistent results", () => {
+    const first = isElevated(true);
+    const second = isElevated(true);
     equal(first, second);
 });
 
-test("isProcessElevated with cache=false re-evaluates", () => {
+test("isElevated with cache=false re-evaluates", () => {
     // This should not throw and should return a boolean
-    const result = isProcessElevated(false);
+    const result = isElevated(false);
     equal(typeof result, "boolean");
 });
 
-test("isProcessElevated caches by default", () => {
-    const first = isProcessElevated();
-    const second = isProcessElevated();
+test("isElevated caches by default", () => {
+    const first = isElevated();
+    const second = isElevated();
     equal(first, second);
 });
 
-test("isProcessElevated returns false for non-elevated process", { skip: unixIsRoot || CI }, () => {
+test("isElevated returns false for non-elevated process", { skip: unixIsRoot || CI }, () => {
     // Skip this test if running as root or in CI
-    const result = isProcessElevated();
+    const result = isElevated();
     ok(!result, "Expected non-elevated process to return false");
 });
 
-test("isProcessElevated returns true for elevated process", { skip: !unixIsRoot && !(WINDOWS && CI) }, () => {
+test("isElevated returns true for elevated process", { skip: !unixIsRoot && !(WINDOWS && CI) }, () => {
     if (!unixIsRoot && !(WINDOWS && CI)) {
         return;
     }
 
     // Skip this test if NOT running as root
-    const result = isProcessElevated();
+    const result = isElevated();
     ok(result, "Expected elevated process to return true");
 });
 
-test("isProcessElevated does not throw", () => {
+test("isElevated does not throw", () => {
     try {
-        const result = isProcessElevated();
-        console.log(`isProcessElevated returned: ${result}`);
+        const result = isElevated();
+        console.log(`isElevated returned: ${result}`);
     } catch (error) {
-        ok(false, `isProcessElevated threw an error: ${error}`);
+        ok(false, `isElevated threw an error: ${error}`);
     }
 });

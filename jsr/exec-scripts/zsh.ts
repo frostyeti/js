@@ -1,8 +1,13 @@
-
-import { cmd, pathFinder, 
+import {
+    cmd,
+    type Command,
+    type CommandArgs,
+    type CommandOptions,
     convertCommandArgs,
-    type CommandArgs, type CommandOptions, type Command, type ShellCommandOptions
-} from "./deps.ts";
+    pathFinder,
+    type ShellCommandOptions,
+} from "@frostyeti/exec";
+
 
 pathFinder.set("sh", {
     name: "sh",

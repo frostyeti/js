@@ -20,8 +20,4 @@ export type ArrayLikeArg<T> = ArrayLike<T> & object;
  * @param expected The array-like object to check for.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function arrayIncludes<T>(
-  actual: ArrayLikeArg<T>,
-  expected: ArrayLikeArg<T>,
-  msg?: string,
-): void;
+export declare function arrayIncludes<T>(actual: ArrayLikeArg<T>, expected: ArrayLikeArg<T>, msg?: string): void;

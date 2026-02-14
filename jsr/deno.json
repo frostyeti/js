@@ -66,9 +66,7 @@
         "./ci-env",
         "./is-elevated",
         "./exec-scripts",
-        "./windows-registry",
         "./win-cred",
-        "./win-os-release",
-        "./libsecret"
+        "./win-os-release"
     ]
 }

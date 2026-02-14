@@ -45,7 +45,7 @@ function getShellArgs(
   if (isFile) {
     params.push(script);
   } else {
-    params = shellArgsOverride || RUBY_EVAL_ARGS;
+    params = [...(shellArgsOverride || RUBY_EVAL_ARGS)];
     params.push(script);
   }
 

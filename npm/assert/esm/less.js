@@ -20,11 +20,9 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function less(actual, expected, msg) {
-  if (actual < expected) {
-    return;
-  }
-  const msgSuffix = msg ? `: ${msg}` : ".";
-  throw new AssertionError(
-    `Expected "${actual}" to be less than "${expected}"${msgSuffix}`,
-  );
+    if (actual < expected) {
+        return;
+    }
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    throw new AssertionError(`Expected "${actual}" to be less than "${expected}"${msgSuffix}`);
 }

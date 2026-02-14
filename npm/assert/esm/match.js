@@ -18,11 +18,9 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function match(actual, expected, msg) {
-  if (expected.test(actual)) {
-    return;
-  }
-  const msgSuffix = msg ? `: ${msg}` : ".";
-  throw new AssertionError(
-    `Expected actual: "${actual}" to match: "${expected}"${msgSuffix}`,
-  );
+    if (expected.test(actual)) {
+        return;
+    }
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    throw new AssertionError(`Expected actual: "${actual}" to match: "${expected}"${msgSuffix}`);
 }

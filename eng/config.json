@@ -188,13 +188,40 @@
       "dntConfig": "jsr/ci-env/dnt.json"
     },
     {
-      "name": "is-process-elevated",
+      "name": "exec-scripts",
+      "id": "@frostyeti/exec-scripts",
+      "version": "0.0.0-alpha.0.1.0",
+      "dir": "jsr\\exec-scripts",
+      "denoConfig": "jsr\\exec-scripts\\deno.json",
+      "packageJson": "npm\\exec-scripts\\package.json",
+      "dntConfig": "jsr\\exec-scripts\\dnt.json"
+    },
+    {
+      "name": "is-elevated",
       "id": "@frostyeti/is-process-elevated",
       "version": "0.0.0-alpha.0.0.0",
-      "dir": "jsr/is-process-elevated",
-      "denoConfig": "jsr/is-process-elevated/deno.json",
-      "packageJson": "npm/is-process-elevated/package.json",
-      "dntConfig": "jsr/is-process-elevated/dnt.json"
+      "dir": "jsr\\is-elevated",
+      "denoConfig": "jsr\\is-elevated\\deno.json",
+      "packageJson": "npm\\is-elevated\\package.json",
+      "dntConfig": "jsr\\is-elevated\\dnt.json"
+    },
+    {
+      "name": "win-cred",
+      "id": "@frostyeti/win-cred",
+      "version": "0.0.0-alpha.0.1.0",
+      "dir": "jsr\\win-cred",
+      "denoConfig": "jsr\\win-cred\\deno.json",
+      "packageJson": "npm\\win-cred\\package.json",
+      "dntConfig": "jsr\\win-cred\\dnt.json"
+    },
+    {
+      "name": "win-os-release",
+      "id": "@frostyeti/win-os-release",
+      "version": "0.0.0-alpha.0.1.0",
+      "dir": "jsr\\win-os-release",
+      "denoConfig": "jsr\\win-os-release\\deno.json",
+      "packageJson": "npm\\win-os-release\\package.json",
+      "dntConfig": "jsr\\win-os-release\\dnt.json"
     }
   ]
 }

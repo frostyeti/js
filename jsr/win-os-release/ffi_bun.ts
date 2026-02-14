@@ -6,11 +6,10 @@
  * @internal
  */
 import type { DomainInfo, OsReleaseBackend, OsVersionInfo } from "./types.ts";
-import { MachineRole, ProductType } from "./types.ts";
+import { MachineRole, type ProductType } from "./types.ts";
+// @deno-types="npm:@types/bun@^1.3.8"
+import {  dlopen, ptr, read, type Pointer,   } from "bun:ffi";
 
-// deno-lint-ignore no-explicit-any
-const bunFfi: any = await (Function('return import("bun:ffi")')() as Promise<unknown>);
-const { dlopen, ptr: ptrFn, read: ffiRead, toArrayBuffer } = bunFfi;
 
 const ntdll = dlopen("ntdll.dll", {
     RtlGetVersion: {
@@ -58,17 +57,15 @@ const DS_OFF_DOMAIN_FLAT = 8;
 const DS_OFF_DOMAIN_DNS = 16;
 const DS_OFF_FOREST = 24;
 
-function bufPtr(buf: Uint8Array): unknown {
-    return ptrFn(buf);
-}
+
 
 /** Read a null-terminated UTF-16LE string from a native pointer. */
-function readWideString(ptr: number): string {
-    if (ptr === 0) return "";
+function readWideString(intPtr: number): string {
+    if (intPtr === 0) return "";
     const chars: number[] = [];
     for (let i = 0; ; i += 2) {
-        const lo: number = ffiRead.u8(ptr + i);
-        const hi: number = ffiRead.u8(ptr + i + 1);
+        const lo: number = read.u8(intPtr as Pointer, i);
+        const hi: number = read.u8(intPtr as Pointer, i + 1);
         if (lo === 0 && hi === 0) break;
         chars.push(lo | (hi << 8));
     }
@@ -81,12 +78,14 @@ export const backend: OsReleaseBackend = {
         const view = new DataView(buf.buffer);
         view.setUint32(0, SIZEOF_OSVERSIONINFOEXW, true);
 
-        const status = ntdll.symbols.RtlGetVersion(bufPtr(buf));
+        const status = ntdll.symbols.RtlGetVersion(ptr(buf));
         if (status !== 0) {
             throw new Error(`RtlGetVersion failed with NTSTATUS ${status}`);
         }
 
-        const csdDecoder = new TextDecoder("utf-16le");
+
+        // deno-lint-ignore no-explicit-any
+        const csdDecoder = new TextDecoder("utf-16le" as any);
         let csdEnd = OFF_CSD + 256;
         for (let i = OFF_CSD; i < OFF_CSD + 256 - 1; i += 2) {
             if (buf[i] === 0 && buf[i + 1] === 0) {
@@ -121,7 +120,7 @@ export const backend: OsReleaseBackend = {
             minorVersion,
             spMajor,
             spMinor,
-            bufPtr(outBuf),
+            ptr(outBuf),
         );
         return new DataView(outBuf.buffer).getUint32(0, true);
     },
@@ -132,7 +131,7 @@ export const backend: OsReleaseBackend = {
         const err = netapi32.symbols.DsRoleGetPrimaryDomainInformation(
             null, // local computer
             1, // DsRolePrimaryDomainInfoBasic
-            bufPtr(outPtrBuf),
+            ptr(outPtrBuf),
         );
 
         if (err !== 0) {
@@ -149,20 +148,20 @@ export const backend: OsReleaseBackend = {
 
         try {
             return {
-                machineRole: ffiRead.u32(infoPtr + DS_OFF_MACHINE_ROLE) as MachineRole,
-                flags: ffiRead.u32(infoPtr + DS_OFF_FLAGS),
+                machineRole: read.u32(infoPtr as Pointer, DS_OFF_MACHINE_ROLE) as MachineRole,
+                flags: read.u32(infoPtr as Pointer, DS_OFF_FLAGS),
                 domainNameFlat: readWideString(
-                    Number(ffiRead.ptr(infoPtr + DS_OFF_DOMAIN_FLAT)),
+                    infoPtr as Pointer + DS_OFF_DOMAIN_FLAT,
                 ),
                 domainNameDns: readWideString(
-                    Number(ffiRead.ptr(infoPtr + DS_OFF_DOMAIN_DNS)),
+                    infoPtr as Pointer + DS_OFF_DOMAIN_DNS,
                 ),
                 forestName: readWideString(
-                    Number(ffiRead.ptr(infoPtr + DS_OFF_FOREST)),
+                    infoPtr as Pointer + DS_OFF_FOREST,
                 ),
             };
         } finally {
-            netapi32.symbols.DsRoleFreeMemory(infoPtr);
+            netapi32.symbols.DsRoleFreeMemory(infoPtr as Pointer);
         }
     },
 };

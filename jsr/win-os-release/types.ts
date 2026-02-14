@@ -178,6 +178,22 @@ export interface OsRelease {
     displayName: string;
 }
 
+/**
+ * Windows-flavored `/etc/os-release`-style values.
+ */
+export interface OsReleaseLike extends Record<string, string | undefined> {
+    /** OS identifier (e.g. "windows"). */
+    id: string;
+    /** OS name (e.g. "Windows"). */
+    name: string;
+    /** Pretty name including edition (e.g. "Windows 11 Pro"). */
+    prettyName: string;
+    /** Variant (e.g. "Workstation", "Server", "Domain Controller"). */
+    variant: string;
+    /** Version codename (e.g. "win11", "server2022"). */
+    codeName: string;
+}
+
 // ── Backend interface ───────────────────────────────────────────────────────
 
 /**

@@ -5,27 +5,33 @@
  * @module
  * @internal
  */
+import { globals } from "@frostyeti/globals/globals";
 import type { DomainInfo, OsReleaseBackend, OsVersionInfo } from "./types.ts";
-import { MachineRole, ProductType } from "./types.ts";
+import { MachineRole, type ProductType } from "./types.ts";
 
-// deno-lint-ignore no-explicit-any
-const Deno_ = (globalThis as any).Deno;
+if (typeof globals.Deno === "undefined" || typeof globals.Deno.dlopen !== "function") {
+    throw new Error(
+        "Deno.dlopen is not available. This module requires Deno with FFI support.",
+    );
+}
 
-const ntdll = Deno_.dlopen("ntdll.dll", {
+const Deno = globals.Deno;
+
+const ntdll = Deno.dlopen("ntdll.dll", {
     RtlGetVersion: {
         parameters: ["buffer"],
         result: "i32",
     },
 } as const);
 
-const kernel32 = Deno_.dlopen("kernel32.dll", {
+const kernel32 = Deno.dlopen("kernel32.dll", {
     GetProductInfo: {
         parameters: ["u32", "u32", "u32", "u32", "buffer"],
         result: "i32",
     },
 } as const);
 
-const netapi32 = Deno_.dlopen("netapi32.dll", {
+const netapi32 = Deno.dlopen("netapi32.dll", {
     DsRoleGetPrimaryDomainInformation: {
         parameters: ["pointer", "u32", "buffer"],
         result: "u32",
@@ -60,7 +66,9 @@ const DS_OFF_FOREST = 24;
 /** Read a null-terminated UTF-16 LE string from a raw pointer. */
 function readWideString(ptr: bigint): string {
     if (ptr === 0n) return "";
-    const view = new Deno_.UnsafePointerView(Deno_.UnsafePointer.create(ptr));
+    const unsafePtr = Deno.UnsafePointer.create(ptr);
+    if (unsafePtr === null) return "";
+    const view = new Deno.UnsafePointerView(unsafePtr);
     const chars: number[] = [];
     for (let i = 0; ; i += 2) {
         const lo = view.getUint8(i);
@@ -74,7 +82,9 @@ function readWideString(ptr: bigint): string {
 /** Read raw bytes from a pointer. */
 function readBytes(ptr: bigint, length: number): Uint8Array {
     if (ptr === 0n || length === 0) return new Uint8Array(0);
-    const view = new Deno_.UnsafePointerView(Deno_.UnsafePointer.create(ptr));
+    const unsafePtr = Deno.UnsafePointer.create(ptr);
+    if (unsafePtr === null) return new Uint8Array(0);
+    const view = new Deno.UnsafePointerView(unsafePtr);
     const buf = new Uint8Array(length);
     for (let i = 0; i < length; i++) {
         buf[i] = view.getUint8(i);
@@ -94,7 +104,8 @@ export const backend: OsReleaseBackend = {
         }
 
         // Read CSD version string (128 WCHARs at offset 20)
-        const csdDecoder = new TextDecoder("utf-16le");
+        // deno-lint-ignore no-explicit-any
+        const csdDecoder = new TextDecoder("utf-16le" as any);
         let csdEnd = OFF_CSD + 256;
         for (let i = OFF_CSD; i < OFF_CSD + 256 - 1; i += 2) {
             if (buf[i] === 0 && buf[i + 1] === 0) {
@@ -180,7 +191,7 @@ export const backend: OsReleaseBackend = {
             };
         } finally {
             netapi32.symbols.DsRoleFreeMemory(
-                Deno_.UnsafePointer.create(infoPtr),
+                Deno.UnsafePointer.create(infoPtr),
             );
         }
     },

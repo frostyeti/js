@@ -20,8 +20,4 @@
  * @param expected The expected value to compare.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function strictEquals<T>(
-  actual: unknown,
-  expected: T,
-  msg?: string,
-): asserts actual is T;
+export declare function strictEquals<T>(actual: unknown, expected: T, msg?: string): asserts actual is T;

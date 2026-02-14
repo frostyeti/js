@@ -49,7 +49,7 @@ function getShellArgs(script: string, isFile: boolean, shellArgsOverride?: strin
     if (isFile) {
         params.push(script);
     } else {
-        params = shellArgsOverride || NODE_EVAL_ARGS;
+        params = [...(shellArgsOverride || NODE_EVAL_ARGS)];
         params.push(script);
     }
     
@@ -68,11 +68,11 @@ export function node(args?: CommandArgs, options?: CommandOptions) : Command {
 }
 
 function script(script: string, options?: ShellCommandOptions) : Command & { script: string } {
-    options = options || {};
-    let isf = options?.isFile;
-    const a = options?.args;
+    const o = options || {};
+    let isf = o.isFile;
+    const a = o.args;
     if (a) {
-        delete options["args"];
+        delete o["args"];
     }
     if (isf === undefined) {
         const line = script.trim();
@@ -80,9 +80,9 @@ function script(script: string, options?: ShellCommandOptions) : Command & { scr
             isf = true;
         }
     }
-    const params = getShellArgs(script, isf || false, options?.shellArgs);
+    const params = getShellArgs(script, isf || false, o?.shellArgs);
     // Use the exported wrapper so the executable is always `node`.
-    const c = node(params, options) as Command & { script: string };
+    const c = node(params, o) as Command & { script: string };
     c.script = script;
     return c;
 }

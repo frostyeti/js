@@ -14,8 +14,4 @@
  * @param expected The expected RegExp pattern to test.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function notMatch(
-  actual: string,
-  expected: RegExp,
-  msg?: string,
-): void;
+export declare function notMatch(actual: string, expected: RegExp, msg?: string): void;

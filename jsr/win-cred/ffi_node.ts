@@ -8,38 +8,12 @@
  * @internal
  */
 import type { CredentialBackend, RawCredential } from "./types.ts";
+import process from "node:process";
 
-// ── Load koffi ──────────────────────────────────────────────────────────────
+const {createRequire} = process.getBuiltinModule("node:module");
+const req = createRequire(import.meta.url ?? "file:///");
+const koffi = req("koffi");
 
-// deno-lint-ignore no-explicit-any
-let koffi: any;
-try {
-    // deno-lint-ignore no-explicit-any
-    const g = globalThis as any;
-    const req = g.require ?? (g.process?.mainModule?.require);
-
-    if (req) {
-        koffi = req("koffi");
-    } else {
-        // ESM fallback
-        // deno-lint-ignore no-explicit-any
-        const nodeModule = await (Function('return import("node:module")')() as Promise<any>);
-        const createRequire = nodeModule.createRequire ?? nodeModule.default?.createRequire;
-        if (createRequire) {
-            const require = createRequire(import.meta.url ?? "file:///");
-            koffi = require("koffi");
-        } else {
-            // deno-lint-ignore no-explicit-any
-            const mod = await (Function('return import("koffi")')() as Promise<any>);
-            koffi = mod.default ?? mod;
-        }
-    }
-} catch {
-    throw new Error(
-        "The 'koffi' package is required for Node.js credential support. " +
-            "Install it with: npm install koffi",
-    );
-}
 
 // ── Define types and struct ────────────────────────────────────────────────
 

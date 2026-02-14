@@ -17,6 +17,10 @@
     },
     "dependencies": {
         "@frostyeti/exec": "*",
-        "@frostyeti/strings": "*"
+        "@frostyeti/strings": "*",
+        "@frostyeti/globals": "*",
+        "@frostyeti/path": "*",
+        "@frostyeti/fs": "*",
+        "@frostyeti/env": "*"
     }
 }

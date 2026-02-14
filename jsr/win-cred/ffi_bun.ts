@@ -7,12 +7,10 @@
  */
 import type { CredentialBackend, RawCredential } from "./types.ts";
 import { stringToWide } from "./types.ts";
+// @deno-types="npm:@types/bun@^1.3.8"
+import {  dlopen, ptr, read, type Pointer, toArrayBuffer   } from "bun:ffi";
 
-// Dynamic import hidden from static analysis so Deno/Node don't choke on "bun:ffi".
-// deno-lint-ignore no-explicit-any
-const bunFfi: any = await (Function('return import("bun:ffi")')() as Promise<unknown>);
 
-const { dlopen, ptr: ptrFn, read: ffiRead, toArrayBuffer } = bunFfi;
 
 const lib = dlopen("advapi32.dll", {
     CredWriteW: {
@@ -62,17 +60,15 @@ const OFF_ATTR_COUNT = 52;
 const OFF_TARGET_ALIAS = 64;
 const OFF_USER_NAME = 72;
 
-function bufPtr(buf: Uint8Array): unknown {
-    return ptrFn(buf);
-}
 
 /** Read a null-terminated UTF-16LE string from a native pointer. */
-function readWideString(ptr: number): string {
-    if (ptr === 0) return "";
+function readWideString(intPtr: number): string {
+    if (intPtr === 0) return "";
+
     const chars: number[] = [];
     for (let i = 0; ; i += 2) {
-        const lo: number = ffiRead.u8(ptr + i);
-        const hi: number = ffiRead.u8(ptr + i + 1);
+        const lo: number = read.u8(intPtr as Pointer, i);
+        const hi: number = read.u8(intPtr as Pointer, i + 1);
         if (lo === 0 && hi === 0) break;
         chars.push(lo | (hi << 8));
     }
@@ -82,21 +78,21 @@ function readWideString(ptr: number): string {
 /** Read raw bytes from a pointer. */
 function readBytes(ptr: number, length: number): Uint8Array {
     if (ptr === 0 || length === 0) return new Uint8Array(0);
-    const ab = toArrayBuffer(ptr, 0, length);
+    const ab = toArrayBuffer(ptr as Pointer, 0, length);
     return new Uint8Array(ab);
 }
 
 function readU32At(ptr: number, offset: number): number {
-    return ffiRead.u32(ptr + offset);
+    return read.u32(ptr as Pointer, offset);
 }
 
 function readPtrAt(ptr: number, offset: number): number {
     // Read a 64-bit pointer as a number. Bun's read.ptr returns a number.
-    return Number(ffiRead.ptr(ptr + offset));
+    return Number(read.ptr(ptr as Pointer, offset));
 }
 
 function readU64At(ptr: number, offset: number): bigint {
-    return ffiRead.u64(ptr + offset);
+    return read.u64(ptr as Pointer, offset);
 }
 
 /** Parse a CREDENTIALW from a pointer value. */
@@ -135,11 +131,11 @@ function buildCredentialBuffer(
 
     const wTarget = stringToWide(cred.targetName);
     refs.push(wTarget);
-    view.setBigUint64(OFF_TARGET_NAME, BigInt(ptrFn(wTarget)), true);
+    view.setBigUint64(OFF_TARGET_NAME, BigInt(ptr(wTarget)), true);
 
     const wComment = stringToWide(cred.comment);
     refs.push(wComment);
-    view.setBigUint64(OFF_COMMENT, BigInt(ptrFn(wComment)), true);
+    view.setBigUint64(OFF_COMMENT, BigInt(ptr(wComment)), true);
 
     view.setBigUint64(OFF_LAST_WRITTEN, cred.lastWritten, true);
     view.setUint32(OFF_BLOB_SIZE, cred.credentialBlob.length, true);
@@ -147,7 +143,7 @@ function buildCredentialBuffer(
     const blob = cred.credentialBlob;
     refs.push(blob);
     if (blob.length > 0) {
-        view.setBigUint64(OFF_BLOB, BigInt(ptrFn(blob)), true);
+        view.setBigUint64(OFF_BLOB, BigInt(ptr(blob)), true);
     }
 
     view.setUint32(OFF_PERSIST, cred.persist, true);
@@ -156,13 +152,13 @@ function buildCredentialBuffer(
     const wAlias = stringToWide(cred.targetAlias);
     refs.push(wAlias);
     if (cred.targetAlias) {
-        view.setBigUint64(OFF_TARGET_ALIAS, BigInt(ptrFn(wAlias)), true);
+        view.setBigUint64(OFF_TARGET_ALIAS, BigInt(ptr(wAlias)), true);
     }
 
     const wUser = stringToWide(cred.userName);
     refs.push(wUser);
     if (cred.userName) {
-        view.setBigUint64(OFF_USER_NAME, BigInt(ptrFn(wUser)), true);
+        view.setBigUint64(OFF_USER_NAME, BigInt(ptr(wUser)), true);
     }
 
     return { structBuf: buf, refs };
@@ -171,7 +167,7 @@ function buildCredentialBuffer(
 export const backend: CredentialBackend = {
     write(cred: RawCredential, flags: number): void {
         const { structBuf, refs: _refs } = buildCredentialBuffer(cred);
-        const ok = symbols.CredWriteW(bufPtr(structBuf), flags);
+        const ok = symbols.CredWriteW(ptr(structBuf), flags);
         if (!ok) {
             const err = k32s.GetLastError();
             throw new Error(`CredWriteW failed with error code ${err}`);
@@ -182,7 +178,7 @@ export const backend: CredentialBackend = {
         const wTarget = stringToWide(targetName);
         const outBuf = new Uint8Array(8);
 
-        const ok = symbols.CredReadW(bufPtr(wTarget), type, 0, bufPtr(outBuf));
+        const ok = symbols.CredReadW(ptr(wTarget), type, 0, ptr(outBuf));
         if (!ok) return null;
 
         const outView = new DataView(outBuf.buffer);
@@ -191,13 +187,13 @@ export const backend: CredentialBackend = {
         try {
             return parseCredential(credPtr);
         } finally {
-            symbols.CredFree(credPtr);
+            symbols.CredFree(credPtr as Pointer);
         }
     },
 
     delete(targetName: string, type: number): boolean {
         const wTarget = stringToWide(targetName);
-        const ok = symbols.CredDeleteW(bufPtr(wTarget), type, 0);
+        const ok = symbols.CredDeleteW(ptr(wTarget), type, 0);
         return !!ok;
     },
 
@@ -209,14 +205,14 @@ export const backend: CredentialBackend = {
         let wFilter: Uint8Array | null = null;
         if (filter !== null) {
             wFilter = stringToWide(filter);
-            filterArg = bufPtr(wFilter);
+            filterArg = ptr(wFilter);
         }
 
         const ok = symbols.CredEnumerateW(
-            filterArg,
+            filterArg as Pointer | null,
             flags,
-            bufPtr(countBuf),
-            bufPtr(credsBuf),
+            ptr(countBuf),
+            ptr(credsBuf),
         );
 
         if (!ok) return [];
@@ -227,11 +223,11 @@ export const backend: CredentialBackend = {
         const results: RawCredential[] = [];
         try {
             for (let i = 0; i < count; i++) {
-                const credPtr = Number(ffiRead.ptr(arrayPtr + i * 8));
+                const credPtr = Number(read.ptr(arrayPtr as Pointer, i * 8));
                 results.push(parseCredential(credPtr));
             }
         } finally {
-            symbols.CredFree(arrayPtr);
+            symbols.CredFree(arrayPtr as Pointer);
         }
 
         return results;

@@ -15,6 +15,7 @@ import { join } from "@frostyeti/path/join";
 import { extname } from "@frostyeti/path/extname";
 import { isfileSync } from "@frostyeti/fs/isfile";
 import { writeTextFileSync } from "@frostyeti/fs/write-text-file";
+import { mkdirSync } from "@frostyeti/fs/mkdir";
 
 pathFinder.set("dotnet", {
     name: "dotnet",
@@ -82,13 +83,16 @@ export class DotnetScriptCommand extends ShellCommand {
         const trimmed = this.script.trim();
 
         if (isSpace(trimmed) || !DOTNET_EXTS.some((ext) => trimmed.endsWith(ext))) {
-            const hash = createHash("sha256").update(this.script).digest("hex");
+            const hash = createHash("sha224").update(this.script).digest("hex");
             const tempDir = tmpdir();
-            const file = join(tempDir, "dotnet-script-" + hash + DOTNET_EXT);
+
+            const file = join(tempDir, "script-dotnet", hash, "script" + DOTNET_EXT);
             if (isfileSync(file)) {
                 return { file, generated: false };
             }
 
+            const dir = join(tempDir, "script-dotnet", hash);
+            mkdirSync(dir, { recursive: true });
             writeTextFileSync(file, this.script);
             // false because we need to cache the file for performance reasons, and we don't want to delete it after execution
             return { file, generated: false }; 

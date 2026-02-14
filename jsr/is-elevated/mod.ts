@@ -29,22 +29,39 @@
  * @module
  */
 
-import { RUNTIME } from "@frostyeti/globals";
+import { globals, RUNTIME } from "@frostyeti/globals";
 
 // deno-lint-ignore no-unused-vars
-let isElevated = function (cache = true): boolean {
+let isProcessElevated = function (cache = true): boolean {
     return false;
 };
 
+  const module = globals.process.getBuiltinModule('module');
+  const require = module.createRequire(import.meta.url);
+
 switch (RUNTIME) {
     case "deno":
-        isElevated = (await import("./deno.ts")).evalIsProcessElevated;
+        {
+            const   { evalIsProcessElevated } = require("./deno.ts");
+            isProcessElevated = evalIsProcessElevated;
+        }
+     
         break;
     case "node":
-        isElevated = (await import("./node.ts")).evalIsProcessElevated;
+        {
+            // to deal deno/node dual compatibility; if we use require in deno with node.js it throws lint errors.
+            // if we require ./node.ts, then it doesn't get transformed by dnt and results in an error for node.
+            const file = "./node.js";
+            const { evalIsProcessElevated } = require(file);
+            isProcessElevated = evalIsProcessElevated;
+        }
         break;
     case "bun":
-        isElevated = (await import("./bun.ts")).evalIsProcessElevated;
+        {
+            const file = "./bun.js";
+            const { evalIsProcessElevated } = require(file);
+            isProcessElevated = evalIsProcessElevated;
+        }
         break;
 }
 
@@ -67,9 +84,9 @@ switch (RUNTIME) {
  *
  * @example Check for elevation before performing privileged operation
  * ```typescript
- * import { isProcessElevated } from "@frostyeti/is-process-elevated";
+ * import { isElevated } from "@frostyeti/is-process-elevated";
  *
- * if (!isProcessElevated()) {
+ * if (!isElevated()) {
  *     console.error("Please run this script with sudo or as Administrator");
  *     process.exit(1);
  * }
@@ -79,23 +96,23 @@ switch (RUNTIME) {
  *
  * @example Force re-evaluation of elevation status
  * ```typescript
- * import { isProcessElevated } from "@frostyeti/is-process-elevated";
+ * import { isElevated } from "@frostyeti/is-process-elevated";
  *
  * // First call - evaluates and caches
- * console.log(isProcessElevated()); // true or false
+ * console.log(isElevated()); // true or false
  *
  * // Subsequent call - uses cache
- * console.log(isProcessElevated()); // same as above
+ * console.log(isElevated()); // same as above
  *
  * // Force re-evaluation
- * console.log(isProcessElevated(false)); // re-checks elevation status
+ * console.log(isElevated(false)); // re-checks elevation status
  * ```
  *
  * @example Conditional logic based on elevation
  * ```typescript
- * import { isProcessElevated } from "@frostyeti/is-process-elevated";
+ * import { isElevated } from "@frostyeti/is-process-elevated";
  *
- * const elevated = isProcessElevated();
+ * const elevated = isElevated();
  *
  * if (elevated) {
  *     console.log("Running with admin/root privileges");
@@ -104,6 +121,6 @@ switch (RUNTIME) {
  * }
  * ```
  */
-export function isProcessElevated(cache = true): boolean {
-    return isElevated(cache);
+export function isElevated(cache = true): boolean {
+    return isProcessElevated(cache);
 }

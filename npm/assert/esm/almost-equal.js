@@ -24,19 +24,17 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function almostEqual(actual, expected, tolerance = 1e-7, msg) {
-  if (Object.is(actual, expected)) {
-    return;
-  }
-  const delta = Math.abs(expected - actual);
-  if (delta <= tolerance) {
-    return;
-  }
-  const msgSuffix = msg ? `: ${msg}` : ".";
-  const f = (n) => Number.isInteger(n) ? n : n.toExponential();
-  throw new AssertionError(
-    `Expected actual: "${f(actual)}" to be close to "${f(expected)}": \
-delta "${f(delta)}" is greater than "${f(tolerance)}"${msgSuffix}`,
-  );
+    if (Object.is(actual, expected)) {
+        return;
+    }
+    const delta = Math.abs(expected - actual);
+    if (delta <= tolerance) {
+        return;
+    }
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    const f = (n) => Number.isInteger(n) ? n : n.toExponential();
+    throw new AssertionError(`Expected actual: "${f(actual)}" to be close to "${f(expected)}": \
+delta "${f(delta)}" is greater than "${f(tolerance)}"${msgSuffix}`);
 }
 /**
  * Make an assertion that `actual` is not almost equal to `expected`,
@@ -60,21 +58,17 @@ delta "${f(delta)}" is greater than "${f(tolerance)}"${msgSuffix}`,
  * @param msg The optional message to display if the assertion fails.
  */
 export function notAlmostEqual(actual, expected, tolerance = 1e-7, msg) {
-  if (Object.is(actual, expected)) {
+    if (Object.is(actual, expected)) {
+        const msgSuffix = msg ? `: ${msg}` : ".";
+        const f = (n) => Number.isInteger(n) ? n : n.toExponential();
+        throw new AssertionError(`Expected actual: "${f(actual)}" to not be close to "${f(expected)}"${msgSuffix}`);
+    }
+    const delta = Math.abs(expected - actual);
+    if (delta > tolerance) {
+        return;
+    }
     const msgSuffix = msg ? `: ${msg}` : ".";
     const f = (n) => Number.isInteger(n) ? n : n.toExponential();
-    throw new AssertionError(
-      `Expected actual: "${f(actual)}" to not be close to "${f(expected)}"${msgSuffix}`,
-    );
-  }
-  const delta = Math.abs(expected - actual);
-  if (delta > tolerance) {
-    return;
-  }
-  const msgSuffix = msg ? `: ${msg}` : ".";
-  const f = (n) => Number.isInteger(n) ? n : n.toExponential();
-  throw new AssertionError(
-    `Expected actual: "${f(actual)}" to not be close to "${f(expected)}": \
-delta "${f(delta)}" is less than or equal to "${f(tolerance)}"${msgSuffix}`,
-  );
+    throw new AssertionError(`Expected actual: "${f(actual)}" to not be close to "${f(expected)}": \
+delta "${f(delta)}" is less than or equal to "${f(tolerance)}"${msgSuffix}`);
 }

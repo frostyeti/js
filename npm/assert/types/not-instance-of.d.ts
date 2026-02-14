@@ -16,8 +16,4 @@
  * @param unexpectedType The class constructor to check against.
  * @param msg The optional message to display if the assertion fails.
  */
-export declare function notInstanceOf<A, T>(
-  actual: A,
-  unexpectedType: abstract new (...args: any[]) => T,
-  msg?: string,
-): asserts actual is Exclude<A, T>;
+export declare function notInstanceOf<A, T>(actual: A, unexpectedType: abstract new (...args: any[]) => T, msg?: string): asserts actual is Exclude<A, T>;

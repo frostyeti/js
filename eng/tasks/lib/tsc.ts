@@ -358,6 +358,12 @@ bun.lockb`;
                 }
             }
 
+            const bunPath = "C:/Users/dev/AppData/Local/mise/installs/bun/1.3.9/bin";
+            const bunEnv = {
+                ...Deno.env.toObject(),
+                PATH: `${bunPath};${Deno.env.get("PATH") || ""}`,
+            };
+
             const bunInstallCmd = new Deno.Command("bun", {
                 args: [
                     "install",
@@ -365,6 +371,7 @@ bun.lockb`;
                 stdout: "inherit",
                 stderr: "inherit",
                 cwd: npmProjectDir,
+                env: bunEnv,
             });
 
             const installOutput = await bunInstallCmd.output();
@@ -381,6 +388,7 @@ bun.lockb`;
                 stdout: "inherit",
                 stderr: "inherit",
                 cwd: npmProjectDir,
+                env: bunEnv,
             });
 
             const tscOutput = await tscCmd.output();
@@ -414,6 +422,7 @@ bun.lockb`;
                 stdout: "inherit",
                 stderr: "inherit",
                 cwd: npmProjectDir,
+                env: bunEnv,
             });
 
             const testOutput = await testCmd.output();
@@ -430,6 +439,7 @@ bun.lockb`;
                 stdout: "inherit",
                 stderr: "inherit",
                 cwd: npmProjectDir,
+                env: bunEnv,
             });
 
             const bunTestOutput = await bunTestCmd.output();

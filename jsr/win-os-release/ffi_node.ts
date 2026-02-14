@@ -6,36 +6,12 @@
  * @internal
  */
 import type { DomainInfo, OsReleaseBackend, OsVersionInfo } from "./types.ts";
-import { MachineRole, ProductType } from "./types.ts";
+import { MachineRole, type ProductType } from "./types.ts";
+import process from "node:process";
 
-// deno-lint-ignore no-explicit-any
-let koffi: any;
-try {
-    // deno-lint-ignore no-explicit-any
-    const g = globalThis as any;
-    const req = g.require ?? (g.process?.mainModule?.require);
-
-    if (req) {
-        koffi = req("koffi");
-    } else {
-        // deno-lint-ignore no-explicit-any
-        const nodeModule = await (Function('return import("node:module")')() as Promise<any>);
-        const createRequire = nodeModule.createRequire ?? nodeModule.default?.createRequire;
-        if (createRequire) {
-            const require = createRequire(import.meta.url ?? "file:///");
-            koffi = require("koffi");
-        } else {
-            // deno-lint-ignore no-explicit-any
-            const mod = await (Function('return import("koffi")')() as Promise<any>);
-            koffi = mod.default ?? mod;
-        }
-    }
-} catch {
-    throw new Error(
-        "The 'koffi' package is required for Node.js OS release support. " +
-            "Install it with: npm install koffi",
-    );
-}
+const {createRequire} = process.getBuiltinModule("node:module");
+const req = createRequire(import.meta.url ?? "file:///");
+const koffi = req("koffi");
 
 // ── Struct definitions ──────────────────────────────────────────────────────
 
@@ -45,7 +21,7 @@ const OSVERSIONINFOEXW = koffi.struct("OSVERSIONINFOEXW", {
     dwMinorVersion: "uint32",
     dwBuildNumber: "uint32",
     dwPlatformId: "uint32",
-    szCSDVersion: koffi.array("char16_t", 128),
+    szCSDVersion: koffi.array("char16_t", 128) as unknown as string,
     wServicePackMajor: "uint16",
     wServicePackMinor: "uint16",
     wSuiteMask: "uint16",
@@ -65,7 +41,7 @@ const DSROLE_PRIMARY_DOMAIN_INFO_BASIC = koffi.struct("DSROLE_PRIMARY_DOMAIN_INF
     DomainGuidData4: koffi.array("uint8", 8),
 });
 
-const PDSROLE_INFO = koffi.pointer(DSROLE_PRIMARY_DOMAIN_INFO_BASIC);
+// const PDSROLE_INFO = koffi.pointer(DSROLE_PRIMARY_DOMAIN_INFO_BASIC);
 
 // ── Load DLLs ───────────────────────────────────────────────────────────────
 
@@ -97,7 +73,9 @@ export const backend: OsReleaseBackend = {
             dwMinorVersion: 0,
             dwBuildNumber: 0,
             dwPlatformId: 0,
-            szCSDVersion: new Array(128).fill("\0"),
+            // initialize wide-char buffer with numeric zeroes (koffi expects numbers)
+            // deno-lint-ignore no-explicit-any
+            szCSDVersion: new Array(128).fill(0) as any,
             wServicePackMajor: 0,
             wServicePackMinor: 0,
             wSuiteMask: 0,

@@ -3,6 +3,16 @@
     "version": "0.0.0-alpha.0.1.0",
     "license": "MIT",
     "exports": {
-        ".": "./mod.ts"
+        ".": "./mod.ts",
+        "./bash": "./bash.ts",
+        "./bun": "./bun.ts",
+        "./deno": "./deno.ts",
+        "./dotnet": "./dotnet.ts",
+        "./go": "./go.ts",
+        "./node": "./node.ts",
+        "./python": "./python.ts",
+        "./ruby": "./ruby.ts",
+        "./sh": "./sh.ts",
+        "./wincmd": "./wincmd.ts"
     }
 }

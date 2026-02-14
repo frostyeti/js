@@ -48,7 +48,7 @@ function getShellArgs(script: string, isFile: boolean, shellArgsOverride?: strin
     if (isFile) {
         params.push(script);
     } else {
-        params = shellArgsOverride || DENO_EVAL_ARGS;
+        params = [...(shellArgsOverride || DENO_EVAL_ARGS)];
         params.push(script);
     }
     

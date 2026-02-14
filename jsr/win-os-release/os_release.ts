@@ -11,6 +11,7 @@ import type {
     DomainInfo,
     OsRelease,
     OsReleaseBackend,
+    OsReleaseLike,
     OsVersionInfo,
 } from "./types.ts";
 import {
@@ -18,28 +19,34 @@ import {
     ProductEdition,
     ProductType,
 } from "./types.ts";
+import { globals } from "@frostyeti/globals/globals";
+import process from "node:process";
+
+const { createRequire} = process.getBuiltinModule("node:module");
+const require = createRequire(import.meta.url ?? "file:///");
 
 let _backend: OsReleaseBackend | null = null;
 
-/**
- * Set the FFI backend used by `WinOsRelease`.
- * Called automatically by `mod.ts` after runtime detection.
- * @internal
- */
-export function setBackend(b: OsReleaseBackend): void {
-    _backend = b;
+export function setBackend(backend: OsReleaseBackend): void {
+    _backend = backend;
 }
 
-function getBackend(): OsReleaseBackend {
-    if (!_backend) {
-        throw new Error(
-            "WinOsRelease backend not initialised. Import from " +
-                "'@frostyeti/win-os-release' (mod.ts) which auto-detects the runtime, " +
-                "or call setBackend() manually.",
-        );
-    }
-    return _backend;
+if (typeof globals.Bun !== "undefined") {
+    const file = "./ffi_bun.js";
+    const { backend } = require(file);
+    _backend = backend;
+} else if (typeof globals.Deno !== "undefined" && typeof globals.Deno.dlopen === "function") {
+    const { backend } = require("./ffi_deno.ts");
+    _backend = backend;
+} else {
+     const file = "./ffi_node.js";
+     const { backend } = require(file);
+        _backend = backend; 
 }
+
+
+
+
 
 // ── Display name generation ─────────────────────────────────────────────────
 
@@ -135,6 +142,61 @@ function buildDisplayName(
     return suffix ? `${base} ${suffix}` : base;
 }
 
+function buildVariant(
+    productType: ProductType,
+    machineRole: MachineRole,
+): string {
+    if (productType === ProductType.DOMAIN_CONTROLLER ||
+        machineRole === MachineRole.PRIMARY_DC ||
+        machineRole === MachineRole.BACKUP_DC) {
+        return "Domain Controller";
+    }
+    if (productType === ProductType.SERVER) return "Server";
+    return "Workstation";
+}
+
+function buildCodeName(build: number, isServer: boolean): string {
+    if (isServer) {
+        if (build >= 26100) return "server2025";
+        if (build >= 20348) return "server2022";
+        if (build >= 17763) return "server2019";
+        if (build >= 14393) return "server2016";
+        return "server";
+    }
+
+    if (build >= 22000) return "win11";
+    if (build >= 10240) return "win10";
+    return "windows";
+}
+
+function formatOsRelease(
+    displayName: string,
+    variant: string,
+    codeName: string,
+): string {
+    return [
+        "ID=windows",
+        "NAME=\"Windows\"",
+        `PRETTY_NAME=\"${displayName}\"`,
+        `VARIANT=\"${variant}\"`,
+        `VERSION_CODENAME=\"${codeName}\"`,
+    ].join("\n");
+}
+
+function buildOsReleaseLike(
+    displayName: string,
+    variant: string,
+    codeName: string,
+): OsReleaseLike {
+    return {
+        id: "windows",
+        name: "Windows",
+        prettyName: displayName,
+        variant,
+        codeName,
+    };
+}
+
 // ── Public API ──────────────────────────────────────────────────────────────
 
 /**
@@ -147,7 +209,7 @@ export class WinOsRelease {
      * @returns Version info including major, minor, build, product type.
      */
     static getVersion(): OsVersionInfo {
-        return getBackend().getVersion();
+        return _backend!.getVersion();
     }
 
     /**
@@ -158,8 +220,8 @@ export class WinOsRelease {
      * @returns A `ProductEdition` code.
      */
     static getProductEdition(version?: OsVersionInfo): number {
-        const v = version ?? getBackend().getVersion();
-        return getBackend().getProductInfo(
+        const v = version ?? _backend!.getVersion();
+        return _backend!.getProductInfo(
             v.majorVersion,
             v.minorVersion,
             v.servicePackMajor,
@@ -173,14 +235,14 @@ export class WinOsRelease {
      * @returns Domain info including machine role, domain names.
      */
     static getDomainInfo(): DomainInfo {
-        return getBackend().getDomainInfo();
+        return _backend!.getDomainInfo();
     }
 
     /**
      * Returns `true` if the OS is a server edition.
      */
     static isServer(): boolean {
-        const v = getBackend().getVersion();
+        const v = _backend!.getVersion();
         return v.productType === ProductType.SERVER ||
             v.productType === ProductType.DOMAIN_CONTROLLER;
     }
@@ -189,10 +251,10 @@ export class WinOsRelease {
      * Returns `true` if the machine is a domain controller.
      */
     static isDomainController(): boolean {
-        const v = getBackend().getVersion();
+        const v = _backend!.getVersion();
         if (v.productType === ProductType.DOMAIN_CONTROLLER) return true;
         // Also check via DsRole for more precision
-        const d = getBackend().getDomainInfo();
+        const d = _backend!.getDomainInfo();
         return d.machineRole === MachineRole.PRIMARY_DC ||
             d.machineRole === MachineRole.BACKUP_DC;
     }
@@ -201,7 +263,7 @@ export class WinOsRelease {
      * Returns `true` if the OS is a workstation/desktop edition.
      */
     static isWorkstation(): boolean {
-        const v = getBackend().getVersion();
+        const v = _backend!.getVersion();
         return v.productType === ProductType.WORKSTATION;
     }
 
@@ -209,7 +271,7 @@ export class WinOsRelease {
      * Returns `true` if the machine is joined to a domain.
      */
     static isDomainJoined(): boolean {
-        const d = getBackend().getDomainInfo();
+        const d = _backend!.getDomainInfo();
         return d.machineRole === MachineRole.MEMBER_WORKSTATION ||
             d.machineRole === MachineRole.MEMBER_SERVER ||
             d.machineRole === MachineRole.PRIMARY_DC ||
@@ -232,14 +294,14 @@ export class WinOsRelease {
      * ```
      */
     static getOsRelease(): OsRelease {
-        const version = getBackend().getVersion();
-        const productEdition = getBackend().getProductInfo(
+        const version = _backend!.getVersion();
+        const productEdition = _backend!.getProductInfo(
             version.majorVersion,
             version.minorVersion,
             version.servicePackMajor,
             version.servicePackMinor,
         );
-        const domain = getBackend().getDomainInfo();
+        const domain = _backend!.getDomainInfo();
 
         const isServer = version.productType === ProductType.SERVER ||
             version.productType === ProductType.DOMAIN_CONTROLLER;
@@ -250,6 +312,7 @@ export class WinOsRelease {
 
         return {
             version,
+
             productEdition,
             domain,
             isServer,
@@ -257,5 +320,51 @@ export class WinOsRelease {
             isWorkstation: version.productType === ProductType.WORKSTATION,
             displayName: buildDisplayName(version, productEdition, isServer),
         };
+    }
+
+    /**
+     * Get a Windows-flavored `/etc/os-release`-style string.
+     *
+     * @returns A newline-delimited string with ID/NAME/PRETTY_NAME/VARIANT/VERSION_CODENAME.
+     */
+    static getOsReleaseText(): string {
+        const version = _backend!.getVersion();
+        const productEdition = _backend!.getProductInfo(
+            version.majorVersion,
+            version.minorVersion,
+            version.servicePackMajor,
+            version.servicePackMinor,
+        );
+        const domain = _backend!.getDomainInfo();
+
+        const isServer = version.productType === ProductType.SERVER ||
+            version.productType === ProductType.DOMAIN_CONTROLLER;
+        const displayName = buildDisplayName(version, productEdition, isServer);
+        const variant = buildVariant(version.productType, domain.machineRole);
+        const codeName = buildCodeName(version.buildNumber, isServer);
+
+        return formatOsRelease(displayName, variant, codeName);
+    }
+
+    /**
+     * Get Windows-flavored `/etc/os-release` values as a JSON-friendly object.
+     */
+    static getOsReleaseJson(): OsReleaseLike {
+        const version = _backend!.getVersion();
+        const productEdition = _backend!.getProductInfo(
+            version.majorVersion,
+            version.minorVersion,
+            version.servicePackMajor,
+            version.servicePackMinor,
+        );
+        const domain = _backend!.getDomainInfo();
+
+        const isServer = version.productType === ProductType.SERVER ||
+            version.productType === ProductType.DOMAIN_CONTROLLER;
+        const displayName = buildDisplayName(version, productEdition, isServer);
+        const variant = buildVariant(version.productType, domain.machineRole);
+        const codeName = buildCodeName(version.buildNumber, isServer);
+
+        return buildOsReleaseLike(displayName, variant, codeName);
     }
 }

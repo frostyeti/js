@@ -14,7 +14,4 @@
  * @param actual The actual value to check.
  * @param msg The optional message to include in the error if the assertion fails.
  */
-export declare function exists<T>(
-  actual: T,
-  msg?: string,
-): asserts actual is NonNullable<T>;
+export declare function exists<T>(actual: T, msg?: string): asserts actual is NonNullable<T>;

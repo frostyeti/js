@@ -1,0 +1,117 @@
+{
+  "name": "@frostyeti/exec-scripts",
+  "version": "0.0.0-alpha.0.1.0",
+  "type": "module",
+  "module": "./esm/mod.js",
+  "types": "./types/mod.d.ts",
+  "description": "The exec module makes it easy to spawn child_processes across different runtimes and different operating systems.",
+  "keywords": [
+    "exec",
+    "command",
+    "shell",
+    "process",
+    "child-process",
+    "spawn",
+    "which",
+    "split-arguments",
+    "splat"
+  ],
+  "license": "MIT",
+  "homepage": "js.frostyeti.com",
+  "bugs": {
+    "url": "https://github.com/frostyeti/js/discussions/categories/bugs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostyeti/js.git"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:bun": "bun test",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./esm/mod.js",
+        "types": "./types/mod.d.ts"
+      }
+    },
+    "./bash": {
+      "import": {
+        "default": "./esm/bash.js",
+        "types": "./types/bash.d.ts"
+      }
+    },
+    "./bun": {
+      "import": {
+        "default": "./esm/bun.js",
+        "types": "./types/bun.d.ts"
+      }
+    },
+    "./deno": {
+      "import": {
+        "default": "./esm/deno.js",
+        "types": "./types/deno.d.ts"
+      }
+    },
+    "./dotnet": {
+      "import": {
+        "default": "./esm/dotnet.js",
+        "types": "./types/dotnet.d.ts"
+      }
+    },
+    "./go": {
+      "import": {
+        "default": "./esm/go.js",
+        "types": "./types/go.d.ts"
+      }
+    },
+    "./node": {
+      "import": {
+        "default": "./esm/node.js",
+        "types": "./types/node.d.ts"
+      }
+    },
+    "./python": {
+      "import": {
+        "default": "./esm/python.js",
+        "types": "./types/python.d.ts"
+      }
+    },
+    "./ruby": {
+      "import": {
+        "default": "./esm/ruby.js",
+        "types": "./types/ruby.d.ts"
+      }
+    },
+    "./sh": {
+      "import": {
+        "default": "./esm/sh.js",
+        "types": "./types/sh.d.ts"
+      }
+    },
+    "./wincmd": {
+      "import": {
+        "default": "./esm/wincmd.js",
+        "types": "./types/wincmd.d.ts"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@frostyeti/exec": "^0.0.0-alpha.0.1.0",
+    "@frostyeti/strings": "^0.0.0-alpha.0.1.0",
+    "@frostyeti/globals": "^0.0.0-alpha.0.1.0",
+    "@frostyeti/path": "^0.0.0-alpha.0.1.0",
+    "@frostyeti/fs": "^0.0.0-alpha.0.1.0",
+    "@frostyeti/env": "^0.0.0-alpha.0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "@frostyeti/assert": "^0.0.0-alpha.0.1.0",
+    "typescript": "^5.9.3"
+  }
+}

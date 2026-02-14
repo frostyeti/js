@@ -18,10 +18,9 @@ import { AssertionError } from "./assertion-error.js";
  * @param msg The optional message to display if the assertion fails.
  */
 export function stringIncludes(actual, expected, msg) {
-  if (actual.includes(expected)) {
-    return;
-  }
-  const msgSuffix = msg ? `: ${msg}` : ".";
-  msg = `Expected actual: "${actual}" to contain: "${expected}"${msgSuffix}`;
-  throw new AssertionError(msg);
+    if (actual.includes(expected))
+        return;
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    msg = `Expected actual: "${actual}" to contain: "${expected}"${msgSuffix}`;
+    throw new AssertionError(msg);
 }

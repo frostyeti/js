@@ -154,6 +154,7 @@ export function stringToWide(str: string): Uint8Array {
  */
 export function wideToString(buffer: Uint8Array, byteLength?: number): string {
     const len = byteLength ?? buffer.length;
+    // @ts-ignore - utf-16le is valid but not in older TypeScript lib definitions
     const decoder = new TextDecoder("utf-16le");
     let end = len;
     for (let i = 0; i < len - 1; i += 2) {
