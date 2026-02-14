@@ -103,6 +103,7 @@ test("module::function handles empty input", () => {
 - Prefer JSR-style exports (`export { ... } from "./module.ts"`)
 - Use explicit type annotations where helpful
 - Add JSDoc comments for public APIs
+- Use a single underscore `_` for intentionally unused variables (for example `catch (_)` or unused destructured elements) — this documents intent and avoids linter warnings
 - No comments unless explicitly requested
 
 ### Module Structure
@@ -234,7 +235,7 @@ export class FfiFacade {
 ```
 
 Notes / best practices:
-- Use js extension for bun and node `const file = './ffi_bun.js'; const { backend} = require(file);` in
+- Use js extension for bun and node imports `const file = './ffi_bun.js'; const { backend} = require(file);` in
   source as dnt does not transform .ts to .js for require functions.
 - Do not use the ready/setBackend pattern.  
 

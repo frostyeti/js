@@ -222,6 +222,15 @@
       "denoConfig": "jsr\\win-os-release\\deno.json",
       "packageJson": "npm\\win-os-release\\package.json",
       "dntConfig": "jsr\\win-os-release\\dnt.json"
+    },
+    {
+      "name": "win-registry",
+      "id": "@frostyeti/win-registry",
+      "version": "0.0.0-alpha.0.1.0",
+      "dir": "jsr\\win-registry",
+      "denoConfig": "jsr\\win-registry\\deno.json",
+      "packageJson": "npm\\win-registry\\package.json",
+      "dntConfig": "jsr\\win-registry\\dnt.json"
     }
   ]
 }

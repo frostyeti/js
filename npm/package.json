@@ -26,6 +26,7 @@
         "./exec-scripts",
         "./is-elevated",
         "./win-cred",
-        "./win-os-release"
+        "./win-os-release",
+        "./win-registry"
     ]
 }
